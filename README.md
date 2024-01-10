@@ -4,6 +4,15 @@
 
 This repository contains examples of how to set up the Howso Platform in various infrastructure formulations.
 
+## Examples
+
+- [Helm](helm-basic/README.md)
+- [Helm Advanced](helm-full/README.md)
+- [Helm Airgap](argocd-basic/README.md)
+- [Helm Openshift](argocd-openshift/README.md)
+- [ArgoCD Basic](argocd-basic/README.md)
+- [ArgoCD Airgap](argocd-airgap/README.md)
+
 ## Overview
 Howso Platform is a kubernetes application that consists of many services, packaged as a helm chart.  It relies on datastores, such as postgresql, redis, and an object store.  These datastores can be deployed as helm charts, or as managed services in a cloud provider, etc.  The documentation will use common available charts, but you can substitute your own charts or managed services. 
 
@@ -77,13 +86,3 @@ kubectl taint nodes $NODE howso.com/nodetype=worker:NoExecute
 These practices ensure that the Howso Platform operates within a well-organized, resource-optimized environment. The core node group maintains the essential services, while the worker node group dynamically scales to meet the demands of machine learning workloads, enhancing overall efficiency and performance.
 
 
-
-
-## Examples
-
-- [Helm](helm-basic/README.md)
-- [Helm Advanced](helm-full/README.md)
-- [Helm Airgap](argocd-basic/README.md)
-- [Helm Openshift](argocd-openshift/README.md)
-- [ArgoCD Basic](argocd-basic/README.md)
-- [ArgoCD Airgap](argocd-airgap/README.md)
