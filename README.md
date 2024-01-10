@@ -28,6 +28,13 @@ While KOTS offers more extensive management features, Helm provides a more strai
 Helm charts are highly customizable, allowing users to adjust settings to fit their specific requirements. This flexibility, combined with the ease of updating and rolling back deployments, makes Helm a preferred choice for rapid and efficient Kubernetes application management. Whether deploying simple microservices or complex, multi-tiered applications, Helm's approach to packaging and deployment is invaluable for consistent and reproducible environments.
 
 
+## Accessing the Howso Platform Helm Registry
+To access the Helm registry for the Howso Platform, you need to use your license ID as the password. You can find your license ID in two ways: either from the address bar on the downloads page or within your license file, where it's listed under the `license_id:` field. The registry is an OCI (Open Container Initiative) type, and you'll log in using the email registered with the customer portal and your license ID. Use the following command to log in, replacing `your_email@example.com` with your registered email and `your_license_id` with your actual license ID:
+
+```bash
+helm registry login registry.replicated.com --username your_email@example.com --password your_license_id
+```
+
 
 ## Examples
 
