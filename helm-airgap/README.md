@@ -1,14 +1,16 @@
-# Installation Example: Helm Airgap Installation 
+# Helm Airgap Installation for Howso Platform
+
+## Introduction
+This guide outlines the deployment of the Howso Platform using ArgoCD and Helm in an airgapped Kubernetes environment.
 
 ## Overview
-This example demonstrates deploying howso-platform using using ArgoCD, a GitOps tool for managing Kubernetes applications. It focuses on deploying the howso-platform using ArgoCD's Helm chart capabilities.
+Deploy the Howso Platform using ArgoCD's Helm chart capabilities, focusing on a minimal configuration that's functional for the Howso Platform and its dependent charts.
 
 ## Limitations
-The example covers basic use of ArgoCD, and is not intended to be a comprehensive guide to ArgoCD's features.  
+This example covers basic ArgoCD usage and is not a comprehensive guide to all features.
 
-The focus is on a working minimal configuration for the howso-platform chart and dependent charts.
-
->  Without a seperate commercial agreement, MinIO, is under the AGPL license.  When deployed as part of a Howso Inc. has an OEM license with Minio - when deployed as part of a commercial howso-platform installation, usage of Minio storage up to 1 terabyte is covered under our OEM license.  Howso Platform should not be deployed beyond personal test use without a fully licensed Minio installation or s3 compatible alternative. 
+## Licensing Note
+> MinIO, under AGPL license, is used with Howso Inc.'s OEM license for commercial Howso Platform deployments, covering up to 1 terabyte. Beyond personal testing, ensure a fully licensed Minio installation or an S3 compatible alternative.
 
 ## Tools and Technologies
 - ArgoCD
@@ -21,5 +23,45 @@ The focus is on a working minimal configuration for the howso-platform chart and
 - Helm installed and configured
 - Access to Replicated's Helm repository
 
+## Installation Steps
+### Push Images to Local Registry
+   ```bash
+   kubectl kots admin-console push-images /path/to/airgap/images registry-localhost:5000 --registry-username reguser --registry-password pw --namespace howso --skip-registry-check
+   ```
 
-## Steps 
+### Helm Registry Authentication
+
+   - Log in:
+     ```bash
+     helm registry login registry.replicated.com --username your_email@example.com --password your_password
+     ```
+
+### Install Component Charts
+   - Install MinIO:
+     ```bash
+     helm install platform-minio oci://registry.replicated.com/howso-platform/minio --create-namespace --namespace howso --values /path/to/minio/values.yaml --wait
+     ```
+   - Install NATS:
+     ```bash
+     helm install platform-nats oci://registry.replicated.com/howso-platform/nats --namespace howso --values /path/to/nats/values.yaml --wait
+     ```
+   - Install PostgreSQL:
+     ```bash
+     helm install platform-postgres oci://registry.replicated.com/howso-platform/postgresql --namespace howso --wait
+     ```
+   - Install Redis:
+     ```bash
+     helm install platform-redis oci://registry.replicated.com/howso-platform/redis --namespace howso --wait
+     ```
+   - Install Howso Platform:
+     ```bash
+     helm install howso-platform oci://registry.replicated.com/howso-platform/howso-platform --namespace howso --values /path/to/howso-platform/values.yaml --wait
+     ```
+
+## Finalizing Installation
+Verify all components are installed and running by checking pod status in the `howso` namespace.
+
+## Troubleshooting and Support
+Refer to ArgoCD and Helm documentation or contact Howso Platform support for troubleshooting assistance.
+
+---
