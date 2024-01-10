@@ -1,4 +1,4 @@
-<img src="assets/logo-gradient-light.png" alt="Logo" width="200"/>
+<img src="assets/logo-gradient-light-bg.png" alt="Logo" width="200"/>
 
 # Howso Platform Setup Examples
 
