@@ -35,6 +35,49 @@ To access the Helm registry for the Howso Platform, you need to use your license
 helm registry login registry.replicated.com --username your_email@example.com --password your_license_id
 ```
 
+## Quick Start vs Production Readiness
+
+### Out-of-the-Box Interoperability
+The Helm charts for the Howso Platform, including Redis, PostgreSQL, MinIO, and NATS, are designed to work together seamlessly in their default configurations. With the exception of enabling JetStream in NATS, these charts require minimal setup for a quick start. This interoperability facilitates an easy and efficient initial deployment of the Howso Platform.
+
+### Considerations for Production Environments
+While the default configurations are suitable for a quick start and testing purposes, they are not intended for hardened, production-level deployments. Key aspects such as securing communication tunnels to the datastores and managing datastore passwords require additional configurations:
+
+- **Securing Datastore Tunnels**: Setting up mTLS (Mutual TLS) is recommended for securing communication channels. This involves configuring certificates and keys to ensure both client and server authenticate each other’s identities.
+
+- **Managing Datastore Passwords**: Utilizing a secret store for managing datastore passwords enhances security. This involves additional configuration to integrate the secret store with each component of the Howso Platform.
+
+These security enhancements, while vital for a production environment, require a more involved setup and may need to be tailored to your specific infrastructure and security requirements. Some configurations will be demonstrated as examples in our documentation, but the final implementation should be customer-driven, taking into account the specific security policies and infrastructure needs of your organization.
+
+
+## Resource Management and Node Grouping in Howso Platform
+
+### Understanding Resource Needs
+The Howso Platform is a resource-intensive machine learning platform. It dynamically creates new workloads through an operator, which require considerable CPU and memory resources. For optimal performance, the platform should be set up in an environment with a substantial number of available nodes, ideally within an autoscaling infrastructure. This setup ensures that the platform can scale resources efficiently as workloads increase.
+
+### Recommended Node Grouping for Autoscaling
+A practical approach to manage resources in an autoscaling cluster (such as EKS or AKS) is to use two distinct node groups:
+
+- **Core Node Group**: This group hosts all non-trainee pods. It's crucial for the stability and running of the platform's core functions.
+- **Worker Node Group**: Dedicated to worker pods, this group handles the dynamic, resource-heavy workloads typical in machine learning tasks.
+
+### Applying Taints and Labels for Effective Scaling
+To optimize resource allocation and ensure that pods are scheduled on the appropriate nodes, use [taints and labels](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/):
+
+1. Restrict Worker Pods on Core Nodes:
+   Label the core node group to prevent worker pods from being scheduled on these nodes:
+   ```bash
+   kubectl label nodes $NODE howso.com/allowWorkers=False
+    ```
+2. Dedicate Worker Nodes for Worker Pods
+Label and taint the worker node group to allow only worker pods and actively remove other types of pods:
+```bash
+kubectl taint nodes $NODE howso.com/nodetype=worker:NoExecute
+```
+These practices ensure that the Howso Platform operates within a well-organized, resource-optimized environment. The core node group maintains the essential services, while the worker node group dynamically scales to meet the demands of machine learning workloads, enhancing overall efficiency and performance.
+
+
+
 
 ## Examples
 
