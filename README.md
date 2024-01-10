@@ -8,8 +8,8 @@ This repository contains examples of how to set up the Howso Platform in various
 
 - [Helm](helm-basic/README.md)
 - [Helm Advanced](helm-full/README.md)
-- [Helm Airgap](argocd-basic/README.md)
-- [Helm Openshift](argocd-openshift/README.md)
+- [Helm Airgap](helm-airgap/README.md)
+- [Helm Openshift](helm-openshift/README.md)
 - [ArgoCD Basic](argocd-basic/README.md)
 - [ArgoCD Airgap](argocd-airgap/README.md)
 
