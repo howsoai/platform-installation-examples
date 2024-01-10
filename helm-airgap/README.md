@@ -1,4 +1,4 @@
-# Installation Example: ArgoCD Installation
+# Installation Example: Helm Airgap Installation 
 
 ## Overview
 This example demonstrates deploying howso-platform using using ArgoCD, a GitOps tool for managing Kubernetes applications. It focuses on deploying the howso-platform using ArgoCD's Helm chart capabilities.

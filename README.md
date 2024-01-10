@@ -18,6 +18,8 @@ Contrastingly, **Helm** is the Kubernetes package manager, akin to apt/yum/homeb
 
 While KOTS offers more extensive management features, Helm provides a more straightforward, agile deployment method. The choice between them depends on the specific needs of your application's lifecycle and operational requirements.
 
+[Replicated Helm Docs](https://docs.replicated.com/vendor/distributing-overview#helm)
+
 
 ### Helm Overview
 

@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: howso-platform 
+  namespace: argocd
+spec:
+  project: howso-platform 
+  source:
+    repoURL: registry.replicated.com/howso-platform/dev-1
+    targetRevision: 2.14.32 
+    chart: howso-platform 
+    helm:
+      values: |
+        customResourceDefinitions:
+          skip: true
+        domain: local.howso.com
+        images:
+          registry: proxy.replicated.com
+          registryNamespace: proxy/howso-platform/dpbuild-docker-edge.jfrog.io/dp
+        
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: argocd 
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
