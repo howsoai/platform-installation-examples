@@ -1,0 +1,9 @@
+makeServiceAccountJob:
+  securityContext:
+    enabled: true
+    runAsUser: null
+resources:
+  requests:
+    memory: 2Gi
+securityContext:
+  enabled: false

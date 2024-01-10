@@ -1,0 +1,24 @@
+backup:
+  cronjob:
+    containerSecurityContext:
+      runAsUser: null
+    podSecurityContext:
+      fsGroup: null
+metrics:
+  containerSecurityContext:
+    runAsUser: null
+primary:
+  containerSecurityContext:
+    runAsUser: null
+  persistence:
+    size: 8Gi
+  podSecurityContext:
+    fsGroup: null
+readReplicas:
+  containerSecurityContext:
+    runAsUser: null
+  podSecurityContext:
+    fsGroup: null
+volumePermissions:
+  containerSecurityContext:
+    runAsUser: null
