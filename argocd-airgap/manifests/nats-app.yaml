@@ -6,7 +6,7 @@ metadata:
 spec:
   project: howso-platform 
   source:
-    repoURL: registry.replicated.com/howso-platform/dev-1 
+    repoURL: registry.how.so/howso-platform/dev-1 
     targetRevision: 1.1.5 
     chart: nats 
     helm:

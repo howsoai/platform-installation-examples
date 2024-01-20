@@ -33,29 +33,29 @@ This example covers basic ArgoCD usage and is not a comprehensive guide to all f
 
    - Log in:
      ```bash
-     helm registry login registry.replicated.com --username your_email@example.com --password your_password
+     helm registry login registry.how.so --username your_email@example.com --password your_password
      ```
 
 ### Install Component Charts
    - Install MinIO:
      ```bash
-     helm install platform-minio oci://registry.replicated.com/howso-platform/minio --create-namespace --namespace howso --values /path/to/minio/values.yaml --wait
+     helm install platform-minio oci://registry.how.so/howso-platform/minio --create-namespace --namespace howso --values /path/to/minio/values.yaml --wait
      ```
    - Install NATS:
      ```bash
-     helm install platform-nats oci://registry.replicated.com/howso-platform/nats --namespace howso --values /path/to/nats/values.yaml --wait
+     helm install platform-nats oci://registry.how.so/howso-platform/nats --namespace howso --values /path/to/nats/values.yaml --wait
      ```
    - Install PostgreSQL:
      ```bash
-     helm install platform-postgres oci://registry.replicated.com/howso-platform/postgresql --namespace howso --wait
+     helm install platform-postgres oci://registry.how.so/howso-platform/postgresql --namespace howso --wait
      ```
    - Install Redis:
      ```bash
-     helm install platform-redis oci://registry.replicated.com/howso-platform/redis --namespace howso --wait
+     helm install platform-redis oci://registry.how.so/howso-platform/redis --namespace howso --wait
      ```
    - Install Howso Platform:
      ```bash
-     helm install howso-platform oci://registry.replicated.com/howso-platform/howso-platform --namespace howso --values /path/to/howso-platform/values.yaml --wait
+     helm install howso-platform oci://registry.how.so/howso-platform/howso-platform --namespace howso --values /path/to/howso-platform/values.yaml --wait
      ```
 
 ## Finalizing Installation

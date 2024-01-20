@@ -6,7 +6,7 @@ metadata:
 spec:
   description: Howso Platform Applications
   sourceRepos:
-    - 'registry.replicated.com/howso-platform/dev-1'
+    - 'registry.how.so/howso-platform/dev-1'
   destinations:
     - namespace: howso
       server: 'https://kubernetes.default.svc'
