@@ -15,7 +15,7 @@ spec:
           skip: true
         domain: local.howso.com
         images:
-          registry: proxy.replicated.com
+          registry: registry.how.so
           registryNamespace: proxy/howso-platform/dpbuild-docker-edge.jfrog.io/dp
         
   destination:
