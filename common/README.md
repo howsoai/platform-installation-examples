@@ -21,11 +21,11 @@ From Howso Admin Drop-down > Credentials > New Credential > "test" Copy|Download
 
 Either [Trust the Certs](#trust-the-certs) or [Disable SSL Verification](#disable-ssl-verification) before proceeding.
 
-## Disable SSL Verification
+### Disable SSL Verification
 Edit the `howso.yaml` file and set `verify_ssl: false.
 
 
-## Trust the Certs 
+### Trust the Certs 
 Get the platform cert from the ca secret
 ```
 kubectl -n howso get secrets platform-ca -ojson | jq -r '.data."tls.crt"' | base64 -d > howso-platform.crt
@@ -48,7 +48,7 @@ howso:
 ```
 
 
-## Create Python environment 
+### Create Python environment 
 
 - Create a python virtual environment using your preferred method. 
 
@@ -60,10 +60,20 @@ i.e.
 pip install -U --trusted-host pypi.local.howso.com --extra-index-url https://mySecretPypiToken@pypi.local.howso.com/simple/ howso-platform-client[full]
 ```
 
-## Test the install
+### Test the install
 
 Run the verification script to ensure everything is working.
 ```
 python -m howso.utilities.installation_verification
 ```
 
+## Download Airgap Bundle
+
+
+- Navigate to the Howso Customer Portal at [https://portal.howso.com/](https://portal.howso.com)
+- In the top right drop-down, where your name appears, select 'Organizations', and select the appropriate value (usually your company name).
+- Scroll down the organization page, and you'll see any licenses.  Airgap enabled licenses will have buttons to download the bundle and reset the password.  If you don't see an air-gapped license, contact your Howso representative.
+- If this is your first time downloading an application bundle, or you've mislaid the password, select 'Reset Bundle Password' then copy the password and click OK.
+- Select 'Air Gap Bundle' and enter the password to get to the Download Portal.
+- In the 'Latest Howso Platform Airgap bundle' Section select 'Download air-gap bundle'
+- Save the file (~ 1 Gig) -  for later use during the installation process, and/or application update.
