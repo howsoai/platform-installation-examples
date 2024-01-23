@@ -23,22 +23,22 @@ For Openshift examples, you'll need to install the following:-
 
 ## Local Kubernetes Cluster Setup 
 
-### Simple Single Node Cluster
+### Simple Single Node K3D Cluster
 
 
 ```
-k3d cluster create --config prereqs/k3d-single-node.yml
+k3d cluster create --config prereqs/k3d-single-node.yaml
 ```
 
-Confirm kubectl access, and check the cluster is running
+Confirm kubectl access, and check the cluster is running.
 ```
 kubectl -n kube-system wait --for=condition=ready --timeout=180s pod -l k8s-app=metrics-server
 ```
 
-### Multi Node Cluster
+### Multi Node K3D Cluster
 
 ```
-k3d cluster create --config prereqs/k3d-multi-node.yml
+k3d cluster create --config prereqs/k3d-multi-node.yaml
 ```
 
 Confirm kubectl access, and check the cluster is running
@@ -47,15 +47,18 @@ kubectl -n kube-system wait --for=condition=ready --timeout=180s pod -l k8s-app=
 ```
 
 Label the server node - to keep worker pods off it
-
 ```
 kubectl label nodes k3d-platformk8s-server-0 howso.com/allowWorkers=False --overwrite
 ```
 
-> For each agent node, apply a taint so only worker pods are scheduled there
+For each agent node, apply a taint so only worker pods are scheduled.
+```
+kubectl taint nodes k3d-platformk8s-agent-{0,1,2} howso.com/nodetype=worker:NoSchedule --overwrite
+```
+
+
+### Remove K3d Cluster
 
 ```
-kubectl taint nodes k3d-platformk8s-agent-0 howso.com/nodetype=worker:NoSchedule --overwrite
-kubectl taint nodes k3d-platformk8s-agent-1 howso.com/nodetype=worker:NoSchedule --overwrite
-kubectl taint nodes k3d-platformk8s-agent-2 howso.com/nodetype=worker:NoSchedule --overwrite
+k3d cluster delete platformk8s
 ```
