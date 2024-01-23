@@ -2,43 +2,38 @@
 
 # Howso Platform Setup Examples
 
-This repository contains examples of how to set up the Howso Platform in various infrastructure formulations.
+This repository contains examples of how to set up the Howso Platform in various configurations based around Helm charts.
 
 ## Examples
+- [Pre-requisites](prereqs/README.md)
 
 - [Helm](helm-basic/README.md)
 - [Helm Advanced](helm-full/README.md)
 - [Helm Airgap](helm-airgap/README.md)
 - [Helm Openshift](helm-openshift/README.md)
 - [ArgoCD Basic](argocd-basic/README.md)
+- [ArgoCD Basic](argocd-helm-template/README.md)
 - [ArgoCD Airgap](argocd-airgap/README.md)
 
 ## Overview
-Howso Platform is a kubernetes application that consists of many services, packaged as a helm chart.  It relies on datastores, such as postgresql, redis, and an object store.  These datastores can be deployed as helm charts, or as managed services in a cloud provider, etc.  The documentation will use common available charts, but you can substitute your own charts or managed services. 
+Howso Platform is a kubernetes application that consists of many services, packaged as a helm chart.  
+
+Helm modularizes kubernetes manifests into charts, which can be installed, upgraded, and uninstalled. It allows a straightforward method for templating out certain values, to make it simple to configure the application.
+
+The Howso Platform relies on datastores, such as postgres, redis, and an s3 compatible object store, and a message queue (NATS).  These requirements can themselves be deployed as helm charts.  The documentation will use common available charts for these dependencies, that are configurable enough to provide a range from simple tests to scaled production configurations.
+
 
 ### Replicated
-The Howso Platform is distributed as a [Replicated](https://www.replicated.com/) application.  Replicated is a kubernetes application distribution platform that facilitates self-hosted installation of kubernetes applications.  This documentation will focus on accessing the application as helm charts - see the Howso Platform documenation for [KOTS](https://kots.io/) installation instructions - both as a standalone installer, and to install into an existing cluster.
+The Howso Platform is distributed as a [Replicated](https://www.replicated.com/) application.  Replicated is a kubernetes application distribution platform that facilitates self-hosted installation of kubernetes applications.  This documentation will focus on accessing the application as Replicated hosted helm charts - see the [Howso Platform documenation](https://portal.howso.com) for [KOTS](https://kots.io/) installation instructions.  KOTS provides methods for standalone (without an existing kubernetes) installer, and to install into an existing cluster; in both cases wrapping all the components into a single installer.
 
-### KOTS vs HELM
-
-**KOTS (Kubernetes Off-The-Shelf Software)** is tailored for managing and distributing complex Kubernetes applications. It shines in scenarios requiring detailed configuration, ongoing maintenance, and support, making it a go-to for enterprise-grade deployments. KOTS focuses on application lifecycle management, offering robust tools for versioning, backup, and restore.
-
-Contrastingly, **Helm** is the Kubernetes package manager, akin to apt/yum/homebrew for Linux. It's designed for simplifying the deployment and management of Kubernetes applications. Helm excels in its simplicity and flexibility, making it ideal for rapid deployment and iteration of applications. It's particularly effective for defining, installing, and upgrading even complex Kubernetes apps.
-
-While KOTS offers more extensive management features, Helm provides a more straightforward, agile deployment method. The choice between them depends on the specific needs of your application's lifecycle and operational requirements.
-
-[Replicated Helm Docs](https://docs.replicated.com/vendor/distributing-overview#helm)
-
-
-### Helm Overview
-
-**Helm** is an indispensable tool in the Kubernetes ecosystem, often referred to as the Kubernetes package manager. It simplifies the process of managing Kubernetes applications through Helm charts — collections of pre-configured Kubernetes resources. These charts streamline the deployment and management process, making it easier to distribute, version, and manage Kubernetes applications.
-
-Helm charts are highly customizable, allowing users to adjust settings to fit their specific requirements. This flexibility, combined with the ease of updating and rolling back deployments, makes Helm a preferred choice for rapid and efficient Kubernetes application management. Whether deploying simple microservices or complex, multi-tiered applications, Helm's approach to packaging and deployment is invaluable for consistent and reproducible environments.
 
 
 ## Accessing the Howso Platform Helm Registry
-To access the Helm registry for the Howso Platform, you need to use your license ID as the password. You can find your license ID in two ways: either from the address bar on the downloads page or within your license file, where it's listed under the `license_id:` field. The registry is an OCI (Open Container Initiative) type, and you'll log in using the email registered with the customer portal and your license ID. Use the following command to log in, replacing `your_email@example.com` with your registered email and `your_license_id` with your actual license ID:
+Access to the Helm registry for the Howso Platform requires a Howso Platform license.  You'll log in with your email, registered with the customer portal, and your license ID as the credential.
+
+You can find your license ID in two ways: either from the address bar on the downloads page or within your license file, where it's listed under the `license_id:` field.
+
+The charts are stored in an OCI (Open Container Initiative) type registry, and you'll log in using the email registered with the customer portal and your license ID. Use the following command to log in, replacing `your_email@example.com` with your registered email and `your_license_id` with your actual license ID:
 
 ```bash
 helm registry login registry.how.so --username your_email@example.com --password your_license_id
@@ -47,16 +42,17 @@ helm registry login registry.how.so --username your_email@example.com --password
 ## Quick Start vs Production Readiness
 
 ### Out-of-the-Box Interoperability
-The Helm charts for the Howso Platform, including Redis, PostgreSQL, MinIO, and NATS, are designed to work together seamlessly in their default configurations. With the exception of enabling JetStream in NATS, these charts require minimal setup for a quick start. This interoperability facilitates an easy and efficient initial deployment of the Howso Platform.
+The Helm charts for the Howso Platform, including Redis, PostgreSQL, MinIO, and NATS, are designed to work together seamlessly in (an almost) default configurations. With the exception of some small changes (i.e. enabling JetStream in NATS) these charts require minimal setup for a quick start. This interoperability facilitates an easy and efficient initial deployment of the Howso Platform.
+
+In the _basic_ examples, this type of configuration will be demonstrated.  It is recommended to start with this configuration before more complex arrangements.
 
 ### Considerations for Production Environments
-While the default configurations are suitable for a quick start and testing purposes, they are not intended for hardened, production-level deployments. Key aspects such as securing communication tunnels to the datastores and managing datastore passwords require additional configurations:
+While the default configurations are suitable for a quick start and testing purposes, they are not intended for hardened, production-level deployments. Key aspects such as air-gapping, securing communication tunnels, appeasing OpenShift policies, and scaling will require additional configuration. 
 
-- **Securing Datastore Tunnels**: Setting up mTLS (Mutual TLS) is recommended for securing communication channels. This involves configuring certificates and keys to ensure both client and server authenticate each other’s identities.
+Though not exhaustive, the included _advanced_, _airgap_ and _openshift_ examples will demonstrate how some of these configurations can be achieved. 
 
-- **Managing Datastore Passwords**: Utilizing a secret store for managing datastore passwords enhances security. This involves additional configuration to integrate the secret store with each component of the Howso Platform.
-
-These security enhancements, while vital for a production environment, require a more involved setup and may need to be tailored to your specific infrastructure and security requirements. Some configurations will be demonstrated as examples in our documentation, but the final implementation should be customer-driven, taking into account the specific security policies and infrastructure needs of your organization.
+### Secret management
+The examples will typically create secrets as a seperate step - creating an _existing secret_ for charts to use.  This is a reasonable approach on its own - as the secrets need only be known between the platform and datastore.  However, including as a seperate step should make it clear where additional secret management tools (external-secrets) could be used instead.
 
 
 ## Resource Management and Node Grouping in Howso Platform
@@ -80,9 +76,13 @@ To optimize resource allocation and ensure that pods are scheduled on the approp
     ```
 2. Dedicate Worker Nodes for Worker Pods
 Label and taint the worker node group to allow only worker pods and actively remove other types of pods:
-```bash
-kubectl taint nodes $NODE howso.com/nodetype=worker:NoExecute
-```
+    ```bash
+    kubectl taint nodes $NODE howso.com/nodetype=worker:NoExecute
+    ```
 These practices ensure that the Howso Platform operates within a well-organized, resource-optimized environment. The core node group maintains the essential services, while the worker node group dynamically scales to meet the demands of machine learning workloads, enhancing overall efficiency and performance.
 
+
+## Example Structure
+
+The examples should work in any kubernetes cluster, but to make them easy to work with locally, examples using [k3d] are provided.  The OpenShift examples should use a [CodeReady Containers](https://developers.redhat.com/products/codeready-containers/overview).  Checkout the [prereqs](prereqs/README.md) for more details. 
 
