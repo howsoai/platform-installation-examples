@@ -1,5 +1,5 @@
 domain: local.howso.com
 images:
-  registry: registry.how.so 
+  registry: proxy.replicated.com 
   registryNamespace: proxy/howso-platform/dpbuild-docker-edge.jfrog.io/dp
 

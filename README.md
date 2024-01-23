@@ -28,17 +28,6 @@ The Howso Platform is distributed as a [Replicated](https://www.replicated.com/)
 
 
 
-## Accessing the Howso Platform Helm Registry
-Access to the Helm registry for the Howso Platform requires a Howso Platform license.  You'll log in with your email, registered with the customer portal, and your license ID as the credential.
-
-You can find your license ID in two ways: either from the address bar on the downloads page or within your license file, where it's listed under the `license_id:` field.
-
-The charts are stored in an OCI (Open Container Initiative) type registry, and you'll log in using the email registered with the customer portal and your license ID. Use the following command to log in, replacing `your_email@example.com` with your registered email and `your_license_id` with your actual license ID:
-
-```bash
-helm registry login registry.how.so --username your_email@example.com --password your_license_id
-```
-
 ## Quick Start vs Production Readiness
 
 ### Out-of-the-Box Interoperability
@@ -85,4 +74,23 @@ These practices ensure that the Howso Platform operates within a well-organized,
 ## Example Structure
 
 The examples should work in any kubernetes cluster, but to make them easy to work with locally, examples using [k3d] are provided.  The OpenShift examples should use a [CodeReady Containers](https://developers.redhat.com/products/codeready-containers/overview).  Checkout the [prereqs](prereqs/README.md) for more details. 
+
+
+## Licensing Note
+MinIO is used at the default s3 object store with Howso Platform.  For production deployments ensure you have a valid license for MinIO.
+MinIO, under the AGPL license, is included with Howso Inc.'s OEM license for commercial Howso Platform deployments, covering usage up to 1 terabyte.
+
+
+## Troubleshooting and Support
+For assistance, consult the documentation:-
+
+- [Howso Platform](https://portal.howso.com) 
+- [Helm](https://helm.sh/docs/)
+- [ArgoCD](https://argoproj.github.io/argo-cd/)
+- [Bitnami PostgreSQL Chart](https://github.com/bitnami/charts/tree/main/bitnami/postgresql)
+- [Bitnami Redis Chart](https://github.com/bitnami/charts/tree/main/bitnami/redis)
+- [MinIO Community Chart](https://github.com/minio/minio/tree/master/helm/minio)
+- [NATS Chart](https://github.com/nats-io/k8s/tree/main/helm/charts/nats)
+
+Or reach out to Howso Platform support (support@howso.com).
 
