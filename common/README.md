@@ -31,11 +31,22 @@ Get the platform cert from the ca secret
 kubectl -n howso get secrets platform-ca -ojson | jq -r '.data."tls.crt"' | base64 -d > howso-platform.crt
 ```
 
-### Linux/WSL
+Update the howso.yml with a full path to the cert file, under key `security.ssl_ca_cert`.  i.e.
 ```
-sudo mv -v ./howso-platform.crt /usr/local/share/ca-certificates/howso-platform.crt
-sudo update-ca-certificates
+security:
+    type: OAuth
+    name: test
+    tenant: https://management.local.howso.com/oauth
+    audience: api://howso.com/platform
+    client_id: myid 
+    client_secret: mykey 
+    verify_ssl: true
+    ssl_ca_cert: /full/path/howso-platform.crt
+howso:
+  ...
+
 ```
+
 
 ## Create Python environment 
 
