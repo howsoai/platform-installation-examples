@@ -12,36 +12,47 @@ As you navigate you will be redirected to other subdomains - each of which will 
  
 
 ## Create Client Environment 
-### Create Test User
-> Using UMS to create a test user and get the howso.yml config file
 
+### Create Client Credentials
+This is just a quick set-up.  The admin user wouldn't typically have their own client credentials, but would be used to bootstrap other users.
+From the Project Page > New Project > "Test Project".
+From Howso Admin Drop-down > Profile > Preferences > Default Project > "Test Project" > Save
+From Howso Admin Drop-down > Credentials > New Credential > "test" Copy|Download as howso.yaml in ~/.howso/howso.yaml or in your local working directory.
+
+Either [Trust the Certs](#trust-the-certs) or [Disable SSL Verification](#disable-ssl-verification) before proceeding.
+
+## Disable SSL Verification
+Edit the `howso.yaml` file and set `verify_ssl: false.
+
+
+## Trust the Certs 
+Get the platform cert from the ca secret
 ```
-kubectl -n howso exec -it deploy/platform-ums -c ums -- /container_files/bin/setup_tests.sh create_user_and_get_diveplane_yml tester1 local.howso.com | awk '/START/{flag=1; next} /END/{flag=0} flag' | grep -v -e verify_ssl -e suppress_tls_warnings
+kubectl -n howso get secrets platform-ca -ojson | jq -r '.data."tls.crt"' | base64 -d > howso-platform.crt
 ```
 
-## Setup Certs 
-> Getting the platform cert from the ca secret
-
+### Linux/WSL
 ```
-kubectl -n howso get secrets platform-ca -ojson | jq -r '.data."tls.crt"' | base64 -d
-```
-
-```
-sudo cp -v ./howso-platform.crt /usr/local/share/ca-certificates/howso-platform.crt
-```
-
-```
+sudo mv -v ./howso-platform.crt /usr/local/share/ca-certificates/howso-platform.crt
 sudo update-ca-certificates
 ```
 
 ## Create Python environment 
-### Command Executed (from /home/dom/workspaces/howso-platform-start/components/platform-tests/envs/helm-replicated-k3d-howso-platform)
+
+- Create a python virtual environment using your preferred method. 
+
+- Navigate to Howso Admin Drop-down > Client Setup. 
+
+- Copy the pip install command, and run in your new virtual environment. 
+i.e.
 ```
-pip install -U howso-platform-client[full]
+pip install -U --trusted-host pypi.local.howso.com --extra-index-url https://mySecretPypiToken@pypi.local.howso.com/simple/ howso-platform-client[full]
 ```
 
-### Command Executed (from /home/dom/workspaces/howso-platform-start/components/platform-tests)
+## Test the install
+
+Run the verification script to ensure everything is working.
 ```
-time python -m howso.utilities.installation_verification
+python -m howso.utilities.installation_verification
 ```
 
