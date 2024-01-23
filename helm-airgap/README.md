@@ -1,67 +1,66 @@
-# Helm Airgap Installation for Howso Platform
+# Helm Non-Airgap Installation for Howso Platform
+- [Helm Non-Airgap Installation for Howso Platform](#helm-non-airgap-installation-for-howso-platform)
+  - [Introduction](#introduction)
+    - [Create datastore secrets](#create-datastore-secrets)
+    - [Install component charts](#install-component-charts)
+
 
 ## Introduction
-This guide outlines the deployment of the Howso Platform using ArgoCD and Helm in an airgapped Kubernetes environment.
+This guide details the process of deploying the Howso Platform using Helm in a non-airgapped Kubernetes environment.
+This documentation focuses on deploying the Howso Platform using Helm, emphasizing a straightforward installation process for environments with direct internet access.
 
-## Overview
-Deploy the Howso Platform using ArgoCD's Helm chart capabilities, focusing on a minimal configuration that's functional for the Howso Platform and its dependent charts.
+Ensure you have completed teh [pre-requisites](../prereqs/README.md) before proceeding.
 
-## Limitations
-This example covers basic ArgoCD usage and is not a comprehensive guide to all features.
 
-## Licensing Note
-> MinIO, under AGPL license, is used with Howso Inc.'s OEM license for commercial Howso Platform deployments, covering up to 1 terabyte. Beyond personal testing, ensure a fully licensed Minio installation or an S3 compatible alternative.
+### Create datastore secrets 
+The datastores will need random passwords generated before they start.  Though the  charts can create these credentials directly, there are circumnstances where random secrets managed by helm can be unstable (change when you don't expect them to, etc).  It is better practice to create them out-of-band, and then configure the chart to look for these pre-existing secrets. 
 
-## Tools and Technologies
-- ArgoCD
-- Helm
-- Kubernetes
-- Replicated KOTS application
+Minio
+```
+kubectl create secret generic platform-minio --from-literal=rootPassword="$(openssl rand -base64 20)" --from-literal=rootUser="$(openssl rand -base64 20)" --dry-run=client -o yaml | kubectl -n howso apply -f -
+```
 
-## Prerequisites
-- Access to a Kubernetes cluster
-- Helm installed and configured
-- Access to Replicated's Helm repository
+Postgres
+```
+kubectl create secret generic platform-postgres-postgresql --from-literal=postgres-password="$(openssl rand -base64 20)" --dry-run=client -o yaml | kubectl -n howso apply -f -
+```
 
-## Installation Steps
-### Push Images to Local Registry
-   ```bash
-   kubectl kots admin-console push-images /path/to/airgap/images registry-localhost:5000 --registry-username reguser --registry-password pw --namespace howso --skip-registry-check
-   ```
+Redis
+```
+kubectl create secret generic platform-redis --from-literal=redis-password="$(openssl rand -base64 20)" --dry-run=client -o yaml | kubectl -n howso apply -f -
+```
 
-### Helm Registry Authentication
 
-   - Log in:
-     ```bash
-     helm registry login registry.how.so --username your_email@example.com --password your_password
-     ```
+### Install component charts 
 
-### Install Component Charts
-   - Install MinIO:
-     ```bash
-     helm install platform-minio oci://registry.how.so/howso-platform/minio --create-namespace --namespace howso --values /path/to/minio/values.yaml --wait
-     ```
-   - Install NATS:
-     ```bash
-     helm install platform-nats oci://registry.how.so/howso-platform/nats --namespace howso --values /path/to/nats/values.yaml --wait
-     ```
-   - Install PostgreSQL:
-     ```bash
-     helm install platform-postgres oci://registry.how.so/howso-platform/postgresql --namespace howso --wait
-     ```
-   - Install Redis:
-     ```bash
-     helm install platform-redis oci://registry.how.so/howso-platform/redis --namespace howso --wait
-     ```
-   - Install Howso Platform:
-     ```bash
-     helm install howso-platform oci://registry.how.so/howso-platform/howso-platform --namespace howso --values /path/to/howso-platform/values.yaml --wait
-     ```
+Minio
+```
+helm install platform-minio oci://registry.how.so/howso-platform/stable/minio --namespace howso --values helm-basic/manifests/minio.yaml --wait
+```
 
-## Finalizing Installation
-Verify all components are installed and running by checking pod status in the `howso` namespace.
+NATS
+```
+helm install platform-nats oci://registry.how.so/howso-platform/stable/nats --namespace howso --values helm-basic/manifests/nats.yaml --wait
+```
 
-## Troubleshooting and Support
-Refer to ArgoCD and Helm documentation or contact Howso Platform support for troubleshooting assistance.
+Postgres
+```
+helm install platform-postgres oci://registry.how.so/howso-platform/stable/postgresql --namespace howso --values helm-basic/manifests/postgres.yaml --wait
+```
 
----
+Redis
+```
+helm install platform-redis oci://registry.how.so/howso-platform/stable/redis --namespace howso --values helm-basic/manifests/redis.yaml --wait
+```
+
+Howso Platform (install last - when all other components are ready).  Time to install will vary depending on network and resources.  
+```
+helm install howso-platform oci://registry.how.so/howso-platform/stable/howso-platform --namespace howso --values helm-basic/manifests/howso-platform.yaml
+```
+
+Check the status of the pods in the howso namespace, as they come online (CTRL-C to exit).
+```
+watch kubectl -n howso get po 
+```
+
+Setup a test user and environment using the [instructions here](../common/README.md#create-test-environment)

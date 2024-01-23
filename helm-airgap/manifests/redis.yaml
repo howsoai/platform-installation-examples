@@ -1,0 +1,4 @@
+auth:
+  existingSecret: platform-redis
+replica:
+  replicaCount: 0
