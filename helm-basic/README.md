@@ -58,9 +58,9 @@ Howso Platform (install last - when all other components are ready).  Time to in
 helm install howso-platform oci://registry.how.so/howso-platform/stable/howso-platform --namespace howso --values helm-basic/manifests/howso-platform.yaml
 ```
 
-Check the status of the pods in the howso namespace (CTRL-C to exit)
+Check the status of the pods in the howso namespace, as they come online (CTRL-C to exit).
 ```
 watch kubectl -n howso get po 
 ```
 
-Setup a test user and environment using the [instructions here](../common/README.md#Create-Test-Environment)
+Setup a test user and environment using the [instructions here](../common/README.md#create-test-environment)

@@ -1,6 +1,17 @@
 
+## Login to the Howso Platform 
 
-## Create Test Environment 
+Hit the User Management Service (UMS) first.  Proceed passed the certifcate warning.  Login with the default admin credentials (platform-admin/platform).  You will be prompted to change the password. 
+
+https://management.local.howso.com/
+
+As you navigate you will be redirected to other subdomains - each of which will have a certificate warning to accept.  Calls to the api domain are cross domain, so navigate directly https://api.local.howso.com/.
+
+
+> Note the certificate(s) offered by the k8s ingress by default will be signed by a platform ca (stored as a secret at platform-ca) - which can be extracted and trusted.  It is possible to override this behavior and use a custom ingress certificate.
+ 
+
+## Create Client Environment 
 ### Create Test User
 > Using UMS to create a test user and get the howso.yml config file
 
