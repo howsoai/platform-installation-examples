@@ -8,12 +8,9 @@ This repository contains examples of how to set up the Howso Platform in various
 - [Pre-requisites](prereqs/README.md)
 
 - [Helm](helm-basic/README.md)
-- [Helm Advanced](helm-full/README.md)
 - [Helm Airgap](helm-airgap/README.md)
 - [Helm Openshift](helm-openshift/README.md)
 - [ArgoCD Basic](argocd-basic/README.md)
-- [ArgoCD Basic](argocd-helm-template/README.md)
-- [ArgoCD Airgap](argocd-airgap/README.md)
 
 ## Overview
 Howso Platform is a kubernetes application that consists of many services, packaged as a helm chart.  
