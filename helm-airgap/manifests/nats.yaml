@@ -1,3 +1,16 @@
 config:
   jetstream:
     enabled: true
+global:
+  image:
+    registry: registry-localhost:5000
+natsBox:
+  container:
+    image:
+      repository: nats-box
+promExporter:
+  image:
+    repository: prometheus-nats-exporter
+reloader:
+  image:
+    repository: nats-server-config-reloader

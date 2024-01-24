@@ -1,4 +1,8 @@
 auth:
   existingSecret: platform-redis
+global:
+  imageRegistry: registry-localhost:5000
+image:
+  repository: redis
 replica:
   replicaCount: 0

@@ -1,2 +1,6 @@
 auth:
   existingSecret: platform-postgres-postgresql
+global:
+  imageRegistry: registry-localhost:5000
+image:
+  repository: postgresql
