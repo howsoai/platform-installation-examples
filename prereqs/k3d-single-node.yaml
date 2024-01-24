@@ -1,6 +1,7 @@
 apiVersion: k3d.io/v1alpha5
 kind: Simple
-name: platformk8s 
+metadata:
+  name: platformk8s 
 servers: 1
 agents: 0 
 image: rancher/k3s:v1.27.9-k3s1 
