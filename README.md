@@ -75,6 +75,8 @@ These practices ensure that the Howso Platform operates within a well-organized,
 
 The examples should work in any kubernetes cluster, but to make them easy to work with locally, examples using [k3d] are provided.  The OpenShift examples should use a [CodeReady Containers](https://developers.redhat.com/products/codeready-containers/overview).  Checkout the [prereqs](prereqs/README.md) for more details. 
 
+All paths are relative to the root of this repository.
+
 
 ## Licensing Note
 MinIO is used at the default s3 object store with Howso Platform.  For production deployments ensure you have a valid license for MinIO.

@@ -17,7 +17,7 @@ Prerequisites for the Howso Platform setup examples.
 
 
 ## Resources
-Expect to need a workstation with at least 32GB of RAM and 8 CPU cores to run the examples.
+To run every example well - you will need a workstation with at least 32GB of RAM and 8 CPU cores.  If you are low on resources, shut down any other applications you can, and try the single node k3d cluster.
 
 ## Container Runtime
 Docker for Windows/Mac or equivilent.  On mac increase the memory and cpu limits.
@@ -29,6 +29,7 @@ Install the following:-
 - [kubectl](https://kubernetes.io/docs/tasks/tools/) - kubernetes command line tool, if not installed with container runtime 
 - [k3d](https://k3d.io/) - k3s in docker
 - [helm](https://helm.sh/) - kubernetes package manager
+- [kots plugin](https://kots.io/kots-cli/) - kubectl kots cli plugin _for uploading images in airgap bundles_
 
 
 For Openshift examples, you'll need to install the following:-
@@ -58,6 +59,7 @@ k3d cluster create --config prereqs/k3d-single-node.yaml
 
 Confirm kubectl access, and check the cluster is running.
 ```
+# This command waits for the metrics server to be ready - a good indicator the cluster is fully up.
 kubectl -n kube-system wait --for=condition=ready --timeout=180s pod -l k8s-app=metrics-server
 ```
 
