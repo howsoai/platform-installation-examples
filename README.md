@@ -38,9 +38,9 @@ While the default configurations are suitable for a quick start and testing purp
 Though not exhaustive, the included _advanced_, _airgap_ and _openshift_ examples will demonstrate how some of these configurations can be achieved. 
 
 ### Secret management
-Creating secrets as a seperate step is a good kubernetes practice.  In the case of helm installs, it takes the management of the secrets out of the helm toolchain.  This helps avoid problems where, for instance, argocd, using helm template behind-the-scenes, both logs secrets, and makes changes to them.
+Creating secrets as a seperate step is a good Kubernetes practice.  In the case of Helm installs, it takes the management of the secrets out of the Helm toolchain.  This helps avoid problems where, for instance, argocd, using Helm template behind-the-scenes, both logs secrets, and makes changes to them.
 
-Including secret creation as a discreet step should also make it clear where additional secret management tools (external-secrets) could be used, without complicating the examples.
+Including secret creation as a discreet step should also make it clear where additional secret management tools (such as external-secrets) could be used, without complicating the examples.
 
 ## Example Structure
 
