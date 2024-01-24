@@ -25,6 +25,9 @@ watch kubectl get po -A
 ```
 
 ## Login to the argocd
+
+From a terminal with the argocd cli installed - the below instructions will get the initial pw and login.  The cli will be used to add a repo - and monitor the app deployments.
+
 ```sh
 initial_argocd_pw=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
 argocd --insecure --grpc-web login argocd.local.howso.com  --username admin --password $initial_argocd_pw
@@ -41,10 +44,11 @@ To extract and apply the CRD directly, use the following command.
 helm template oci://registry.how.so/howso-platform/stable/howso-platform --show-only templates/crds/trainee-crd.yaml | kubectl apply -f -
 ```
 
+
 ## Add the Chart registry to ArgoCD
 See the [prerequisites](../prereqs/README.md#accessing-the-howso-platform-helm-registry) for information on how to get the credentials to access the Howso Platform Helm registry.
 ```sh
-argocd repo add registry.how.so/howso-platform/stable --type helm --name replicated --username youremail@example.com --password <your-license-id> --enable-oci
+argocd repo add registry.how.so --type helm --name replicated --username youremail@example.com --password <your-license-id> --enable-oci
 ```
 
 ## Create datastore secrets

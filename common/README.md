@@ -80,4 +80,7 @@ python -m howso.utilities.installation_verification
 
 ## Troubleshooting
 
-TBD
+- Access all the values for howso-platform
+```sh
+helm show  values oci://registry.how.so/howso-platform/stable/howso-platform | less
+```

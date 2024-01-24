@@ -6,9 +6,9 @@ metadata:
 spec:
   project: howso-platform 
   source:
-    repoURL: registry.how.so/howso-platform/stable
-    targetRevision: 2.14.78
-    chart: howso-platform 
+    repoURL: registry.how.so
+    targetRevision: '*' 
+    chart: howso-platform/stable/howso-platform 
     helm:
       values: |
         customResourceDefinitions:
@@ -34,9 +34,9 @@ metadata:
 spec:
   project: howso-platform
   source:
-    repoURL: registry.how.so/howso-platform/stable
-    targetRevision: 5.0.14 
-    chart: minio 
+    repoURL: registry.how.so
+    targetRevision: '*' 
+    chart: howso-platform/stable/minio 
     helm:
       values: |
         existingSecret: platform-minio
@@ -57,9 +57,9 @@ metadata:
 spec:
   project: howso-platform 
   source:
-    repoURL: registry.how.so/howso-platform/stable 
-    targetRevision: 1.1.5 
-    chart: nats 
+    repoURL: registry.how.so
+    targetRevision: '*' 
+    chart: howso-platform/stable/nats
     helm:
       values: |
         config:
@@ -81,9 +81,9 @@ metadata:
 spec:
   project: howso-platform 
   source:
-    repoURL: registry.how.so/howso-platform/stable 
-    targetRevision: 13.2.24 
-    chart: postgresql 
+    repoURL: registry.how.so
+    targetRevision: '*' 
+    chart: howso-platform/stable/postgresql
     helm:
       values: |
         auth:
@@ -104,9 +104,9 @@ metadata:
 spec:
   project: howso-platform 
   source:
-    repoURL: registry.how.so/howso-platform/stable 
-    targetRevision: 18.4.0 
-    chart: redis 
+    repoURL: registry.how.so
+    targetRevision: '*' 
+    chart: howso-platform/stable/redis
     helm:
       values: |
         auth:
