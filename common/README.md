@@ -15,9 +15,9 @@ As you navigate you will be redirected to other subdomains - each of which will 
 
 ### Create Client Credentials
 This is just a quick set-up.  The admin user wouldn't typically have their own client credentials, but would be used to bootstrap other users.
-From the Project Page > New Project > "Test Project".
-From Howso Admin Drop-down > Profile > Preferences > Default Project > "Test Project" > Save
-From Howso Admin Drop-down > Credentials > New Credential > "test" Copy|Download as howso.yaml in ~/.howso/howso.yaml or in your local working directory.
+ - From the Project Page > New Project > "Test Project".
+ - From Howso Admin Drop-down > Profile > Preferences > Default Project > "Test Project" > Save
+ - From Howso Admin Drop-down > Credentials > New Credential > "test" Copy|Download as howso.yaml in ~/.howso/howso.yaml or in your local working directory.
 
 Either [Trust the Certs](#trust-the-certs) or [Disable SSL Verification](#disable-ssl-verification) before proceeding.
 
@@ -59,6 +59,7 @@ i.e.
 ```
 pip install -U --trusted-host pypi.local.howso.com --extra-index-url https://mySecretPypiToken@pypi.local.howso.com/simple/ howso-platform-client[full]
 ```
+> Note - a fuller install would create a secret for the pypi token - above is the default.
 
 ### Test the install
 

@@ -71,7 +71,7 @@ kubectl -n kube-system wait --for=condition=ready --timeout=180s pod -l k8s-app=
 k3d cluster create --config prereqs/k3d-multi-node.yaml
 ```
 
-Confirm kubectl access, and check the cluster is running
+Check/wait for the cluster to be ready.
 ```
 kubectl -n kube-system wait --for=condition=ready --timeout=180s pod -l k8s-app=metrics-server
 ```
