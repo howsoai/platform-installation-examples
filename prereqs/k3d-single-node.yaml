@@ -1,4 +1,4 @@
-apiVersion: k3d.io/v1alpha3
+apiVersion: k3d.io/v1alpha5
 kind: Simple
 name: platformk8s 
 servers: 1

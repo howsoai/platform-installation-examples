@@ -30,6 +30,7 @@ Install the following:-
 - [k3d](https://k3d.io/) - k3s in docker
 - [helm](https://helm.sh/) - kubernetes package manager
 - [kots plugin](https://kots.io/kots-cli/) - kubectl kots cli plugin _for uploading images in airgap bundles_
+- [argocd cli](https://argo-cd.readthedocs.io/en/stable/cli_installation/) - argocd cli _for argocd install examples_
 
 
 For Openshift examples, you'll need to install the following:-
