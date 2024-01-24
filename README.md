@@ -42,7 +42,8 @@ The examples will typically create secrets as a seperate step - creating an _exi
 
 ## Example Structure
 
-The examples should work in any kubernetes cluster, but to make them easy to work with locally, examples using [k3d] are provided.  The OpenShift examples should use a [CodeReady Containers](https://developers.redhat.com/products/codeready-containers/overview).  Checkout the [prereqs](prereqs/README.md) for more details. 
+The examples should work in any kubernetes cluster, but to make them easy to work locally, examples using [k3d](https://k3d.io/) are provided.  The OpenShift examples should use [CodeReady Containers](https://developers.redhat.com/products/codeready-containers/overview).  Checkout the [prereqs](prereqs/README.md) for more details. 
+
 
 All paths are relative to the root of this repository.
 
