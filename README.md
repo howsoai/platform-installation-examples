@@ -49,7 +49,7 @@ All paths are relative to the root of this repository.
 
 
 ## Licensing Note
-MinIO is used at the default s3 object store with Howso Platform.  For production deployments ensure you have a valid license for MinIO.
+MinIO is used as the default s3 object store with Howso Platform.  For production deployments ensure you have a valid license for MinIO.
 MinIO, under the AGPL license, is included with Howso Inc.'s OEM license for commercial Howso Platform deployments, covering usage up to 1 terabyte.
 
 
