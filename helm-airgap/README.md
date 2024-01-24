@@ -3,13 +3,13 @@
   - [Introduction](#introduction)
     - [Create datastore secrets](#create-datastore-secrets)
     - [Install component charts](#install-component-charts)
+    - [Setting up the local registry](#setting-up-the-local-registry)
 
 
 ## Introduction
-This guide details the process of deploying the Howso Platform using Helm in a non-airgapped Kubernetes environment.
-This documentation focuses on deploying the Howso Platform using Helm, emphasizing a straightforward installation process for environments with direct internet access.
+This guide details the process of deploying the Howso Platform using Helm in a airgapped Kubernetes environment.
 
-Ensure you have completed teh [pre-requisites](../prereqs/README.md) before proceeding.
+Ensure you have completed the [pre-requisites](../prereqs/README.md) before proceeding.
 
 
 ### Create datastore secrets 
@@ -64,3 +64,14 @@ watch kubectl -n howso get po
 ```
 
 Setup a test user and environment using the [instructions here](../common/README.md#create-test-environment)
+
+
+### Setting up the local registry
+
+Download an airgap bundle as per the [instructions here](../common/README.md#download-airgap-bundle)
+
+Upload the images in the downloaded bundle.  In this example we'll use the [kots cli](https://docs.replicated.com/reference/kots-cli-getting-started) - which will do it directly from the bundle all in one step.
+> Note registry-localhost was set up as a loopback host entry in the [prerequisites](../prereqs/README.md) - it should resolve to the registry setup by k3d when the cluster was created.  This is a example only, and in this dev case, the credentials are required by the cli, but ultimately ignored.
+```
+kubectl kots admin-console push-images ~/2024.1.0.airgap registry-localhost:5000 --registry-username reguser --registry-password pw --namespace howso --skip-registry-check
+```
