@@ -1,30 +1,64 @@
 # Helm Installation for Howso Platform on OpenShift
 
 ## Introduction
-This guide outlines the process of deploying the Howso Platform using Helm in OpenShift environments. It demonstrates how to configure Helm charts specifically for OpenShift and addresses unique considerations for these installations.
+This guide covers how the Howso Platform installation may change to deploy in an OpenShift environments.  It demonstrates both additional configuration within the datastore components to accomodate the security policies of OpenShift, and also how to seperate out the CRD installation from the main chart installation, which can be helpful in environments where the installation is done with only namespace-level permissions. 
 
-## Overview
-Deploying on OpenShift requires tailored configurations to accommodate its security model and operational paradigms. This documentation provides steps to modify Helm values for OpenShift and highlights best practices for a successful deployment.
 
-## Complexities of OpenShift Installs
-OpenShift, with its security-focused architecture, introduces complexities not present in standard Kubernetes environments. Key considerations include:
-
-- **Security Context Constraints (SCCs)**: OpenShift's SCCs often require additional configurations for pods to run with the necessary privileges.
-- **Network Policies**: Adjustments to network policies may be necessary to enable proper communication between services.
-- **Route and Ingress Management**: OpenShift's handling of routes and ingress resources can differ from standard Kubernetes, necessitating specific configurations.
-
-## Customizing Helm Values for OpenShift
-Copy the customized Helm values file configured for OpenShift:
-```bash
-cp ./minio/config/values-patch-openshift.yaml /home/dom/workspaces/howso-platform-start/components/platform-installation-examples/helm-openshift/manifests/
-```
-## Alternative Installation Without KOTS and CertManager
-For a more streamlined setup in OpenShift, you can opt to install the Howso Platform using just namespace permissions. This method eliminates the need for KOTS and CertManager by directly installing the required CRDs, using the `customResourceDefinitions.skip` option during the platform's installation.
-
-### Extracting and Applying the CRD for Separate Installation
-To extract and apply the CRD directly, use the following command, substituting `$CHART_URI` with the appropriate Helm chart URI:
-```bash
-helm template $CHART_URI --show-only templates/crds/trainee-crd.yaml | kubectl apply -f -
+### Apply the CRD
+Howso Platform uses a CRD.  This is the only cluster level component that is a requirement of the platform.  Installing this seperately, allows the rest of the installation to take place with only namespace-level permissions.
+To extract and apply the CRD directly, use the following command.
+```sh
+helm template oci://registry.how.so/howso-platform/stable/howso-platform --show-only templates/crds/trainee-crd.yaml | kubectl apply -f -
 ```
 
-This command uses helm template to generate the necessary CRD manifest from the Howso Platform Helm chart and applies it using kubectl. It facilitates a targeted and namespace-specific installation approach, fitting for OpenShift environments.
+This command uses helm template to generate the necessary CRD manifest from the Howso Platform Helm chart and applies it using kubectl.
+
+
+### Create datastore secrets
+
+See the explanation in [basic installation](../helm-basic/README.md#create-datastore-secrets) for more details.
+
+```sh
+# Minio
+kubectl create secret generic platform-minio --from-literal=rootPassword="$(openssl rand -base64 20)" --from-literal=rootUser="$(openssl rand -base64 20)" --dry-run=client -o yaml | kubectl -n howso apply -f -
+# Postgres
+kubectl create secret generic platform-postgres-postgresql --from-literal=postgres-password="$(openssl rand -base64 20)" --dry-run=client -o yaml | kubectl -n howso apply -f -
+# Redis
+kubectl create secret generic platform-redis --from-literal=redis-password="$(openssl rand -base64 20)" --dry-run=client -o yaml | kubectl -n howso apply -f -
+```
+
+### Install component charts 
+
+Minio
+```
+helm install platform-minio oci://registry.how.so/howso-platform/stable/minio --namespace howso --values helm-openshift/manifests/minio.yaml --wait
+```
+
+NATS
+```
+helm install platform-nats oci://registry.how.so/howso-platform/stable/nats --namespace howso --values helm-openshift/manifests/nats.yaml --wait
+```
+
+Postgres
+```
+helm install platform-postgres oci://registry.how.so/howso-platform/stable/postgresql --namespace howso --values helm-openshift/manifests/postgres.yaml --wait
+```
+
+Redis
+```
+helm install platform-redis oci://registry.how.so/howso-platform/stable/redis --namespace howso --values helm-openshift/manifests/redis.yaml --wait
+```
+
+Howso Platform (install last - when all other components are ready).  Time to install will vary depending on network and resources.  
+```
+helm install howso-platform oci://registry.how.so/howso-platform/stable/howso-platform --namespace howso --values helm-openshift/manifests/howso-platform.yaml
+```
+
+> **Note** the howso-platform chart is installed with _skip: true_ under _CustomResourceDefinitions_. Since it was installed in a previous [step](#apply-the-crd).
+
+Check the status of the pods in the howso namespace, as they come online (CTRL-C to exit).
+```
+watch kubectl -n howso get po 
+```
+
+Setup a test user and environment using the [instructions here](../common/README.md#create-test-environment)

@@ -1,7 +1,10 @@
+configPathmc: /tmp/
+existingSecret: platform-minio
 makeServiceAccountJob:
   securityContext:
     enabled: true
     runAsUser: null
+mode: standalone
 resources:
   requests:
     memory: 2Gi
