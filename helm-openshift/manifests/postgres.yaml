@@ -1,0 +1,27 @@
+auth:
+  existingSecret: platform-postgres-postgresql
+backup:
+  cronjob:
+    containerSecurityContext:
+      runAsUser: null
+    podSecurityContext:
+      fsGroup: null
+metrics:
+  containerSecurityContext:
+    runAsUser: null
+primary:
+  containerSecurityContext:
+    runAsUser: null
+  podSecurityContext:
+    fsGroup: null
+readReplicas:
+  containerSecurityContext:
+    runAsUser: null
+  podSecurityContext:
+    fsGroup: null
+shmVolume:
+  enabled: false
+volumePermissions:
+  containerSecurityContext:
+    runAsUser: null
+  enabled: true

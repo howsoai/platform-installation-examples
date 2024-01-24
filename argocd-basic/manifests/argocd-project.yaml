@@ -1,0 +1,12 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: howso-platform
+  namespace: argocd
+spec:
+  description: Howso Platform Applications
+  sourceRepos:
+    - 'registry.how.so'
+  destinations:
+    - namespace: howso
+      server: 'https://kubernetes.default.svc'

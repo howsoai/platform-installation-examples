@@ -1,0 +1,123 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: howso-platform 
+  namespace: argocd
+spec:
+  project: howso-platform 
+  source:
+    repoURL: registry.how.so
+    targetRevision: '*' 
+    chart: howso-platform/stable/howso-platform 
+    helm:
+      values: |
+        customResourceDefinitions:
+          skip: true
+        domain: local.howso.com
+        images:
+          registry: proxy.replicated.com
+          registryNamespace: proxy/howso-platform/dpbuild-docker-edge.jfrog.io/dp
+        
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: howso 
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: platform-minio 
+  namespace: argocd
+spec:
+  project: howso-platform
+  source:
+    repoURL: registry.how.so
+    targetRevision: '*' 
+    chart: howso-platform/stable/minio 
+    helm:
+      values: |
+        existingSecret: platform-minio
+        mode: standalone
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: howso 
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: platform-nats 
+  namespace: argocd
+spec:
+  project: howso-platform 
+  source:
+    repoURL: registry.how.so
+    targetRevision: '*' 
+    chart: howso-platform/stable/nats
+    helm:
+      values: |
+        config:
+          jetstream:
+            enabled: true
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: howso 
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: platform-postgres 
+  namespace: argocd
+spec:
+  project: howso-platform 
+  source:
+    repoURL: registry.how.so
+    targetRevision: '*' 
+    chart: howso-platform/stable/postgresql
+    helm:
+      values: |
+        auth:
+          existingSecret: platform-postgres-postgresql
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: howso 
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: platform-redis 
+  namespace: argocd
+spec:
+  project: howso-platform 
+  source:
+    repoURL: registry.how.so
+    targetRevision: '*' 
+    chart: howso-platform/stable/redis
+    helm:
+      values: |
+        auth:
+          existingSecret: platform-redis
+        replica:
+          replicaCount: 0
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: howso 
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+---

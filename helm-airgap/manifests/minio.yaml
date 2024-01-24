@@ -1,0 +1,9 @@
+existingSecret: platform-minio
+image:
+  repository: registry-localhost:5000/minio
+mcImage:
+  repository: registry-localhost:5000/mc
+mode: standalone
+resources:
+  requests:
+    memory: 2Gi

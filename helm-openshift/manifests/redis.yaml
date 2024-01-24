@@ -1,0 +1,19 @@
+auth:
+  existingSecret: platform-redis
+master:
+  containerSecurityContext:
+    runAsUser: null
+  podSecurityContext:
+    fsGroup: null
+metrics:
+  containerSecurityContext:
+    runAsUser: null
+replica:
+  containerSecurityContext:
+    runAsUser: null
+  podSecurityContext:
+    fsGroup: null
+  replicaCount: 0
+sentinel:
+  containerSecurityContext:
+    runAsUser: null

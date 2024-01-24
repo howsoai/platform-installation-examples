@@ -1,0 +1,4 @@
+domain: local.howso.com
+images:
+  registry: registry-localhost:5000 
+  registryNamespace: "" 
