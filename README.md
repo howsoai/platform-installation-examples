@@ -43,34 +43,6 @@ Though not exhaustive, the included _advanced_, _airgap_ and _openshift_ example
 ### Secret management
 The examples will typically create secrets as a seperate step - creating an _existing secret_ for charts to use.  This is a reasonable approach on its own - as the secrets need only be known between the platform and datastore.  However, including as a seperate step should make it clear where additional secret management tools (external-secrets) could be used instead.
 
-
-## Resource Management and Node Grouping in Howso Platform
-
-### Understanding Resource Needs
-The Howso Platform is a resource-intensive machine learning platform. It dynamically creates new workloads through an operator, which require considerable CPU and memory resources. For optimal performance, the platform should be set up in an environment with a substantial number of available nodes, ideally within an autoscaling infrastructure. This setup ensures that the platform can scale resources efficiently as workloads increase.
-
-### Recommended Node Grouping for Autoscaling
-A practical approach to manage resources in an autoscaling cluster (such as EKS or AKS) is to use two distinct node groups:
-
-- **Core Node Group**: This group hosts all non-trainee pods. It's crucial for the stability and running of the platform's core functions.
-- **Worker Node Group**: Dedicated to worker pods, this group handles the dynamic, resource-heavy workloads typical in machine learning tasks.
-
-### Applying Taints and Labels for Effective Scaling
-To optimize resource allocation and ensure that pods are scheduled on the appropriate nodes, use [taints and labels](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/):
-
-1. Restrict Worker Pods on Core Nodes:
-   Label the core node group to prevent worker pods from being scheduled on these nodes:
-   ```bash
-   kubectl label nodes $NODE howso.com/allowWorkers=False
-    ```
-2. Dedicate Worker Nodes for Worker Pods
-Label and taint the worker node group to allow only worker pods and actively remove other types of pods:
-    ```bash
-    kubectl taint nodes $NODE howso.com/nodetype=worker:NoExecute
-    ```
-These practices ensure that the Howso Platform operates within a well-organized, resource-optimized environment. The core node group maintains the essential services, while the worker node group dynamically scales to meet the demands of machine learning workloads, enhancing overall efficiency and performance.
-
-
 ## Example Structure
 
 The examples should work in any kubernetes cluster, but to make them easy to work with locally, examples using [k3d] are provided.  The OpenShift examples should use a [CodeReady Containers](https://developers.redhat.com/products/codeready-containers/overview).  Checkout the [prereqs](prereqs/README.md) for more details. 

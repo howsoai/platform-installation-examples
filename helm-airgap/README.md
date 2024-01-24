@@ -36,7 +36,8 @@ echo "Charts are in $tmp_dir/howso-platform-charts.tar.gz"
 ### Upload images to container registry 
 
 In this example we'll use the [kots cli](https://docs.replicated.com/reference/kots-cli-getting-started) - which can upload images directly from the airgap bundle in one step (other methods are possible).
-> Note registry-localhost was set up as a loopback host entry in the [prerequisites](../prereqs/README.md) - it should resolve to the registry container setup by k3d when the cluster was created.  
+> Note registry-localhost was set up as a loopback host entry in the [prerequisites](../prereqs/README.md) - it should resolve to the registry container setup by k3d when the cluster was created. 
+It is assumed that the downloaded airgap bundle has been moved to the airgapped environment - and is available at the path `~/2024.1.0.airgap`.
 
 #### Check connectivity to the local registry
 

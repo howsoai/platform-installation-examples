@@ -67,6 +67,11 @@ kubectl -n kube-system wait --for=condition=ready --timeout=180s pod -l k8s-app=
 
 ### Multi Node K3D Cluster
 
+The Howso Platform is a resource-intensive machine learning platform. It dynamically creates new workloads through an operator, which require considerable CPU and memory resources. For optimal performance, the platform should be set up in an environment with a substantial number of available nodes, ideally within an autoscaling infrastructure. This setup ensures that the platform can scale resources efficiently as workloads increase.
+
+Though just running locally - the following setup shows how labels and taints can be used to control scheduling of pods across multiple nodes.
+
+
 ```
 k3d cluster create --config prereqs/k3d-multi-node.yaml
 ```
