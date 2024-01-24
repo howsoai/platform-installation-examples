@@ -6,7 +6,7 @@ This guide demonstrates deploying the Howso Platform using ArgoCD, a GitOps tool
 
 This documentation covers basic ArgoCD usage for deploying the Howso Platform. It is not a comprehensive guide to all ArgoCD features.
 
-
+Ensure you have completed the [pre-requisites](../prereqs/README.md) before proceeding, and have a kubernetes cluster running, with a howso namespace, and the argocd cli installed. 
 
 ## Install ArgoCD
 

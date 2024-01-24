@@ -3,6 +3,7 @@
 ## Introduction
 This guide covers how the Howso Platform installation may change to deploy in an OpenShift environments.  It demonstrates both additional configuration within the datastore components to accomodate the security policies of OpenShift, and also how to seperate out the CRD installation from the main chart installation, which can be helpful in environments where the installation is done with only namespace-level permissions. 
 
+Ensure you have completed the [pre-requisites](../prereqs/README.md) before proceeding, and have a kubernetes cluster running, with a howso namespace, and are logged into the Helm registry.
 
 ### Apply the CRD
 Howso Platform uses a CRD.  This is the only cluster level component that is a requirement of the platform.  Installing this seperately, allows the rest of the installation to take place with only namespace-level permissions.

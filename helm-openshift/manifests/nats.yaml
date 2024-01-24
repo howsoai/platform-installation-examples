@@ -1,3 +1,5 @@
 config:
   jetstream:
     enabled: true
+natsBox:
+  enabled: false

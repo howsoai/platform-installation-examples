@@ -1,5 +1,6 @@
+## Create Client Environment 
 
-## Login to the Howso Platform 
+### Login to the Howso Platform 
 
 Hit the User Management Service (UMS) first.  Proceed passed the certifcate warning.  Login with the default admin credentials (platform-admin/platform).  You will be prompted to change the password. 
 
@@ -11,7 +12,6 @@ As you navigate you will be redirected to other subdomains - each of which will 
 > Note the certificate(s) offered by the k8s ingress by default will be signed by a platform ca (stored as a secret at platform-ca) - which can be extracted and trusted.  It is possible to override this behavior and use a custom ingress certificate.
  
 
-## Create Client Environment 
 
 ### Create Client Credentials
 This is just a quick set-up.  The admin user wouldn't typically have their own client credentials, but would be used to bootstrap other users.
@@ -26,25 +26,20 @@ Edit the `howso.yaml` file and set `verify_ssl: false.
 
 
 ### Trust the Certs 
-Get the platform cert from the ca secret
+The python client environmnet, uses the certifi package for root certs, and not the os trust store.  So to trust the platform ca - we'll extract it, and then set it explicityly as trusted in our `howso.yml`
+
+- Get the platform cert from the ca secret
 ```
 kubectl -n howso get secrets platform-ca -ojson | jq -r '.data."tls.crt"' | base64 -d > howso-platform.crt
 ```
 
-Update the howso.yml with a full path to the cert file, under key `security.ssl_ca_cert`.  i.e.
+- Update the howso.yml with a full path to the cert file, under key `security.ssl_ca_cert`.  i.e.
 ```
 security:
-    type: OAuth
-    name: test
-    tenant: https://management.local.howso.com/oauth
-    audience: api://howso.com/platform
-    client_id: myid 
-    client_secret: mykey 
-    verify_ssl: true
     ssl_ca_cert: /full/path/howso-platform.crt
+    ...
 howso:
   ...
-
 ```
 
 

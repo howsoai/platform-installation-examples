@@ -6,7 +6,7 @@ This guide details the process of deploying the Howso Platform using Helm in a a
 
 A real airgapped kubernetes environments will have pipelines for [scanning images](../container-scanning/README.md), and their own secured container registries.  This example will use a local registry setup by k3d.
 
-Ensure you have completed the [pre-requisites](../prereqs/README.md) before proceeding, and have a kubernetes cluster running, with a howso namespace, and are logged into the Helm registry.
+Ensure you have completed the [pre-requisites](../prereqs/README.md) before proceeding, and have a kubernetes cluster running, with a howso namespace, the kubectl kots plugin installed, and are logged into the Helm registry.
 
 ### Download container images
 
