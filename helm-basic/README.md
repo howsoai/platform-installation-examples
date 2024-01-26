@@ -14,6 +14,7 @@ Ensure you have completed the [pre-requisites](../prereqs/README.md) before proc
 ```sh
 # pre-requisites TLDR
 # helm registry login registry.how.so --username your_email@example.com --password your_license_id 
+# add local.howso.com pypi|api|www|management.local.howso.com to /etc/hosts 
 k3d cluster create --config prereqs/k3d-single-node.yaml
 kubectl create namespace howso
 ```
