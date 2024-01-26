@@ -10,6 +10,8 @@ Ensure you have completed the [pre-requisites](../prereqs/README.md) before proc
 
 ```sh
 # pre-requisites TLDR
+# install kots cli https://kots.io/kots-cli/ 
+# helm registry login registry.how.so --username your_email@example.com --password your_license_id 
 k3d cluster create --config prereqs/k3d-single-node.yaml
 kubectl create namespace howso
 ```
@@ -124,5 +126,5 @@ watch kubectl -n howso get po
 
 If there are any issues, check the logs of the pods, and the [troubleshooting](../common/README.md#troubleshooting) section.
 
-Setup a test user and environment using the [instructions here](../common/README.md#create-test-environment)
+Setup a test user and environment using the [instructions here](../common/README.md#login-to-the-howso-platform).
 

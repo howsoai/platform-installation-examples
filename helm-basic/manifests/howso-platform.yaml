@@ -2,6 +2,3 @@ domain: local.howso.com
 images:
   registry: proxy.replicated.com 
   registryNamespace: proxy/howso-platform/dpbuild-docker-edge.jfrog.io/dp
-worker:
-  imageLoader:
-    pauseImage: proxy.replicated.com/proxy/howso-platform/dpbuild-docker-edge.jfrog.io/dp/pause:3.9

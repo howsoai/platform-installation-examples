@@ -1,5 +1,5 @@
-# Helm Non-Airgap Installation for Howso Platform
-- [Helm Non-Airgap Installation for Howso Platform](#helm-non-airgap-installation-for-howso-platform)
+# Helm Online Installation for Howso Platform
+- [Helm Online Installation for Howso Platform](#helm-online-installation-for-howso-platform)
   - [Introduction](#introduction)
     - [Create datastore secrets](#create-datastore-secrets)
     - [Install component charts](#install-component-charts)
@@ -11,6 +11,12 @@ This documentation focuses on deploying the Howso Platform using Helm, emphasizi
 
 Ensure you have completed the [pre-requisites](../prereqs/README.md) before proceeding, and have a kubernetes cluster running, with a howso namespace, and the argocd cli installed. 
 
+```sh
+# pre-requisites TLDR
+# helm registry login registry.how.so --username your_email@example.com --password your_license_id 
+k3d cluster create --config prereqs/k3d-single-node.yaml
+kubectl create namespace howso
+```
 
 ### Create datastore secrets 
 The datastores will need random passwords generated before they start.  Though the  charts can create these credentials directly, there are circumnstances where random secrets managed by helm can be unstable (change when you don't expect them to, etc).  It is better practice to create them out-of-band, and then configure the chart to look for these pre-existing secrets. 
@@ -63,4 +69,4 @@ Check the status of the pods in the howso namespace, as they come online (CTRL-C
 watch kubectl -n howso get po 
 ```
 
-Setup a test user and environment using the [instructions here](../common/README.md#create-test-environment)
+Setup a test user and environment using the [instructions here](../common/README.md#login-to-the-howso-platform).
