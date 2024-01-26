@@ -4,6 +4,8 @@
   - [Download Airgap Bundle](#download-airgap-bundle)
     - [Extracting the images](#extracting-the-images)
   - [Downloading from Container registry](#downloading-from-container-registry)
+    - [Extracting the images](#extracting-the-images-1)
+  - [Container registry](#container-registry)
     - [List all the images](#list-all-the-images)
     - [Pull the images](#pull-the-images)
 
@@ -43,7 +45,7 @@ tar -xzOf "${AIRGAP_ARCHIVE}" ./airgap.yaml | yq e '.spec.savedImages[]' # The a
 
 
 ## Downloading from Container registry
-=======
+Alternatively, you can access the container registry directly - and download the images yourself.
 
 ### Extracting the images 
 
