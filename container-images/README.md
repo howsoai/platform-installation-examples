@@ -45,20 +45,22 @@ tar -xzOf "${AIRGAP_ARCHIVE}" ./airgap.yaml | yq e '.spec.savedImages[]' # The a
 
 
 ## Downloading from Container registry
+
 Alternatively, you can access the container registry directly - and download the images yourself.
 
 ### Extracting the images 
 
-The airgap bundle container the image layers, extracting them requires first using the 
-kubectl kots admin-console push-images ~/2024.1.0.airgap registry-localhost:5000 --registry-username reguser --registry-password pw --namespace howso --skip-registry-check
-
-You can list the images in the bundle with the following command. 
-
+The airgap bundle container the image layers, extracting them requires first using:
 ```sh
-AIRGAP_ARCHIVE=~/2024.1.0.airgap # or wherever you saved the file
-tar -xzOf "${AIRGAP_ARCHIVE}" ./airgap.yaml | yq e '.spec.savedImages[]' # The airgap.yaml file contains a list of the images in the bundle - if you don't have yq just remove the piped cmd
+kubectl kots admin-console push-images ~/2024.1.0.airgap registry-localhost:5000 --registry-username reguser --registry-password pw --namespace howso --skip-registry-check
 ```
 
+You can list the images in the bundle with the following command. 
+```sh
+AIRGAP_ARCHIVE=~/2024.1.0.airgap # or wherever you saved the file
+tar -xzOf "${AIRGAP_ARCHIVE}" airgap.yaml | yq e '.spec.savedImages[]' # The airgap.yaml file contains a list of the images in the bundle - if you don't have yq just remove the piped cmd
+```
+> Note the image registry and namespace are in their original format.  For the public images - in the datastore/message-queue charts, you can pull them directly.
 
 ## Container registry 
 
@@ -75,7 +77,7 @@ You can't directly `docker login` to the proxy registry - but you can, add the `
 Dealing just with the Howso Platform - you can template the chart and extract the images with something like the following.
 ```
 # template the platform chart | grep for images | remove leading whitespace, image tag and trailing quotes 
-helm template oci://registry.how.so/howso-platform/stable/howso-platform --values helm-basic/manifests/howso-platform.yaml  2> /dev/null | grep 'image: ' | sed 's/^[ \t]*//' | sed 's/image: "//' | sed 's/"$//'
+helm template oci://registry.how.so/howso-platform/stable/howso-platform --values helm-basic/manifests/howso-platform.yaml  2> /dev/null | grep 'image: "' | sed 's/^[ \t]*//' | sed 's/image: "//' | sed 's/"$//'
 ```
 > Note it is important that you run this from this repo, as the values file will alter the images to the correct format.
 
@@ -90,3 +92,10 @@ DOCKER_CONFIG=/tmp/  docker pull proxy.replicated.com/proxy/howso-platform/dpbui
 ```
 
 This can be scripted, or combined with `| xargs -n 1 docker pull` to pull all the images.
+
+```
+export DOCKER_CONFIG=/tmp/
+helm template oci://registry.how.so/howso-platform/stable/howso-platform --values helm-basic/manifests/howso-platform.yaml  2> /dev/null | grep 'image: "' | sed 's/^[ \t]*//' | sed 's/image: "//' | sed 's/"$//' | xargs -n 1 docker pull
+unset DOCKER_CONFIG
+```
+> Note - any issues are likely to be swallowed up in the pipes - so you may want to run the commands individually to troubleshoot.
