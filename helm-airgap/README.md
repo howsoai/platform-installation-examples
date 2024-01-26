@@ -129,3 +129,7 @@ If there are any issues, check the logs of the pods, and the [troubleshooting](.
 
 Setup a test user and environment using the [instructions here](../common/README.md#login-to-the-howso-platform).
 
+Confirm that the images are all pulled from the internal registry, and not the external registry.
+```sh
+kubectl -n howso get po  -oyaml  | grep 'image:'
+```
