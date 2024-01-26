@@ -8,9 +8,15 @@ A real airgapped kubernetes environments will have pipelines for [scanning image
 
 Ensure you have completed the [pre-requisites](../prereqs/README.md) before proceeding, and have a kubernetes cluster running, with a howso namespace, the kubectl kots plugin installed, and are logged into the Helm registry.
 
+```sh
+# pre-requisites TLDR
+k3d cluster create --config prereqs/k3d-single-node.yaml
+kubectl create namespace howso
+```
+
 ### Download container images
 
-Download an airgap bundle as per the [instructions here](../common/README.md#download-airgap-bundle).
+Download an airgap bundle as per the [instructions here](../container-images/README.md#download-airgap-bundle).
 
 ### Download Helm charts
 
@@ -35,7 +41,7 @@ echo "Charts are in $tmp_dir/howso-platform-charts.tar.gz"
 
 ### Upload images to container registry 
 
-In this example we'll use the [kots cli](https://docs.replicated.com/reference/kots-cli-getting-started) - which can upload images directly from the airgap bundle in one step (other methods are possible).
+In this example we'll use the [kots cli](https://kots.io/kots-cli/) - which can upload images directly from the airgap bundle in one step (other methods are possible).
 > Note registry-localhost was set up as a loopback host entry in the [prerequisites](../prereqs/README.md) - it should resolve to the registry container setup by k3d when the cluster was created. 
 It is assumed that the downloaded airgap bundle has been moved to the airgapped environment - and is available at the path `~/2024.1.0.airgap`.
 
