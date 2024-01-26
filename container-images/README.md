@@ -43,6 +43,22 @@ tar -xzOf "${AIRGAP_ARCHIVE}" ./airgap.yaml | yq e '.spec.savedImages[]' # The a
 
 
 ## Downloading from Container registry
+=======
+
+### Extracting the images 
+
+The airgap bundle container the image layers, extracting them requires first using the 
+kubectl kots admin-console push-images ~/2024.1.0.airgap registry-localhost:5000 --registry-username reguser --registry-password pw --namespace howso --skip-registry-check
+
+You can list the images in the bundle with the following command. 
+
+```sh
+AIRGAP_ARCHIVE=~/2024.1.0.airgap # or wherever you saved the file
+tar -xzOf "${AIRGAP_ARCHIVE}" ./airgap.yaml | yq e '.spec.savedImages[]' # The airgap.yaml file contains a list of the images in the bundle - if you don't have yq just remove the piped cmd
+```
+
+
+## Container registry 
 
 Replicated hosted helm charts embed an customer's container secret in the chart, to simplify the installation process.  Extract your organization's container registry credentials from the Helm chart with the following one liner.  Make sure to have logged in first, as per the [prerequisites](../prereqs/README.md).
 ```
