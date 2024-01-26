@@ -8,6 +8,12 @@ A real airgapped kubernetes environments will have pipelines for [scanning image
 
 Ensure you have completed the [pre-requisites](../prereqs/README.md) before proceeding, and have a kubernetes cluster running, with a howso namespace, the kubectl kots plugin installed, and are logged into the Helm registry.
 
+```sh
+# pre-requisites TLDR
+k3d cluster create --config prereqs/k3d-single-node.yaml
+kubectl create namespace howso
+```
+
 ### Download container images
 
 Download an airgap bundle as per the [instructions here](../common/README.md#download-airgap-bundle).
