@@ -22,6 +22,8 @@ To run every example well - you will need a workstation with at least 32GB of RA
 ## Container Runtime
 Docker for Windows/Mac or equivilent.  On mac increase the memory and cpu limits.
 
+> Note - Airgap installs provide amd64 images only.  Mac emulation will work enough that the environment will start, but it is not able to complete machine learning tasks, without the arm64 images.
+
 ## Tools
 
 Install the following:-
