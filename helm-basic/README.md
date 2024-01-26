@@ -13,6 +13,7 @@ Ensure you have completed the [pre-requisites](../prereqs/README.md) before proc
 
 ```sh
 # pre-requisites TLDR
+# helm registry login registry.how.so --username your_email@example.com --password your_license_id 
 k3d cluster create --config prereqs/k3d-single-node.yaml
 kubectl create namespace howso
 ```
@@ -68,4 +69,4 @@ Check the status of the pods in the howso namespace, as they come online (CTRL-C
 watch kubectl -n howso get po 
 ```
 
-Setup a test user and environment using the [instructions here](../common/README.md#create-test-environment)
+Setup a test user and environment using the [instructions here](../common/README.md#login-to-the-howso-platform).

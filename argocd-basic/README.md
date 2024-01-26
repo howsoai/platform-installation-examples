@@ -8,6 +8,14 @@ This documentation covers basic ArgoCD usage for deploying the Howso Platform. I
 
 Ensure you have completed the [pre-requisites](../prereqs/README.md) before proceeding, and have a kubernetes cluster running, with a howso namespace, and the argocd cli installed. 
 
+```sh
+# pre-requisites TLDR
+# install argocd cli https://argo-cd.readthedocs.io/en/stable/cli_installation/
+# helm registry login registry.how.so --username your_email@example.com --password your_license_id 
+k3d cluster create --config prereqs/k3d-single-node.yaml
+kubectl create namespace howso
+```
+
 ## Install ArgoCD
 
 To get a basic deployment of ArgoCD, run the following commands:

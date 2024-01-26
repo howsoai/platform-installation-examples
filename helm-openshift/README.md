@@ -5,7 +5,15 @@ This guide covers how the Howso Platform installation may change to deploy in an
 
 Ensure you have completed the [pre-requisites](../prereqs/README.md) before proceeding, and have a kubernetes cluster running, with a howso namespace, and are logged into the Helm registry.
 
+```sh
+# pre-requisites TLDR
+# Create CRC OpenShift environment
+# helm registry login registry.how.so --username your_email@example.com --password your_license_id 
+kubectl create namespace howso
+```
+
 ### Apply the CRD
+
 Howso Platform uses a CRD.  This is the only cluster level component that is a requirement of the platform.  Installing this seperately, allows the rest of the installation to take place with only namespace-level permissions.
 To extract and apply the CRD directly, use the following command.
 ```sh
