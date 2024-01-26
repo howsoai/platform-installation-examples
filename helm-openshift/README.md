@@ -8,6 +8,7 @@ Ensure you have completed the [pre-requisites](../prereqs/README.md) before proc
 ```sh
 # pre-requisites TLDR
 # Create CRC OpenShift environment
+# add local.howso.com pypi|api|www|management.local.howso.com to /etc/hosts 
 # helm registry login registry.how.so --username your_email@example.com --password your_license_id 
 kubectl create namespace howso
 ```

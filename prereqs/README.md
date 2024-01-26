@@ -105,7 +105,6 @@ The Howso Platform uses a number of subdomains under a parent domain.  For a loc
 127.0.0.1 pypi.local.howso.com
 127.0.0.1 api.local.howso.com
 127.0.0.1 www.local.howso.com
-127.0.0.1 ui2.local.howso.com
 127.0.0.1 management.local.howso.com
 127.0.0.1 registry-localhost # For airgap install example
 127.0.0.1 argocd.local.howso.com # For ArgoCD install example

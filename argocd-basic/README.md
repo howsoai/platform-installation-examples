@@ -12,6 +12,7 @@ Ensure you have completed the [pre-requisites](../prereqs/README.md) before proc
 # pre-requisites TLDR
 # install argocd cli https://argo-cd.readthedocs.io/en/stable/cli_installation/
 # helm registry login registry.how.so --username your_email@example.com --password your_license_id 
+# add local.howso.com pypi|api|www|management|argocd.local.howso.com to /etc/hosts 
 k3d cluster create --config prereqs/k3d-single-node.yaml
 kubectl create namespace howso
 ```
