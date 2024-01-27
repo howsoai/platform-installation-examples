@@ -54,6 +54,7 @@ kubectl kots install --namespace howso howso-platform
 - Continue > Deploy (Preflight checks will likely raise issues for local environments - though do not ignore for production deployments)
 - When the status on the _Dashboard_ screen becomes _Ready_ - Procceed to [test the install](../common/README.md#login-to-the-howso-platform).
 
+> Note. If you are running on an OpenShift cluster (the recommended approach would be a [Helm install](../helm-openshift/README.md)) - make sure to select the _Configure Platform for OpenShift_ checkbox on the _Configuration_ screen.  From the cli, you can add a value of 1 to a key _openshift_enabled_ in the config file.
 
 ### Install via the KOTS CLI
 
