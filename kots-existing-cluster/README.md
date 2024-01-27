@@ -32,12 +32,12 @@ Make sure the cert-manager pods are ready before proceeding.
 watch kubectl get po -n cert-manager
 ```
 
-## Install Howso Platform using KOTS 
+## Install Howso Platform with KOTS 
 
 This example will show either an entirely UI driven install, or a CLI driven install.  The CLI driven install is useful for scripting, and for environments where the UI is not available.  The CLI driven install uses a configuration file to set the initial password, and the parent domain name.
 
 
-### Install the Howso Platform using the KOTS UI
+### Install via the KOTS UI
 
 There is a UI driven install approach, that (with the license file to hand) you can initiate with the following command: 
 
@@ -55,7 +55,7 @@ kubectl kots install --namespace howso howso-platform
 - When the status on the _Dashboard_ screen becomes _Ready_ - Procceed to [test the install](../common/README.md#login-to-the-howso-platform).
 
 
-### Install the Howso Platform using the KOTS CLI
+### Install via the KOTS CLI
 
 With your license available at `~/howso-platform-license.yaml` - you can install the Howso Platform using the following command:
 
@@ -66,7 +66,15 @@ kubectl kots install howso-platform --skip-preflights --namespace howso --no-por
                      --config-values kots-existing-cluster/manifests/kots-howso-platform.yaml
 ```
 
-If you need to configure the Howso Platform - you can bring up the KOTS admin screen with the following command:
+- The `--skip-preflights` flag is used to skip the preflight checks - which will likely raise issues for local environments - though do not ignore for production deployments.
+- The `--no-port-forward` flag is used to prevent the KOTS CLI from port forwarding the KOTS admin screen post installation.
+
+Check the status of the pods in the howso namespace, as they come online (CTRL-C to exit).
+```sh
+watch kubectl get po -n howso
+```
+
+If you need to additionally configure the Howso Platform - you can bring up the KOTS admin screen with the following command:
 
 ```sh
 # Use the --shared-password from the install command above
