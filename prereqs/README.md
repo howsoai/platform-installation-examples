@@ -8,7 +8,7 @@ To run every example well - you will need a workstation with at least 32GB of RA
 ## Container Runtime
 Docker for Windows/Mac or equivilent.  On mac increase the memory and cpu limits.
 
-> Note - Airgap installs provide amd64 images only.  Mac emulation will work enough that the environment will start, but it is not able to complete machine learning tasks, without the arm64 images.
+> Note - Air-gap installs provide amd64 images only.  Mac emulation will work enough that the environment will start, but it is not able to complete machine learning tasks, without the arm64 images.
 
 ## Tools
 
@@ -17,7 +17,7 @@ Install the following:-
 - [kubectl](https://kubernetes.io/docs/tasks/tools/) - Kubernetes command line tool, if not installed with container runtime 
 - [k3d](https://k3d.io/) - k3s in docker
 - [helm](https://helm.sh/) - Kubernetes package manager
-- [kots plugin](https://kots.io/kots-cli/) - kubectl kots cli plugin _for uploading images in airgap bundles_
+- [kots plugin](https://kots.io/kots-cli/) - kubectl kots cli plugin _for uploading images in air-gap bundles_
 - [argocd cli](https://argo-cd.readthedocs.io/en/stable/cli_installation/) - argocd cli _for argocd install examples_
 
 
@@ -92,7 +92,7 @@ The Howso Platform uses a number of subdomains under a parent domain.  For a loc
 127.0.0.1 api.local.howso.com
 127.0.0.1 www.local.howso.com
 127.0.0.1 management.local.howso.com
-127.0.0.1 registry-localhost # For airgap install example
+127.0.0.1 registry-localhost # For air-gap install example
 127.0.0.1 argocd.local.howso.com # For ArgoCD install example
 ```
 

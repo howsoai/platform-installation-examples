@@ -3,9 +3,9 @@
 ## Introduction
 This guide details the process of deploying the Howso Platform using Replicated (KOTS)[https://kots.io/] into an existing Kubernetes cluster.  This approach wraps the Howso Platform into a single installable unit; it also provides a UI for updating, configuring, and troubleshooting the platform. 
 
-
 This formulation can be a convenient way to get started with the Howso Platform - but will not provide the same levers to control the deployments as Helm installs.  As such, if you have detailed Kubernetes requirements - you may not be able to meet them with this approach. 
 
+Ensure you have completed the [pre-requisites](../prereqs/README.md) before proceeding, and have a Kubernetes cluster running, with a howso namespace, the kubectl kots plugin installed.
 
 ```sh
 # pre-requisites TLDR
@@ -60,7 +60,8 @@ kubectl kots install --namespace howso howso-platform
 With your license available at `~/howso-platform-license.yaml` - you can install the Howso Platform using the following command:
 
 ```sh
-kubectl kots install howso-platform --skip-preflights --namespace howso --no-port-forward \
+kubectl kots install howso-platform --skip-preflights \
+                     --namespace howso --no-port-forward \
                      --license-file  ~/howso-platform-license.yaml \
                      --shared-password kotspw --wait-duration 20m \
                      --config-values kots-existing-cluster/manifests/kots-howso-platform.yaml

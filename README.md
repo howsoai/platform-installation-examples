@@ -8,10 +8,11 @@ This repository contains examples of how to set up the Howso Platform in various
 - [Pre-requisites](prereqs/README.md)
 ---
 - [Helm](helm-basic/README.md)
-- [Helm Airgap](helm-airgap/README.md)
+- [Helm Air-gap](helm-air-gap/README.md)
 - [Helm Openshift](helm-openshift/README.md)
 - [ArgoCD Basic](argocd-basic/README.md)
 - [KOTS Existing Cluster](kots-existing-cluster/README.md)
+- [KOTS Existing Cluster - air-gap](kots-existing-cluster-air-gap/README.md)
 
 ## Overview
 Howso Platform is a Kubernetes application that consists of many services, packaged as a helm chart.  
@@ -36,7 +37,7 @@ In the _basic_ examples, this type of configuration will be demonstrated.  It is
 ### Considerations for Production Environments
 While the default configurations are suitable for a quick start and testing purposes, they are not intended for hardened, production-level deployments. Key aspects such as air-gapping (deploying to environments with no internet access), securing communication tunnels, adhering to OpenShift policies, and scaling will require additional configuration. 
 
-Though not exhaustive, the included, _airgap_ and _openshift_ examples will demonstrate how some of these configurations can be achieved. 
+Though not exhaustive, the included, _air-gap_ and _openshift_ examples will demonstrate how some of these configurations can be achieved. 
 
 ### Secret management
 Creating secrets as a seperate step is a good Kubernetes practice.  In the case of Helm installs, it takes the management of the secrets out of the Helm toolchain.  This helps avoid problems where, for instance, argocd, using Helm template behind-the-scenes, both logs secrets, and makes often unintended changes to them.

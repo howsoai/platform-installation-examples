@@ -1,10 +1,10 @@
-# Helm Airgap Installation for Howso Platform
+# Helm Air-gap Installation for Howso Platform
 
 ## Introduction
 
-This guide details the process of deploying the Howso Platform using Helm in a airgapped Kubernetes environment.  The main goal is not use external registries for both container images, and Helm charts.  Instead additional steps are added to download/upload these components. The chart values are also modified to use the local registry.
+This guide details the process of deploying the Howso Platform using Helm in a air-gapped Kubernetes environment.  The main goal is not use external registries for both container images, and Helm charts.  Instead additional steps are added to download/upload these components. The chart values are also modified to use the local registry.
 
-A real airgapped Kubernetes environments will have pipelines for [scanning images](../container-scanning/README.md), and their own secured container registries.  This example will use a local registry setup by k3d.
+Production air-gapped Kubernetes environments will have pipelines for [scanning images](../container-scanning/README.md), and their own secured container registries.  This example will use a local registry setup by k3d.
 
 Ensure you have completed the [pre-requisites](../prereqs/README.md) before proceeding, and have a Kubernetes cluster running, with a howso namespace, the kubectl kots plugin installed, and are logged into the Helm registry.
 
@@ -19,11 +19,11 @@ kubectl create namespace howso
 
 ### Download container images
 
-Download an airgap bundle as per the [instructions here](../container-images/README.md#download-airgap-bundle).
+Download an air-gap bundle as per the [instructions here](../container-images/README.md#download-air-gap-bundle).
 
 ### Download Helm charts
 
-This steps shows how you can pull the charts on a machine with internet access, and then copy them to the airgapped environment.
+This steps shows how you can pull the charts on a machine with internet access, and then copy them to the air-gapped environment.
 
 Note the use of untar is just so you don't need to know the version, for the next step (the tarball is named with the version).  
 
@@ -44,9 +44,9 @@ echo "Charts are in $tmp_dir/howso-platform-charts.tar.gz"
 
 ### Upload images to container registry 
 
-In this example we'll use the [kots cli](https://kots.io/kots-cli/) - which can upload images directly from the airgap bundle in one step (other methods are possible).
+In this example we'll use the [kots cli](https://kots.io/kots-cli/) - which can upload images directly from the air-gap bundle in one step (other methods are possible).
 > Note registry-localhost was set up as a loopback host entry in the [prerequisites](../prereqs/README.md) - it should resolve to the registry container setup by k3d when the cluster was created. 
-It is assumed that the downloaded airgap bundle has been moved to the airgapped environment - and is available at the path `~/2024.1.0.airgap`.
+It is assumed that the downloaded air-gap bundle has been moved to the air-gapped environment - and is available at the path `~/2024.1.0.airgap`.
 
 #### Check connectivity to the local registry
 
@@ -80,7 +80,7 @@ kubectl create secret generic platform-redis --from-literal=redis-password="$(op
 
 ### Helm values files
 
-The values files for the charts need to be modified to use the local registry.  The manifests directory contains the modified values files for each chart.  You can compare the differences with the non-airgap versions with the following command:- 
+The values files for the charts need to be modified to use the local registry.  The manifests directory contains the modified values files for each chart.  You can compare the differences with the non-air-gap versions with the following command:- 
 
 ```sh
 diff helm-basic/manifests/ helm-airgap/manifests/ --color

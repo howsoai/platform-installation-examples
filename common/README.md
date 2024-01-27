@@ -103,5 +103,5 @@ WARNING:urllib3.connectionpool:Retrying (Retry(total=2, connect=None, read=None,
 
 ### Worker pods start but immediately crash
 
-If you are running installation examples on mac via airgap - these examples only work with amd64 images.
+If you are running installation examples on mac via air-gap - these examples only work with amd64 images.
 

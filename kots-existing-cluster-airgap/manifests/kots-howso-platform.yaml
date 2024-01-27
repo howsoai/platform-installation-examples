@@ -1,0 +1,25 @@
+apiVersion: kots.io/v1beta1
+kind: ConfigValues
+metadata:
+  name: howso-platform
+spec:
+  values:
+    beta_features_enabled:
+      value: "1"
+    global_debug:
+      default: "20"
+      value: "15"
+    initial_admin_password:
+      value: "platform" 
+    parent_domain:
+      value: "local.howso.com" 
+    restapi_replicas:
+      value: "1"
+    test_user_enabled:
+      value: "1"
+    internal_apis_enabled:
+      value: "1"
+    use_internal_tls: 
+      value: "0"
+    pypi_token:
+      value: mySecretPypiToken
