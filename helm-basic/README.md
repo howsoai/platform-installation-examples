@@ -9,7 +9,7 @@
 This guide details the process of deploying the Howso Platform using Helm in a non-airgapped Kubernetes environment.
 This documentation focuses on deploying the Howso Platform using Helm, emphasizing a straightforward installation process for environments with direct internet access.
 
-Ensure you have completed the [pre-requisites](../prereqs/README.md) before proceeding, and have a kubernetes cluster running, with a howso namespace, and the argocd cli installed. 
+Ensure you have completed the [pre-requisites](../prereqs/README.md) before proceeding, and have a Kubernetes cluster running, with a howso namespace, and the argocd cli installed. 
 
 ```sh
 # pre-requisites TLDR

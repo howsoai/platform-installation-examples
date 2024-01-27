@@ -28,9 +28,9 @@ Docker for Windows/Mac or equivilent.  On mac increase the memory and cpu limits
 
 Install the following:-
 
-- [kubectl](https://kubernetes.io/docs/tasks/tools/) - kubernetes command line tool, if not installed with container runtime 
+- [kubectl](https://kubernetes.io/docs/tasks/tools/) - Kubernetes command line tool, if not installed with container runtime 
 - [k3d](https://k3d.io/) - k3s in docker
-- [helm](https://helm.sh/) - kubernetes package manager
+- [helm](https://helm.sh/) - Kubernetes package manager
 - [kots plugin](https://kots.io/kots-cli/) - kubectl kots cli plugin _for uploading images in airgap bundles_
 - [argocd cli](https://argo-cd.readthedocs.io/en/stable/cli_installation/) - argocd cli _for argocd install examples_
 

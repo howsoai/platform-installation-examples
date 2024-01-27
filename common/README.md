@@ -6,10 +6,12 @@ Hit the User Management Service (UMS) first.  Proceed passed the certifcate warn
 
 https://management.local.howso.com/
 
+> Note with a KOTS install that doesn't set the initial password via config (i.e. the UI driven appraoch above) - the initial password should be retrieved from the KOTS admin configuration screen.
+
 As you navigate you will be redirected to other subdomains - each of which will have a certificate warning to accept.  Calls to the api domain are cross domain, so navigate directly https://api.local.howso.com/.
 
 
-> Note the certificate(s) offered by the k8s ingress by default will be signed by a platform ca (stored as a secret at platform-ca) - which can be extracted and trusted.  It is possible to override this behavior and use a custom ingress certificate.
+> Note the certificate(s) offered by the Kubernetes ingress by default will be signed by a platform ca (stored as a secret at platform-ca) - which can be extracted and trusted.  It is possible to override this behavior and use a custom ingress certificate.
  
 
 
