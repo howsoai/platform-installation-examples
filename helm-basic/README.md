@@ -1,9 +1,4 @@
 # Helm Online Installation for Howso Platform
-- [Helm Online Installation for Howso Platform](#helm-online-installation-for-howso-platform)
-  - [Introduction](#introduction)
-    - [Create datastore secrets](#create-datastore-secrets)
-    - [Install component charts](#install-component-charts)
-
 
 ## Introduction
 This guide details the process of deploying the Howso Platform using Helm in a non-airgapped Kubernetes environment.

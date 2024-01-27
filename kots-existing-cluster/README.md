@@ -1,11 +1,4 @@
 # Kots Existing Cluster Installation for Howso Platform 
-- [Kots Existing Cluster Installation for Howso Platform](#kots-existing-cluster-installation-for-howso-platform)
-  - [Introduction](#introduction)
-  - [Install Certmanager](#install-certmanager)
-  - [Install Howso Platform using KOTS](#install-howso-platform-using-kots)
-    - [Install the Howso Platform using the KOTS UI](#install-the-howso-platform-using-the-kots-ui)
-    - [Install the Howso Platform using the KOTS CLI](#install-the-howso-platform-using-the-kots-cli)
-
 
 ## Introduction
 This guide details the process of deploying the Howso Platform using Replicated (KOTS)[https://kots.io/] into an existing Kubernetes cluster.  This approach wraps the Howso Platform into a single installable unit; it also provides a UI for updating, configuring, and troubleshooting the platform. 

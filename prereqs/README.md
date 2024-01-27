@@ -2,20 +2,6 @@
 
 Prerequisites for the Howso Platform setup examples.
 
-- [Howso Platform Setup Examples Prerequisites](#howso-platform-setup-examples-prerequisites)
-  - [Resources](#resources)
-  - [Container Runtime](#container-runtime)
-  - [Tools](#tools)
-  - [Accessing the Howso Platform Helm Registry](#accessing-the-howso-platform-helm-registry)
-  - [Local Kubernetes Cluster Setup](#local-kubernetes-cluster-setup)
-    - [Simple Single Node K3D Cluster](#simple-single-node-k3d-cluster)
-    - [Multi Node K3D Cluster](#multi-node-k3d-cluster)
-  - [Create a howso namespace](#create-a-howso-namespace)
-  - [Setup Hosts](#setup-hosts)
-  - [Uninstalling the Howso Platform](#uninstalling-the-howso-platform)
-    - [Remove K3d Cluster](#remove-k3d-cluster)
-
-
 ## Resources
 To run every example well - you will need a workstation with at least 32GB of RAM and 8 CPU cores.  If you are low on resources, shut down any other applications you can, and try the single node k3d cluster.
 

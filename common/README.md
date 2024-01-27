@@ -1,3 +1,5 @@
+# Howso Platform Examples - Common Setup Steps 
+
 ## Create Client Environment 
 
 ### Login to the Howso Platform 
@@ -46,7 +48,6 @@ howso:
   ...
 ```
 
-
 ### Create Python environment 
 
 - Create a python virtual environment using your preferred method. 
@@ -67,10 +68,24 @@ Run the verification script to ensure everything is working.
 python -m howso.utilities.installation_verification
 ```
 
-
 ## Troubleshooting
 
+### Howso Platform Helm Chart values
 - Access all the values for howso-platform
 ```sh
 helm show  values oci://registry.how.so/howso-platform/stable/howso-platform | less
 ```
+
+### Addional Documentation 
+For assistance, consult the documentation:-
+
+- [Howso Platform](https://portal.howso.com) 
+- [Helm](https://helm.sh/docs/)
+- [ArgoCD](https://argoproj.github.io/argo-cd/)
+- [Bitnami PostgreSQL Chart](https://github.com/bitnami/charts/tree/main/bitnami/postgresql)
+- [Bitnami Redis Chart](https://github.com/bitnami/charts/tree/main/bitnami/redis)
+- [MinIO Community Chart](https://github.com/minio/minio/tree/master/helm/minio)
+- [NATS Chart](https://github.com/nats-io/k8s/tree/main/helm/charts/nats)
+
+### Howso Platform Support
+Please reach out to Howso Platform support (support@howso.com) - via email, or via the [Howso Customer Portal](https://portal.howso.com).

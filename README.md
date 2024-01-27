@@ -6,11 +6,12 @@ This repository contains examples of how to set up the Howso Platform in various
 
 ## Examples
 - [Pre-requisites](prereqs/README.md)
-
+---
 - [Helm](helm-basic/README.md)
 - [Helm Airgap](helm-airgap/README.md)
 - [Helm Openshift](helm-openshift/README.md)
 - [ArgoCD Basic](argocd-basic/README.md)
+- [KOTS Existing Cluster](kots-existing-cluster/README.md)
 
 ## Overview
 Howso Platform is a Kubernetes application that consists of many services, packaged as a helm chart.  
@@ -53,18 +54,3 @@ All paths are relative to the root of this repository.
 ## Licensing Note
 MinIO is used as the default s3 object store with Howso Platform.  For production deployments ensure you have a valid license for MinIO.
 MinIO, under the AGPL license, is included with Howso Inc.'s OEM license for commercial Howso Platform deployments, covering usage up to 1 terabyte.
-
-
-## Troubleshooting and Support
-For assistance, consult the documentation:-
-
-- [Howso Platform](https://portal.howso.com) 
-- [Helm](https://helm.sh/docs/)
-- [ArgoCD](https://argoproj.github.io/argo-cd/)
-- [Bitnami PostgreSQL Chart](https://github.com/bitnami/charts/tree/main/bitnami/postgresql)
-- [Bitnami Redis Chart](https://github.com/bitnami/charts/tree/main/bitnami/redis)
-- [MinIO Community Chart](https://github.com/minio/minio/tree/master/helm/minio)
-- [NATS Chart](https://github.com/nats-io/k8s/tree/main/helm/charts/nats)
-
-Or reach out to Howso Platform support (support@howso.com).
-
