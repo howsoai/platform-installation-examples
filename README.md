@@ -2,7 +2,7 @@
 
 # Howso Platform Setup Examples
 
-This repository contains examples of how to set up the Howso Platform in various configurations based around Helm charts.
+This repository contains examples of how to set up the Howso Platform in various configurations based around Helm charts and the KOTS.
 
 ## Examples
 - [Pre-requisites](prereqs/README.md)
@@ -15,14 +15,14 @@ This repository contains examples of how to set up the Howso Platform in various
 ## Overview
 Howso Platform is a Kubernetes application that consists of many services, packaged as a helm chart.  
 
+
+### Replicated
+The Howso Platform is distributed as a [Replicated](https://www.replicated.com/) application.  Replicated is a Kubernetes application distribution platform that facilitates self-hosted installation of Kubernetes applications.  This documentation will cover accessing the application as Replicated hosted helm charts - as well as Kubernetes Off-The-Shelf [(KOTS)](https://kots.io/) installations.  KOTS provides methods for standalone (without an existing Kubernetes) installer, and to install into an existing cluster; in both cases wrapping all the components into a single installer.
+
+### Helm
 Helm modularizes Kubernetes manifests into charts, which can be installed, upgraded, and uninstalled. It allows a straightforward method for templating out certain values, to make it simple to configure the application.
 
 The Howso Platform relies on datastores, such as postgres, redis, and an s3 compatible object store, and a message queue (NATS).  These requirements can themselves be deployed as helm charts.  The documentation will use common available charts for these dependencies, that are configurable enough to provide a range from simple tests to scaled production configurations.
-
-
-### Replicated
-The Howso Platform is distributed as a [Replicated](https://www.replicated.com/) application.  Replicated is a Kubernetes application distribution platform that facilitates self-hosted installation of Kubernetes applications.  This documentation will focus on accessing the application as Replicated hosted helm charts - see the [Howso Platform documenation](https://portal.howso.com) for Kubernetes Off-The-Shelf [(KOTS)](https://kots.io/) installation instructions.  KOTS provides methods for standalone (without an existing Kubernetes) installer, and to install into an existing cluster; in both cases wrapping all the components into a single installer.
-
 
 
 ## Quick Start vs Production Readiness
