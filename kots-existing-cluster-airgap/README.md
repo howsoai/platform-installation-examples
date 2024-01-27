@@ -69,7 +69,7 @@ kubectl kots install howso-platform --skip-preflights \
                      --kotsadm-namespace tests --airgap-bundle ~/2024.1.0.airgap \
                      --license-file  ~/howso-platform-license.yaml \
                      --shared-password kotspw --wait-duration 20m \
-                     --config-values kots-existing-cluster/manifests/kots-howso-platform.yaml
+                     --config-values kots-existing-cluster-airgap/manifests/kots-howso-platform.yaml
 ```
 
 - The `--skip-preflights` flag is used to skip the preflight checks - which will likely raise issues for local environments - though do not ignore for production deployments.

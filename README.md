@@ -12,7 +12,7 @@ This repository contains examples of how to set up the Howso Platform in various
 - [Helm Openshift](helm-openshift/README.md)
 - [ArgoCD Basic](argocd-basic/README.md)
 - [KOTS Existing Cluster](kots-existing-cluster/README.md)
-- [KOTS Existing Cluster - air-gap](kots-existing-cluster-air-gap/README.md)
+- [KOTS Existing Cluster Air-gap](kots-existing-cluster-airgap/README.md)
 
 ## Overview
 Howso Platform is a Kubernetes application that consists of many services, packaged as a helm chart.  
