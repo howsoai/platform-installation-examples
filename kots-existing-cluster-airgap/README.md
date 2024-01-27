@@ -24,6 +24,17 @@ Download an air-gap bundle as per the [instructions here](../container-images/RE
 
 > Note the KOTS cli bundles can also be downloaded, and moved into the air-gapped environment.  This is not covered in this guide.
 
+### Download kotsadm container images
+
+Download the kotsadm container images either via the [Howso Customer Portal](https://portal.howso.com) alongside the Howso Platform airgap bundle, or from the [KOTS release page](https://github.com/replicatedhq/kots/releases).
+
+i.e.
+```sh
+wget https://github.com/replicatedhq/kots/releases/download/v1.106.0/kotsadm.tar.gz -O ~/kotsadm.tar.gz
+```
+
+> Make sure the kots plugin version (`kubectl kots version`) matches the container bundle version.
+
 ## Install Certmanager
 
 Certmanager is used to manage the TLS certificates for the Howso Platform, and is a requirement of KOTS installations.  
@@ -42,7 +53,7 @@ watch kubectl get po -n cert-manager
 
 ## Check Local Registry
 
-The k3d cluster used in these examples is configured to include a local registry.  In this example we'll use the [kots cli](https://kots.io/kots-cli/) - which will upload images from the air-gap bundle to the registry as part of the installation.  Change the install params to use your own registry in non-local environments. 
+The k3d cluster used in these examples is configured to include a local registry.  In this example we'll use the [kots cli](https://kots.io/kots-cli/) - which will upload images from the air-gap bundle to the registry as part of the installation.  
 
 > Note registry-localhost was set up as a loopback host entry in the [prerequisites](../prereqs/README.md) - it should resolve to the registry container setup by k3d when the cluster was created. 
 
@@ -57,23 +68,30 @@ curl -s http://registry-localhost:5000/v2/_catalog | jq .
 
 This example will show a CLI driven install.  The KOTS UI can also be used, use `kubectl kots install --namespace howso howso-platform` to initiate the UI driven install.
 
+With your license available at `~/howso-platform-license.yaml`, your kotsadm.tar.gz container bundle at ~/kotsadm.tar.gz and your air-gapped bundle available at ~/2024.1.0.airgap - you can install the Howso Platform using the following commands:
 
-With your license available at `~/howso-platform-license.yaml`, and your air-gapped bundle available at ~/2024.1.0.airgap - you can install the Howso Platform using the following command:
+Push the kotsadm images to the local registry.
 
+```sh
+kubectl kots admin-console push-images ~/kotsadm.tar.gz registry-localhost:5000 \
+            --registry-username reguser --registry-password pw --namespace howso \
+            --skip-registry-check
+```
+
+Push the Howso Platform images to the local registry & complete the installation.
 
 ```sh
 kubectl kots install howso-platform --skip-preflights \
                      --namespace howso --no-port-forward \
                      --registry-username reguser --registry-password pw \
                      --kotsadm-registry registry-localhost:5000 --skip-registry-check \
-                     --kotsadm-namespace tests --airgap-bundle ~/2024.1.0.airgap \
+                     --kotsadm-namespace howso --airgap-bundle ~/2024.1.0.airgap \
                      --license-file  ~/howso-platform-license.yaml \
                      --shared-password kotspw --wait-duration 20m \
                      --config-values kots-existing-cluster-airgap/manifests/kots-howso-platform.yaml
 ```
 
-- The `--skip-preflights` flag is used to skip the preflight checks - which will likely raise issues for local environments - though do not ignore for production deployments.
-- The `--no-port-forward` flag is used to prevent the KOTS CLI from port forwarding the KOTS admin screen post installation.
+- Change the registry params (--registry-username/--registry-password/--kotsadm-registry) to use your own registry in non-local environments. 
 
 Check the status of the pods in the howso namespace, as they come online (CTRL-C to exit).
 ```sh
