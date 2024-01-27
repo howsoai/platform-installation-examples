@@ -73,7 +73,7 @@ python -m howso.utilities.installation_verification
 ### Howso Platform Helm Chart values
 - Access all the values for howso-platform
 ```sh
-helm show  values oci://registry.how.so/howso-platform/stable/howso-platform | less
+helm show values oci://registry.how.so/howso-platform/stable/howso-platform | less
 ```
 
 ### Addional Documentation 
