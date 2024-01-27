@@ -19,7 +19,7 @@ As you navigate you will be redirected to other subdomains - each of which will 
 
 ### Create Client Credentials
 This is just a quick set-up.  The admin user wouldn't typically have their own client credentials, but would be used to bootstrap other users.
- - From the Project Page > New Project > "Test Project".
+ - From the Home (Project Page) > New Project > "Test Project".
  - From Howso Admin Drop-down > Profile > Preferences > Default Project > "Test Project" > Save
  - From Howso Admin Drop-down > Credentials > New Credential > "test" Copy|Download as howso.yml in ~/.howso/howso.yml or in your local working directory.
 
@@ -89,3 +89,19 @@ For assistance, consult the documentation:-
 
 ### Howso Platform Support
 Please reach out to Howso Platform support (support@howso.com) - via email, or via the [Howso Customer Portal](https://portal.howso.com).
+
+
+### SSL CERTIFICATE_VERIFY_FAILED
+
+If the verification script shows the following errors, you may need to [Trust the Certs](#trust-the-certs) or [Disable SSL Verification](#disable-ssl-verification) before proceeding.
+
+```text
+WARNING:urllib3.connectionpool:Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by
+'SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1006)'))':
+/oauth/token/
+```
+
+### Worker pods start but immediately crash
+
+If you are running installation examples on mac via airgap - these examples only work with amd64 images.
+
