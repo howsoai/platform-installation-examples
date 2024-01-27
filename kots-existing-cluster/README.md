@@ -18,7 +18,7 @@ kubectl create namespace howso
 
 ## Install Certmanager
 
-Certmanager is used to manage the TLS certificates for the Howso Platform.  With the KOTS driven install - it is a requirement; the Howso Platform KOTS implementation will use Certmanager to create a certificate authority for the platform, and configure up TLS for all the communication channels between the Howso Platform, its datastores, and message queue. 
+Certmanager is used to manage the TLS certificates for the Howso Platform.  With the KOTS driven install - it is a requirement; the Howso Platform KOTS implementation will use Certmanager to create a certificate authority for the platform, and configure TLS for all the communication channels between the Howso Platform, its datastores, and message queue. 
 
 > The install is straightforward, but as it uses many Kubernetes features (CRDs, webhooks) may require extra configuration for certain Kubernetes clusters (i.e. Open Shift).  
 
@@ -60,7 +60,10 @@ kubectl kots install --namespace howso howso-platform
 With your license available at `~/howso-platform-license.yaml` - you can install the Howso Platform using the following command:
 
 ```sh
-kubectl kots install  --skip-preflights --namespace howso  --license-file  ~/howso-platform-license.yaml --shared-password kotspw --config-values kots-existing-cluster/manifests/kots-howso-platform.yaml howso-platform --wait-duration 20m --no-port-forward
+kubectl kots install howso-platform --skip-preflights --namespace howso --no-port-forward \
+                     --license-file  ~/howso-platform-license.yaml \
+                     --shared-password kotspw --wait-duration 20m \
+                     --config-values kots-existing-cluster/manifests/kots-howso-platform.yaml
 ```
 
 If you need to configure the Howso Platform - you can bring up the KOTS admin screen with the following command:
