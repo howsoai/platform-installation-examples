@@ -67,7 +67,7 @@ kubectl kots install --namespace howso howso-platform
 With your license available at `~/howso-platform-license.yaml` - you can install the Howso Platform using the following command:
 
 ```sh
-kubectl kots install  --skip-preflights --namespace howso  --license-file  ~/howso-platform-license.yaml --shared-password kotspw --config-values kots-existing-cluster/manifests/kots-howso-platform.yaml howso-platform
+kubectl kots install  --skip-preflights --namespace howso  --license-file  ~/howso-platform-license.yaml --shared-password kotspw --config-values kots-existing-cluster/manifests/kots-howso-platform.yaml howso-platform --wait-duration 20m --no-port-forward
 ```
 
 If you need to configure the Howso Platform - you can bring up the KOTS admin screen with the following command:
