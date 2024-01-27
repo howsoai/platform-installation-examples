@@ -18,13 +18,13 @@ k3d cluster create --config prereqs/k3d-single-node.yaml
 kubectl create namespace howso
 ```
 
-### Download container images
+## Download Howso Platform container images
 
 Download an air-gap bundle as per the [instructions here](../container-images/README.md#download-air-gap-bundle).
 
 > Note the KOTS cli bundles can also be downloaded, and moved into the air-gapped environment.  This is not covered in this guide.
 
-### Download kotsadm container images
+## Download KOTS Admin container images
 
 Download the kotsadm container images either via the [Howso Customer Portal](https://portal.howso.com) alongside the Howso Platform airgap bundle, or from the [KOTS release page](https://github.com/replicatedhq/kots/releases).
 
@@ -73,10 +73,11 @@ With your license available at `~/howso-platform-license.yaml`, your kotsadm.tar
 Push the kotsadm images to the local registry.
 
 ```sh
-kubectl kots admin-console push-images ~/kotsadm.tar.gz registry-localhost:5000 \
+kubectl kots admin-console push-images ~/kotsadm.tar.gz registry-localhost:5000/howso \
             --registry-username reguser --registry-password pw --namespace howso \
             --skip-registry-check
 ```
+> Note the namespace in the registry location above
 
 Push the Howso Platform images to the local registry & complete the installation.
 
