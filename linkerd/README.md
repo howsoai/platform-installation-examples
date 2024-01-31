@@ -29,6 +29,10 @@ helm install howso-platform oci://registry.how.so/howso-platform/stable/howso-pl
 ## Install Linkerd
 Linkerd is a full featured tool - this guide will just touch on installing it, with Helm.  The [linkerd cli](https://linkerd.io/2/getting-started/) is optional, but simplifies accessing the Linkerd dashboard, and other features.  Refer to the [Linkerd documentation](https://linkerd.io/2/overview/) for up to date install information and troubleshooting.
 
+Add the Linkerd Helm repository
+```sh
+helm repo add linkerd https://helm.linkerd.io/stable
+```
 
 The CRDs are installed via a seperate chart
 ```sh
@@ -49,18 +53,19 @@ helm upgrade --install --namespace linkerd --set-file identityTrustAnchorsPEM=li
 
 Optionally - the linkerd-viz chart can be installed to provide a dashboard for the service mesh. 
 ```sh
-helm upgrade --install --namespace linkerd-viz --create-namespace --values config/values-patch.yaml linkerd-viz linkerd/linkerd-viz --wait
+helm upgrade --install --namespace linkerd-viz --create-namespace linkerd-viz linkerd/linkerd-viz --wait
 ```
 
 To run the dashboard (port-forwarded locally)
 ```
+# You may wish to background this process with & or run it in a seperate terminal
 linkerd viz dashboard
 ```
 
 
 ## Annotating the Howso Platform
 
-By default linkerd will not involve itself in the Howso Platform traffic.  By annotating the installed namespace (default howso) - linkerd will automatically inject the sidecar proxy into all pods, and establish mTLS between them. 
+By default linkerd will not involve itself in the Howso Platform traffic.  By annotating the Howso Platform namespace (default howso) - linkerd will automatically inject the sidecar proxy into all pods and establish mTLS between them. 
 
 Annotate the namespace
 ```sh
@@ -69,9 +74,11 @@ kubectl annotate namespaces howso linkerd.io/inject=enabled
 
 
 ### NATS
-NATS Message queue is heavilly used within the Howso Platform.  NATS traffic is not automatically recognized by Linkerd (as it uses a server-speaks-first first protocol).  To enable Linkerd to recognize NATS traffic, the NATS service and server(s) needs to be annotated.
+NATS Message queue is heavilly used within the Howso Platform.  The NATS traffic is not automatically recognized by Linkerd (as it uses a server-speaks-first first protocol).  To enable Linkerd to recognize NATS traffic, the NATS service and server(s) needs to be annotated, as being an opaque port.
 
-Since we've installed via Helm - we'll update the installed NATS service to include the `config.linkerd.io/opaque-ports="4222"` annotation - which will inform linkerd to proxy NATS traffic even though it doesn't automatically recognize it. 
+> Note this does not skip NATS traffic from the proxy - it just informs Linkerd that it should be proxied even though it doesn't automatically recognize it. 
+
+Since we've installed via Helm - we'll update the installed NATS service to include the `config.linkerd.io/opaque-ports="4222"` annotation - 
 
 The new [values file](./manifests/nats.yaml) includes the annotations. 
 
@@ -79,20 +86,22 @@ The new [values file](./manifests/nats.yaml) includes the annotations.
 helm upgrade platform-nats oci://registry.how.so/howso-platform/stable/nats --namespace howso --values linkerd/manifests/nats.yaml --wait
 ```
 
+> Note - Kubernetes Jobs are complicated by side-car based service meshes, as the (long lived) proxy side-car, can interfere with the job completion being registered if it doesn't also terminate.  All jobs in the Howso Platform include extra shutdown commands that explicitly terminate any proxy sidecar as the job completes.  Nothing extra is required to enable this functionality, and you should not exclude Jobs from the service mesh. 
 
-> Note - Jobs can be complicated with side-car based service mesh as the (long lived) proxy side-car can interfere with the job completion.  All jobs in the Howso Platform provide extra shutdown commands that explicitly terminate any proxy sidecar as the job completes.  Nothing extra is required to enable this functionality. 
+> Note - NATS traffic will not appear 
+linkerd viz edges -n howso po
+
 
 ## Network Policies
 
-With Linkerd installed, and the Howso Platform annotated - proxied pod traffic that is not explicitly allowed will be denied. Every pod has a sidecar proxy - but we can use network polcies to explicily only allow the Linkerd meshed traffic. 
+With Linkerd installed, and the Howso Platform annotated - proxied pod traffic that is not explicitly allowed will be denied. Every pod has a sidecar proxy - we can use network polcies to explicily only allow the Linkerd meshed traffic at the CNI level.
 
-Check out the [network policy ingress manifests](./manifests/network-policy.yaml) for an example of how to do this.  Note a deny-all policy is added, then all linkerd control plane traffic (label linkerd.io/control-plane-ns: linkerd).  This label is on both the linkerd components, and the components with sidecar proxies.  In addition, the services that accept ingress traffic are whitelisted.
+Check out the [network policy ingress manifests](./manifests/network-policy.yaml) before applying. The approach is as follows: 
+- A default deny ingress policy is added
+- All linkerd control plane traffic (label linkerd.io/control-plane-ns: linkerd) is allowed.  This label is on both the linkerd's own components as well as the components with sidecar proxies. This network policy allows all linkerd sidecar traffic to take place. 
+- Services that accept ingress traffic into the cluster are whitelisted.
 
 ```sh
 kubectl apply -f linkerd/manifests/network-policy.yaml -n howso
 ```
 
-### Egress
-
-
-## Authorization Policies
