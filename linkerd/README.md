@@ -72,15 +72,12 @@ Annotate the namespace
 kubectl annotate namespaces howso linkerd.io/inject=enabled
 ```
 
-
 ### NATS
 NATS Message queue is heavilly used within the Howso Platform.  The NATS traffic is not automatically recognized by Linkerd (as it uses a server-speaks-first first protocol).  To enable Linkerd to recognize NATS traffic, the NATS service and server(s) needs to be annotated, as being an opaque port.
 
 > Note this does not skip NATS traffic from the proxy - it just informs Linkerd that it should be proxied even though it doesn't automatically recognize it. 
 
-Since we've installed via Helm - we'll update the installed NATS service to include the `config.linkerd.io/opaque-ports="4222"` annotation - 
-
-The new [values file](./manifests/nats.yaml) includes the annotations. 
+Since we've installed via Helm - we'll update the installed NATS chart to include the `config.linkerd.io/opaque-ports="4222"` annotation.  The [values file](./manifests/nats.yaml) includes the annotations for the service and statefulset. 
 
 ```sh
 helm upgrade platform-nats oci://registry.how.so/howso-platform/stable/nats --namespace howso --values linkerd/manifests/nats.yaml --wait
@@ -91,10 +88,20 @@ helm upgrade platform-nats oci://registry.how.so/howso-platform/stable/nats --na
 > Note - NATS traffic will not appear 
 linkerd viz edges -n howso po
 
+### Restart the Howso Platform
+
+Linkerd won't inject the sidecar into existing pods.  Restart the Howso Platform to have the sidecar injected. 
+
+```sh
+kubectl delete po --all -n howso
+watch kubectl -n howso get po # Note the extra containers in the READY column
+```
 
 ## Network Policies
 
-With Linkerd installed, and the Howso Platform annotated - proxied pod traffic that is not explicitly allowed will be denied. Every pod has a sidecar proxy - we can use network polcies to explicily only allow the Linkerd meshed traffic at the CNI level.
+With Linkerd installed, and the Howso Platform annotated - proxied pod traffic that is not explicitly allowed will be denied at the pod level. Every pod in the namespace has a sidecar proxy - so this will be enforced at the pod level for all the Howso Platform components.  We can also use network polcies (similar to a Kubernetes firewall rule) to explicily only allow this traffic at the CNI (Container Network Interface) level.
+
+> Note not all Kubernetes network configurations support network policies.  The default CNI for k3d (flannel) does note, but k3d (based of of k3s) uses kube-router, a [network policy controller](https://docs.k3s.io/networking#network-policy-controller) to enforce network policies.
 
 Check out the [network policy ingress manifests](./manifests/network-policy.yaml) before applying. The approach is as follows: 
 - A default deny ingress policy is added
