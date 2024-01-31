@@ -1,7 +1,7 @@
-# Downloading Images for Airgap Installs and Scanning
-- [Downloading Images for Airgap Installs and Scanning](#downloading-images-for-airgap-installs-and-scanning)
+# Downloading Images for Air-gap Installs and Scanning
+- [Downloading Images for Air-gap Installs and Scanning](#downloading-images-for-air-gap-installs-and-scanning)
   - [Overview](#overview)
-  - [Download Airgap Bundle](#download-airgap-bundle)
+  - [Download Air-gap Bundle](#download-air-gap-bundle)
     - [Extracting the images](#extracting-the-images)
   - [Downloading from Container registry](#downloading-from-container-registry)
     - [Extracting the images](#extracting-the-images-1)
@@ -11,25 +11,25 @@
 
 ## Overview 
 
-The simplest approach for airgap helm installs is to Download the airgap bundle, and use the `kubect kots` command to push the images to a container registry.  Alternatively it is possible to access the container registry directly - and download the images yourself.
+The simplest approach for air-gap helm installs is to Download the air-gap bundle, and use the `kubect kots` command to push the images to a container registry.  Alternatively it is possible to access the container registry directly - and download the images yourself.
 
 If you need to process the images in a pipeline, before running the install (i.e. to scan them), either approach is viable, it is possible to extract them from the bundle, by first pushing them to a registry.  Alternatively, if you capture the image names from the helm chart - you can access them from the registry directly. 
 
 
-## Download Airgap Bundle
+## Download Air-gap Bundle
 
 - Navigate to the Howso Customer Portal at [https://portal.howso.com/](https://portal.howso.com)
 - In the top right drop-down, where your name appears, select 'Organizations', and select the appropriate value (usually your company name).
-- Scroll down the organization page, and you'll see any licenses.  Airgap enabled licenses will have buttons to download the bundle and reset the password.  If you don't see an air-gapped license, contact your Howso representative.
+- Scroll down the organization page, and you'll see any licenses.  Air-gap enabled licenses will have buttons to download the bundle and reset the password.  If you don't see an air-gapped license, contact your Howso representative.
 - If this is your first time downloading an application bundle, or you've forgotten the password, select 'Reset Bundle Password' then copy the password and click OK.
-- Select 'Air Gap Bundle' and enter the password to get to the Download Portal.
-- In the 'Latest Howso Platform Airgap bundle' Section select 'Download air-gap bundle'
+- Select 'Air-gap Bundle' and enter the password to get to the Download Portal.
+- In the 'Latest Howso Platform Air-gap bundle' Section select 'Download air-gap bundle'
 - Save the file (~ 1 Gig) via the browser, or copy the link and use wget or curl. 
 - The [kots cli](https://kots.io/kots-cli/) can be used to push the images to a container registry.
 
 ### Extracting the images 
 
-The airgap bundle format has changed, so it no longer directly contains the image tar.gz files.  Instead it splits the image layers, allowing images with shared layers to be combined.  Whilst this is efficient, it maeans extracting the images first requires using the `kots` cli to extract the images, push them to a registry - and then pull them back out again.  The following commands show how to do this.
+The air-gap bundle format has changed, so it no longer directly contains the image tar.gz files.  Instead it splits the image layers, allowing images with shared layers to be combined.  Whilst this is efficient, it maeans extracting the images first requires using the `kots` cli to extract the images, push them to a registry - and then pull them back out again.  The following commands show how to do this.
 
 
 ```sh 
@@ -40,7 +40,7 @@ kubectl kots admin-console push-images ~/2024.1.0.airgap registry-localhost:5000
 If needed - you can list the images in the bundle with the following command. 
 ```sh
 AIRGAP_ARCHIVE=~/2024.1.0.airgap # or wherever you saved the file
-tar -xzOf "${AIRGAP_ARCHIVE}" ./airgap.yaml | yq e '.spec.savedImages[]' # The airgap.yaml file contains a list of the images in the bundle - if you don't have yq just remove that piped cmd
+tar -xzOf "${AIRGAP_ARCHIVE}" ./airgap.yaml | yq e '.spec.savedImages[]' # The air-gap.yaml file contains a list of the images in the bundle - if you don't have yq just remove that piped cmd
 ```
 
 
@@ -50,7 +50,7 @@ Alternatively, you can access the container registry directly - and download the
 
 ### Extracting the images 
 
-The airgap bundle container the image layers, extracting them requires first using:
+The air-gap bundle container the image layers, extracting them requires first using:
 ```sh
 kubectl kots admin-console push-images ~/2024.1.0.airgap registry-localhost:5000 --registry-username reguser --registry-password pw --namespace howso --skip-registry-check
 ```

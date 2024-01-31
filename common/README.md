@@ -1,3 +1,5 @@
+# Howso Platform Examples - Common Setup Steps 
+
 ## Create Client Environment 
 
 ### Login to the Howso Platform 
@@ -6,16 +8,18 @@ Hit the User Management Service (UMS) first.  Proceed passed the certifcate warn
 
 https://management.local.howso.com/
 
+> Note with a KOTS install that doesn't set the initial password via config (i.e. the UI driven appraoch above) - the initial password should be retrieved from the KOTS admin configuration screen.
+
 As you navigate you will be redirected to other subdomains - each of which will have a certificate warning to accept.  Calls to the api domain are cross domain, so navigate directly https://api.local.howso.com/.
 
 
-> Note the certificate(s) offered by the k8s ingress by default will be signed by a platform ca (stored as a secret at platform-ca) - which can be extracted and trusted.  It is possible to override this behavior and use a custom ingress certificate.
+> Note the certificate(s) offered by the Kubernetes ingress by default will be signed by a platform ca (stored as a secret at platform-ca) - which can be extracted and trusted.  It is possible to override this behavior and use a custom ingress certificate.
  
 
 
 ### Create Client Credentials
 This is just a quick set-up.  The admin user wouldn't typically have their own client credentials, but would be used to bootstrap other users.
- - From the Project Page > New Project > "Test Project".
+ - From the Home (Project Page) > New Project > "Test Project".
  - From Howso Admin Drop-down > Profile > Preferences > Default Project > "Test Project" > Save
  - From Howso Admin Drop-down > Credentials > New Credential > "test" Copy|Download as howso.yml in ~/.howso/howso.yml or in your local working directory.
 
@@ -44,7 +48,6 @@ howso:
   ...
 ```
 
-
 ### Create Python environment 
 
 - Create a python virtual environment using your preferred method. 
@@ -65,10 +68,40 @@ Run the verification script to ensure everything is working.
 python -m howso.utilities.installation_verification
 ```
 
-
 ## Troubleshooting
 
+### Howso Platform Helm Chart values
 - Access all the values for howso-platform
 ```sh
-helm show  values oci://registry.how.so/howso-platform/stable/howso-platform | less
+helm show values oci://registry.how.so/howso-platform/stable/howso-platform | less
 ```
+
+### Addional Documentation 
+For assistance, consult the documentation:-
+
+- [Howso Platform](https://portal.howso.com) 
+- [Helm](https://helm.sh/docs/)
+- [ArgoCD](https://argoproj.github.io/argo-cd/)
+- [Bitnami PostgreSQL Chart](https://github.com/bitnami/charts/tree/main/bitnami/postgresql)
+- [Bitnami Redis Chart](https://github.com/bitnami/charts/tree/main/bitnami/redis)
+- [MinIO Community Chart](https://github.com/minio/minio/tree/master/helm/minio)
+- [NATS Chart](https://github.com/nats-io/k8s/tree/main/helm/charts/nats)
+
+### Howso Platform Support
+Please reach out to Howso Platform support (support@howso.com) - via email, or via the [Howso Customer Portal](https://portal.howso.com).
+
+
+### SSL CERTIFICATE_VERIFY_FAILED
+
+If the verification script shows the following errors, you may need to [Trust the Certs](#trust-the-certs) or [Disable SSL Verification](#disable-ssl-verification) before proceeding.
+
+```text
+WARNING:urllib3.connectionpool:Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by
+'SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1006)'))':
+/oauth/token/
+```
+
+### Worker pods start but immediately crash
+
+If you are running installation examples on mac via air-gap - these examples only work with amd64 images.
+
