@@ -85,8 +85,6 @@ helm upgrade platform-nats oci://registry.how.so/howso-platform/stable/nats --na
 
 > Note - Kubernetes Jobs are complicated by side-car based service meshes, as the (long lived) proxy side-car, can interfere with the job completion being registered if it doesn't also terminate.  All jobs in the Howso Platform include extra shutdown commands that explicitly terminate any proxy sidecar as the job completes.  Nothing extra is required to enable this functionality, and you should not exclude Jobs from the service mesh. 
 
-> Note - NATS traffic will not appear 
-linkerd viz edges -n howso po
 
 ### Restart the Howso Platform
 
@@ -97,6 +95,16 @@ kubectl delete po --all -n howso
 watch kubectl -n howso get po # Note the extra containers in the READY column
 ```
 
+## Test the Howso Platform
+
+Setup a test user and environment using the [instructions here](../common/README.md#login-to-the-howso-platform).
+
+Observe the traffic in the Linkerd dashboard.  The dashboard will show the traffic between the Howso Platform components.
+
+> Note - NATS traffic will not appear in the graphs.  Since it is the main inter-pod communication channel in the Howso Platform - the graphs do not give a complete indication of the flow of traffic.  You can confirm the NATS traffic is included in the secured `edges` with the following command: 
+linkerd viz edges -n howso po
+
+
 ## Network Policies
 
 With Linkerd installed, and the Howso Platform annotated - proxied pod traffic that is not explicitly allowed will be denied at the pod level. Every pod in the namespace has a sidecar proxy - so this will be enforced at the pod level for all the Howso Platform components.  We can also use network polcies (similar to a Kubernetes firewall rule) to explicily only allow this traffic at the CNI (Container Network Interface) level.
@@ -104,11 +112,25 @@ With Linkerd installed, and the Howso Platform annotated - proxied pod traffic t
 > Note not all Kubernetes network configurations support network policies.  The default CNI for k3d (flannel) does note, but k3d (based of of k3s) uses kube-router, a [network policy controller](https://docs.k3s.io/networking#network-policy-controller) to enforce network policies.
 
 Check out the [network policy ingress manifests](./manifests/network-policy.yaml) before applying. The approach is as follows: 
-- A default deny ingress policy is added
+- A [default deny](./manifests/network-policy-default-deny.yaml) ingress policy is added
 - All linkerd control plane traffic (label linkerd.io/control-plane-ns: linkerd) is allowed.  This label is on both the linkerd's own components as well as the components with sidecar proxies. This network policy allows all linkerd sidecar traffic to take place. 
 - Services that accept ingress traffic into the cluster are whitelisted.
+
+First apply the default deny policy.  This will configure the CNI to block all namespaced traffic.
+```sh
+kubectl apply -f linkerd/manifests/network-policy-default-deny.yaml -n howso
+```
+
+Confirm that you can no longer access the Howso Platform from outside the cluster i.e. https://management.local.howso.com.  The validation tests will also fail. 
+
+```sh
+python -m howso.utilities.installation_verification
+```
+
+Then apply the proxy side-car and ingress whitelist policies.
 
 ```sh
 kubectl apply -f linkerd/manifests/network-policy.yaml -n howso
 ```
 
+Both the Howso Platform and the validation tests should now pass.
