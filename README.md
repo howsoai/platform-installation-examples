@@ -2,7 +2,7 @@
 
 # Howso Platform Setup Examples
 
-This repository contains examples of how to set up the Howso Platform in various configurations based around Helm charts and the KOTS.
+This repository contains examples of how to set up the Howso Platform in various configurations based around Helm charts.
 
 ## Examples
 - [Pre-requisites](prereqs/README.md)
@@ -11,15 +11,13 @@ This repository contains examples of how to set up the Howso Platform in various
 - [Helm Air-gap](helm-air-gap/README.md)
 - [Helm Openshift](helm-openshift/README.md)
 - [ArgoCD Basic](argocd-basic/README.md)
-- [KOTS Existing Cluster](kots-existing-cluster/README.md)
-- [KOTS Existing Cluster Air-gap](kots-existing-cluster-airgap/README.md)
 
 ## Overview
-Howso Platform is a Kubernetes application that consists of many services, packaged as a helm chart.  
+Howso Platform is a Kubernetes application that consists of many services, packaged as a helm chart. 
 
 
 ### Replicated
-The Howso Platform is distributed as a [Replicated](https://www.replicated.com/) application.  Replicated is a Kubernetes application distribution platform that facilitates self-hosted installation of Kubernetes applications.  This documentation will cover accessing the application as Replicated hosted helm charts - as well as Kubernetes Off-The-Shelf [(KOTS)](https://kots.io/) installations.  KOTS provides methods for standalone (without an existing Kubernetes) installer, and to install into an existing cluster; in both cases wrapping all the components into a single installer.
+The Howso Platform is distributed as a [Replicated](https://www.replicated.com/) application.  Replicated is a Kubernetes application distribution platform that facilitates self-hosted installation of Kubernetes applications.  This documentation will cover accessing the application as Replicated hosted helm charts.  KOTS provides methods for standalone (without an existing Kubernetes) installer, and to install into an existing cluster; in both cases wrapping all the components into a single installer.  Given the nature of the Howso Platform, which is resource intensive, requires a number of datastores and message queues - the KOTS standalone approach is only recommended for POCs. 
 
 ### Helm
 Helm modularizes Kubernetes manifests into charts, which can be installed, upgraded, and uninstalled. It allows a straightforward method for templating out certain values, to make it simple to configure the application.
