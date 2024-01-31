@@ -1,0 +1,76 @@
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: deny-all-ingress
+spec:
+  podSelector: {}
+  ingress:
+  - from:
+    - podSelector: {}
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: allow-control-plane-ingress
+spec:
+  podSelector: {}
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          linkerd.io/control-plane-ns: linkerd
+
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: platform-api-v2-ingress-policy
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/component: rest-api-service 
+  policyTypes:
+  - Ingress 
+  ingress:
+  - ports:
+    - protocol: TCP
+      port: 8443
+    - protocol: TCP
+      port: 8080
+---
+
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: platform-ui-v1-ingress-policy
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/component: platform-ui 
+  policyTypes:
+  - Ingress 
+  ingress: 
+  - ports:
+    - protocol: TCP
+      port: 8443
+    - protocol: TCP
+      port: 8000
+    - protocol: TCP
+      port: 8080
+---
+
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: platform-ums-ingress-policy
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/component: user-management-service 
+  policyTypes:
+  - Ingress
+  ingress:
+  - ports:
+    - protocol: TCP
+      port: 8443 
+    - protocol: TCP

@@ -5,3 +5,5 @@ howso_stacktrace.txt
 .direnv
 howso-platform.crt
 howso-platform-charts.tar.gz
+linkerd*.key
+linkerd*.crt

@@ -42,6 +42,9 @@ Creating secrets as a seperate step is a good Kubernetes practice.  In the case 
 
 Including secret creation as a discreet step should also make it clear where additional secret management tools (such as external-secrets) could be used, without complicating the examples.
 
+### Securing Howso Platform
+Securing the Howso Platform is discussed in the [security](security/README.md) section.  This includes the use of Service Mesh, Network Policies, and other security topics. 
+
 ## Example Structure
 
 The examples should work in any Kubernetes cluster, but to make them easy to work locally, examples using [k3d](https://k3d.io/) are provided.  The OpenShift examples should use [CodeReady Containers](https://developers.redhat.com/products/codeready-containers/overview).  Checkout the [prereqs](prereqs/README.md) for more details. 
