@@ -17,7 +17,7 @@ Howso Platform is a Kubernetes application that consists of many services, packa
 
 
 ### Replicated
-The Howso Platform is distributed as a [Replicated](https://www.replicated.com/) application.  Replicated is a Kubernetes application distribution platform that facilitates self-hosted installation of Kubernetes applications.  This documentation will cover accessing the application as Replicated hosted helm charts.  KOTS provides methods for standalone (without an existing Kubernetes) installer, and to install into an existing cluster; in both cases wrapping all the components into a single installer.  Given the nature of the Howso Platform, which is resource intensive, requires a number of datastores and message queues - the KOTS standalone approach is only recommended for POCs. 
+The Howso Platform is distributed as a [Replicated](https://www.replicated.com/) application.  Replicated is a Kubernetes application distribution platform that facilitates self-hosted installation of Kubernetes applications.  This documentation will cover accessing the application as Replicated hosted helm charts.  
 
 ### Helm
 Helm modularizes Kubernetes manifests into charts, which can be installed, upgraded, and uninstalled. It allows a straightforward method for templating out certain values, to make it simple to configure the application.
