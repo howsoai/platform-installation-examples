@@ -85,12 +85,26 @@ helm template oci://registry.how.so/howso-platform/stable/howso-platform --value
 
 ### Pull the images
 
+#### Pull with docker cli 
 DOCKER_CONFIG takes a directory, so use the one you extracted the config.json file to earlier.
 i.e.
 ```
 DOCKER_CONFIG=/tmp/  docker pull proxy.replicated.com/proxy/howso-platform/dpbuild-docker-edge.jfrog.io/dp/platform-worker:1.1.992
 ```
 
+> Note - this requires a docker daemon to be running - and may require further modification to work if the DOCKER_CONFIG requires other required configuration.
+
+### Pull with skopeo 
+
+Docker cli can pull images - and is a commonly available tool.  Other options don't require a running daemon so are often used in CI/CD pipelines, etc.
+
+To pull the image with skopeo.  Note this example downloads the image to a tar file.  It overrides the arch and os to ensure the image pulled is correct for the target environment (and not the workstation i.e. mac). 
+
+```sh
+REGISTRY_AUTH_FILE=/tmp/config.json skopeo copy --override-arch=amd64 --override-os=linux docker://proxy.replicated.com/proxy/howso-platform/dpbuild-docker-edge.jfrog.io/dp/platform-worker:1.1.992 docker-archive:/tmp/platform-worker_1.1.992.tar
+```
+
+### Pull all the images
 This can be scripted, or combined with `| xargs -n 1 docker pull` to pull all the images.
 
 ```
