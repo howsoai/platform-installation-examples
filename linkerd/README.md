@@ -109,8 +109,8 @@ linkerd viz edges -n howso po
 
 ## Network Policies
 
-Every pod in the namespace has a Linkerd sidecar proxy. This proxy will control and secure all appropriately annotatied pod network traffic. 
- To further protect the network at the CNI (Container Network Interface) level- we can also use network polcies (similar to a firewall rule) to explicily only allow only traffic between these linkerd pods. 
+Every pod in the namespace has a Linkerd sidecar proxy. This proxy will control and secure the network traffic of all appropriately annotated pods - securing all explicitly configured ports, and denying access to all other traffic. 
+ To further protect the network, this time at the CNI (Container Network Interface) level- we can also use network polcies (similar to a firewall rule) to explicily only allow only traffic between these linkerd pods. 
 
 > Note not all Kubernetes network configurations support network policies.  The default CNI for k3d (flannel) does not, but k3d (k3s in a container) uses kube-router, a [network policy controller](https://docs.k3s.io/networking#network-policy-controller) to enforce network policies.
 
