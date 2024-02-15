@@ -73,7 +73,7 @@ kubectl annotate namespaces howso linkerd.io/inject=enabled
 ```
 
 ### NATS
-NATS Message queue is heavilly used within the Howso Platform.  The NATS traffic is not automatically recognized by Linkerd (as it uses a server-speaks-first first protocol).  To enable Linkerd to recognize NATS traffic, the NATS service and server(s) needs to be annotated, as being an opaque port.
+NATS Message queue is heavilly used within the Howso Platform.  The NATS traffic is not automatically recognized by Linkerd (as it uses a server-speaks-first protocol).  To enable Linkerd to recognize NATS traffic, the NATS service and server(s) need to be annotated as being an opaque port.
 
 > Note this does not skip NATS traffic from the proxy - it just informs Linkerd that it should be proxied even though it doesn't automatically recognize it. 
 
@@ -102,14 +102,17 @@ Setup a test user and environment using the [instructions here](../common/README
 Observe the traffic in the Linkerd dashboard.  The dashboard will show the traffic between the Howso Platform components.
 
 > Note - NATS traffic will not appear in the graphs.  Since it is the main inter-pod communication channel in the Howso Platform - the graphs do not give a complete indication of the flow of traffic.  You can confirm the NATS traffic is included in the secured `edges` with the following command: 
+```sh
 linkerd viz edges -n howso po
+```
 
 
 ## Network Policies
 
-With Linkerd installed, and the Howso Platform annotated - proxied pod traffic that is not explicitly allowed will be denied at the pod level. Every pod in the namespace has a sidecar proxy - so this will be enforced at the pod level for all the Howso Platform components.  We can also use network polcies (similar to a Kubernetes firewall rule) to explicily only allow this traffic at the CNI (Container Network Interface) level.
+Every pod in the namespace has a Linkerd sidecar proxy. This proxy will control and secure all appropriately annotatied pod network traffic. 
+ To further protect the network at the CNI (Container Network Interface) level- we can also use network polcies (similar to a firewall rule) to explicily only allow only traffic between these linkerd pods. 
 
-> Note not all Kubernetes network configurations support network policies.  The default CNI for k3d (flannel) does note, but k3d (based of of k3s) uses kube-router, a [network policy controller](https://docs.k3s.io/networking#network-policy-controller) to enforce network policies.
+> Note not all Kubernetes network configurations support network policies.  The default CNI for k3d (flannel) does not, but k3d (k3s in a container) uses kube-router, a [network policy controller](https://docs.k3s.io/networking#network-policy-controller) to enforce network policies.
 
 Check out the [network policy ingress manifests](./manifests/network-policy.yaml) before applying. The approach is as follows: 
 - A [default deny](./manifests/network-policy-default-deny.yaml) ingress policy is added
