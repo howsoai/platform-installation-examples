@@ -23,7 +23,7 @@ This documentation will
 Use the [basic helm install guide](../helm-basic/README.md) to install Howso Platform, and ensure it is running correctly.
 
 ```sh
-# pre-requisites TLDR
+# prerequisites TLDR
 # helm registry login registry.how.so --username your_email@example.com --password your_license_id 
 # add local.howso.com pypi|api|www|management.local.howso.com to /etc/hosts 
 # Install the [linkerd cli](https://linkerd.io/2/getting-started/) and the certificate tool [step](https://smallstep.com/docs/step-cli/).

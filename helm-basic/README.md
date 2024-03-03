@@ -4,10 +4,10 @@
 This guide details the process of deploying the Howso Platform using Helm in a non-air-gapped Kubernetes environment.
 This documentation focuses on deploying the Howso Platform using Helm, emphasizing a straightforward installation process for environments with direct internet access.
 
-Ensure you have completed the [pre-requisites](../prereqs/README.md) before proceeding, and have a Kubernetes cluster running, with a howso namespace, and the argocd cli installed. 
+Ensure you have completed the [prerequisites](../prereqs/README.md) before proceeding, and have a Kubernetes cluster running, with a howso namespace, and the argocd cli installed. 
 
 ```sh
-# pre-requisites TLDR
+# prerequisites TLDR
 # helm registry login registry.how.so --username your_email@example.com --password your_license_id 
 # add local.howso.com pypi|api|www|management.local.howso.com to /etc/hosts 
 k3d cluster create --config prereqs/k3d-single-node.yaml

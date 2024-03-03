@@ -1,14 +1,17 @@
 # Howso Platform Setup Examples Prerequisites
 
-Prerequisites for the Howso Platform setup examples.
+Prerequisites for the Howso Platform installation examples.
 
 ## Resources
-To run every example well - you will need a workstation with at least 32GB of RAM and 8 CPU cores.  If you are low on resources, shut down any other applications you can, and try the single node k3d cluster.
+To run the examples well requires a workstation with at least 32GB of RAM and 8 CPU cores.  If you are low on resources, shut down any other applications you can, and try the single node k3d cluster.
+
+## Workstation OS
+These examples use local workstation installs to inform production Howso Platform installations.  Production installations are expected to be amd64 on a supported Linux distribution.  These local examples should work on Windows, Mac (x86 or arm64), or Linux (x86 or arm64) should work. 
+
+> Note the air-gap examples use image archives that only contain amd64 images.  Mac Silicon amd64 emulation (rosetta) will work enough that the environment will start, but it is not able to complete machine learning tasks. 
 
 ## Container Runtime
 Docker for Windows/Mac or equivilent.  On mac increase the memory and cpu limits.
-
-> Note - Air-gap installs provide amd64 images only.  Mac emulation will work enough that the environment will start, but it is not able to complete machine learning tasks, without the arm64 images.
 
 ## Tools
 
@@ -27,7 +30,7 @@ For Openshift examples, you'll need to install the following:-
 
 
 ## Accessing the Howso Platform Helm Registry
-Access to the Helm registry for the Howso Platform requires a Howso Platform license.  You'll log in with your email, registered with the customer portal, and your license ID as the credential.
+Access to the Helm registry for the Howso Platform requires a Howso Platform license.  Log in with your email, registered with the customer portal, and your license ID as the credential.
 
 You can find your license ID in two ways: either from the address bar on the downloads page or within your license file, where it's listed under the `license_id:` field.
 
@@ -47,18 +50,25 @@ k3d cluster create --config prereqs/k3d-single-node.yaml
 ```
 
 Confirm kubectl access, and check the cluster is running.
+> This command waits for the metrics server to be ready - a good indicator the cluster is fully up.
 ```
-# This command waits for the metrics server to be ready - a good indicator the cluster is fully up.
 kubectl -n kube-system wait --for=condition=ready --timeout=180s pod -l k8s-app=metrics-server
 ```
 
 
 ### Multi Node K3D Cluster
 
-The Howso Platform is a resource-intensive machine learning platform. It dynamically creates new workloads through an operator, which require considerable CPU and memory resources. For optimal performance, the platform should be set up in an environment with a substantial number of available nodes, ideally within an autoscaling infrastructure. This setup ensures that the platform can scale resources efficiently as workloads increase.
+The Howso Platform is a resource-intensive machine learning platform. It dynamically creates new kubernetes workloads through an operator; these can require considerable CPU and memory resources. 
 
-Though just running locally - the following setup shows how labels and taints can be used to control scheduling of pods across multiple nodes.
+For optimal performance installations should:- 
+- Allow for a substantial number of available nodes, ideally within an autoscaling infrastructure. 
+- Dedicate nodes to either the core services or the dynamic worker pods. 
 
+Such setups ensure that the platform can scale resources efficiently as workloads increase.
+
+> Note - the typical autoscaling pattern is:- to use taints/tolerations to control the scheduling of worker pods onto specific node groups; allow the worker node group to autoscale. When the Howso Platform operator creates new workloads it will schedule them onto the worker node group and the kubernetes autoscaler will add new nodes to accomodate.
+
+Though these examples are for local installations - mimicking a larger cluster demonstrate's how labels and taints can be used to control scheduling of pods across multiple nodes.
 
 ```
 k3d cluster create --config prereqs/k3d-multi-node.yaml

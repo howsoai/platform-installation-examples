@@ -6,10 +6,10 @@ This guide details the process of deploying the Howso Platform using Helm in a a
 
 Production air-gapped Kubernetes environments will have pipelines for [scanning images](../container-scanning/README.md), and their own secured container registries.  This example will use a local registry setup by k3d.
 
-Ensure you have completed the [pre-requisites](../prereqs/README.md) before proceeding, and have a Kubernetes cluster running, with a howso namespace, the kubectl kots plugin installed, and are logged into the Helm registry.
+Ensure you have completed the [prerequisites](../prereqs/README.md) before proceeding, and have a Kubernetes cluster running, with a howso namespace, the kubectl kots plugin installed, and are logged into the Helm registry.
 
 ```sh
-# pre-requisites TLDR
+# prerequisites TLDR
 # install kots cli https://kots.io/kots-cli/ 
 # add local.howso.com pypi|api|www|management.local.howso.com and registry-localhost to /etc/hosts 
 # helm registry login registry.how.so --username your_email@example.com --password your_license_id 
@@ -20,6 +20,9 @@ kubectl create namespace howso
 ### Download container images
 
 Download an air-gap bundle as per the [instructions here](../container-images/README.md#download-air-gap-bundle).
+
+> Note the airgap bundle is a tarball of the images, but also includes the manifests and scripts for a [kots install](../kots-existing-cluster-airgap/README.md) - those are not used in helm installations - the bundle is simply used to get the images into the air-gapped environment.
+
 
 ### Download Helm charts
 

@@ -9,10 +9,10 @@ With an air-gapped installation, there is a seperate step to download the instal
 
 Further details about aspects of the KOTS installation process are in the non-air-gapped [guide](../kots-existing-cluster/README.md).
 
-Ensure you have completed the [pre-requisites](../prereqs/README.md) before proceeding, and have a Kubernetes cluster running, with a howso namespace, the kubectl kots plugin installed.
+Ensure you have completed the [prerequisites](../prereqs/README.md) before proceeding, and have a Kubernetes cluster running, with a howso namespace, the kubectl kots plugin installed.
 
 ```sh
-# pre-requisites TLDR
+# prerequisites TLDR
 # Have your license file available on the local filesystem 
 # install the kots cli https://kots.io/install/
 # add local.howso.com pypi|api|www|management.local.howso.com to /etc/hosts 

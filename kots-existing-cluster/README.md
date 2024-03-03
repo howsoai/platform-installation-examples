@@ -7,10 +7,10 @@ This guide details the process of deploying the Howso Platform using Replicated 
 
 This formulation can be a convenient way to get started with the Howso Platform - but will not provide the same levers to control the deployments as Helm installs.  As such, if you have detailed Kubernetes requirements - you may not be able to meet them with this approach. 
 
-Ensure you have completed the [pre-requisites](../prereqs/README.md) before proceeding, and have a Kubernetes cluster running, with a howso namespace, the kubectl kots plugin installed.
+Ensure you have completed the [prerequisites](../prereqs/README.md) before proceeding, and have a Kubernetes cluster running, with a howso namespace, the kubectl kots plugin installed.
 
 ```sh
-# pre-requisites TLDR
+# prerequisites TLDR
 # Have your license file available on the local filesystem 
 # install the kots cli https://kots.io/install/
 # add local.howso.com pypi|api|www|management.local.howso.com to /etc/hosts 

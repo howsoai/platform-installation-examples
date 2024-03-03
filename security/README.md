@@ -1,7 +1,7 @@
 # Securing Howso Platform 
 
 ## Examples
-[pre-requisites](../prereqs/README.md)
+[prerequisites](../prereqs/README.md)
 ---
 [Linkerd and Network Policies](linkerd/README.md)
 [Container Scanning](container-scanning/README.md)
