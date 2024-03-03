@@ -43,6 +43,8 @@ kubectl create secret generic platform-redis --from-literal=redis-password="$(op
 
 ### Install component charts 
 
+Now install the Helm charts.  It is encouraged to check the [values manifest files](./manifests/) for each chart, to see the minimal (but important) configuration applied to each.
+
 Minio
 ```
 helm install platform-minio oci://registry.how.so/howso-platform/stable/minio --namespace howso --values helm-basic/manifests/minio.yaml --wait
