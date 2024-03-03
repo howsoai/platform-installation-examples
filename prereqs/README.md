@@ -26,7 +26,7 @@ Install the following:-
 
 For Openshift examples, you'll need to install the following:-
 
-- [CodeReady Containers](https://developers.redhat.com/products/codeready-containers/overview) - OpenShift local development environment 
+- [OpenShift Local (CodeReady Containers)](https://developers.redhat.com/products/openshift-local/getting-started) - OpenShift local development environment 
 
 
 ## Accessing the Howso Platform Helm Registry

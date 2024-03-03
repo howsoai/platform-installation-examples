@@ -5,7 +5,7 @@
 This repository contains examples of how to set up the Howso Platform in various configurations predominantly based on the use of Helm charts.
 
 ## Examples
-- [Example prerequisites](prereqs/README.md)
+- [Prerequisites](prereqs/README.md)
 ---
 - [Helm](helm-basic/README.md)
 - [Helm Air-gap](helm-air-gap/README.md)

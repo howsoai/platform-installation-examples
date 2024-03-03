@@ -2,10 +2,12 @@
 
 ## Introduction
 This guide details the process of deploying the Howso Platform using Helm in a non-air-gapped Kubernetes environment.
-This documentation focuses on deploying the Howso Platform using Helm, emphasizing a straightforward installation process for environments with direct internet access.
+This example emphasizes a straightforward installation process for environments with direct internet access, making minimal configuration changes to the default Helm charts.  It is recommended to confirm that you can setup a basic environment before making any customizations.
 
-Ensure you have completed the [prerequisites](../prereqs/README.md) before proceeding, and have a Kubernetes cluster running, with a howso namespace, and the argocd cli installed. 
+Ensure you have completed the [prerequisites](../prereqs/README.md) before proceeding, and have a Kubernetes cluster running, with a howso namespace, and the argocd cli installed.   
 
+### Prerequisites TLDR
+Not your first run-through?  Apply the following to get up and running quickly. 
 ```sh
 # prerequisites TLDR
 # helm registry login registry.how.so --username your_email@example.com --password your_license_id 
@@ -15,7 +17,13 @@ kubectl create namespace howso
 ```
 
 ### Create datastore secrets 
-The datastores will need random passwords generated before they start.  Though the  charts can create these credentials directly, there are circumnstances where random secrets managed by helm can be unstable (change when you don't expect them to, etc).  It is better practice to create them out-of-band, and then configure the chart to look for these pre-existing secrets. 
+The datastore Helm charts installed and used by Howso Platform will need random passwords generated before they start.  The charts, in their default configuration, will create these credentials directly as part of Kubernetes secret resources.  However it is not an approach that should be taken in a production environment for the following reasons:   
+
+- There are circumstances where random secrets managed by Helm can be unstable (change when you don't expect them to).  Though (if configured to do so) Helm will lookup the existing value, and try to keep the secret the same when upgrading a release, tools like ArgoCD, that do not directly install with the Helm cli, rather template out the resources and apply them directly, will not necessarily have the same behavior. 
+- It is harder to avoid the secrets being stored in places they shouldn't be, like in a repository used for gitops.
+- It is also a common requirement to have these secrets managed by different tooling i.e. Hashicorp Vault, or Azure Key Vault. 
+
+These examples will create the secrets out-of-band, as a separate step from the main installation, and then configure the chart to look for these pre-existing secrets.  This is superior to the default behavior, but is mainly done to cleanly separate the secrets management step to delineate where an organizations own policies and procedures should be applied.
 
 Minio
 ```
