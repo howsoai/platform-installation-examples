@@ -4,16 +4,15 @@
 
 ### Login to the Howso Platform 
 
-Hit the User Management Service (UMS) first.  Proceed passed the certifcate warning.  Login with the default admin credentials (platform-admin/platform).  You will be prompted to change the password. 
+Navigate to the User Management Service (UMS) first.  Proceed passed the certificate warning.  Login with the default admin credentials (platform-admin/platform).  You will be prompted to change the password. 
 
 https://management.local.howso.com/
 
-> Note with a KOTS install that doesn't set the initial password via config (i.e. the UI driven appraoch above) - the initial password should be retrieved from the KOTS admin configuration screen.
+> Note.  With a KOTS install driven via the UI - the initial password won't be the default, but should be retrieved from the KOTS admin configuration screen.
 
-As you navigate you will be redirected to other subdomains - each of which will have a certificate warning to accept.  Calls to the api domain are cross domain, so navigate directly https://api.local.howso.com/.
+As you navigate you will be redirected to other subdomains - each of which will have a certificate warning to accept.  Calls to the api domain are cross domain, so navigate directly https://api.local.howso.com/, to avoid hidden certificate errors.
 
-
-> Note the certificate(s) offered by the Kubernetes ingress by default will be signed by a platform ca (stored as a secret at platform-ca) - which can be extracted and trusted.  It is possible to override this behavior and use a custom ingress certificate.
+> Note.  The certificate(s) offered by the Kubernetes ingress by default will be signed by a platform ca (stored as a secret at platform-ca) - which can be extracted and trusted.  It is possible to override this behavior and use a custom ingress certificate.
  
 
 

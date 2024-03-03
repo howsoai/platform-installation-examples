@@ -45,6 +45,8 @@ kubectl create secret generic platform-redis --from-literal=redis-password="$(op
 
 Now install the Helm charts.  It is encouraged to check the [values manifest files](./manifests/) for each chart, to see the minimal configuration applied to each.
 
+> Note. Using the same release names is important, so that the default configuration of the Howso Platform chart can find the other components.
+
 
 #### Minio
 [Standalone mode](./manifests/minio.yaml) is used as an alternative to a much more heavyweight default configuration.
@@ -71,11 +73,12 @@ helm install platform-redis oci://registry.how.so/howso-platform/stable/redis --
 ```
 
 #### Howso Platform
-Howso Platform is installed last - when all other components are ready.  The [only configuration changes](./manifests/howso-platform.yaml) are to configure the image repository to use the Replicated registry.  The registry credentials are injected into the chart in your customer specific registry.
+Howso Platform is installed last - when all other components are ready.  The [only configuration changes](./manifests/howso-platform.yaml) are to configure the the Replicated container registry.  The registry credentials are injected into the chart in your customer specific Helm registry.
 ```
 helm install howso-platform oci://registry.how.so/howso-platform/stable/howso-platform --namespace howso --values helm-basic/manifests/howso-platform.yaml
 ```
-Time to install may vary depending on network and resources -so the install command avoids waiting.  Instead check the status of the pods in the howso namespace, as they come online (CTRL-C to exit).
+
+Time to install may vary significantly depending on network and resources -so the install command avoids waiting.  Instead check the status of the pods in the howso namespace, as they come online (CTRL-C to exit).
 ```
 watch kubectl -n howso get po 
 ```
