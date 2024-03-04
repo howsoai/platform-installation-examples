@@ -12,15 +12,16 @@ https://management.local.howso.com/
 
 As you navigate you will be redirected to other subdomains - each of which will have a certificate warning to accept.  Calls to the api domain are cross domain, so navigate directly https://api.local.howso.com/, to avoid hidden certificate errors.
 
-> Note.  The certificate(s) offered by the Kubernetes ingress by default will be signed by a platform ca (stored as a secret at platform-ca) - which can be extracted and trusted.  It is possible to override this behavior and use a custom ingress certificate.
- 
+> Note.  By default the ingress certificate(s) offered by the Howso Platform will be signed by a Certificate Authority, stored as a secret at platform-ca, which can be extracted and trusted.  It is possible to override this behavior and use a custom ingress certificate.
 
 
 ### Create Client Credentials
-This is just a quick set-up.  The admin user wouldn't typically have their own client credentials, but would be used to bootstrap other users.
- - From the Home (Project Page) > New Project > "Test Project".
- - From Howso Admin Drop-down > Profile > Preferences > Default Project > "Test Project" > Save
- - From Howso Admin Drop-down > Credentials > New Credential > "test" Copy|Download as howso.yml in ~/.howso/howso.yml or in your local working directory.
+
+This is just a quick set-up to test the install.  The admin user wouldn't typically have their own client credentials, but would be used to bootstrap other users.
+ - From the Home (Projects Page) > New Project > "Test Project".
+ - From Howso Admin drop-down > Profile > Preferences > Default Project > "Test Project" > Save
+ - From Howso Admin drop-down > Credentials > New Credential > "test" > Create
+ - Copy|Download as howso.yml to `~/.howso/howso.yml` or in your local working directory.
 
 Either [Trust the Certs](#trust-the-certs) or [Disable SSL Verification](#disable-ssl-verification) before proceeding.
 
