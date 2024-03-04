@@ -14,26 +14,29 @@ This repository contains examples of how to set up the Howso Platform in various
 
 ## Overview
 
-Howso Platform is a Kubernetes application that consists of many services, packaged as a helm chart. 
+Howso Platform is a Kubernetes-based application that consists of many services, it is available as a Helm chart install, depending on data stores and a message queue that can also be deployed as charts.
+
 
 ### Replicated
 
-The Howso Platform is distributed as a [Replicated](https://www.replicated.com/) application.  Replicated is a Kubernetes application distribution platform that facilitates self-hosted installation of Kubernetes applications.  This documentation will mostly cover accessing the application as Replicated hosted helm charts.  
+The Howso Platform is distributed as a [Replicated](https://www.replicated.com/) application.  Replicated is a Kubernetes application distribution platform that facilitates self-hosted installation of Kubernetes applications.  This documentation will mostly cover accessing the application as Replicated hosted Helm charts.  
+
 
 ### Helm
 
-Helm modularizes Kubernetes manifests into charts, which can be installed, upgraded, and uninstalled as a single entity. It includes a straightforward method for templating out certain values, to make it simple to configure the application.
+[Helm](https://helm.sh/) modularizes Kubernetes manifests into charts, which can be installed, upgraded, and uninstalled as a single entity. It includes a straightforward method for templating out certain values, to make it simple to configure the application.
 
-The Howso Platform relies on data stores, such as Postgres, Redis, an S3-compatible object store (Minio), and a message queue (NATS).  These requirements can themselves be deployed as helm charts.  The documentation will use commonly available charts for these dependencies, that are configurable enough to provide a range from simple tests to scaled production configurations.
+The Howso Platform relies on data stores, such as Postgres, Redis, an S3-compatible object store (Minio), and a message queue (NATS).  These requirements can themselves be deployed as Helm charts.  The documentation will use commonly available charts for these dependencies.  These public charts are configurable and mature enough to provide a range from simple tests to scaled production configurations.
 
 
 ## Quick Start vs Production Readiness
 
 ### Out-of-the-Box Interoperability
 
-The Howso Platform chart is designed to work together seamlessly with the Helm charts for the Howso Platform, including Redis, PostgreSQL, MinIO, and NATS, in an (almost) default configuration.  Except for some small changes (i.e. enabling JetStream in NATS), these charts require minimal setup for a quick start. This interoperability facilitates an easy and efficient initial deployment of the Howso Platform.
+The Howso Platform chart is designed to work together well with the dependent Helm charts for Redis, PostgreSQL, MinIO, and NATS, in an (almost) default configuration.  Except for some small changes (i.e. enabling JetStream in NATS), these charts require minimal setup for a quick start. This interoperability facilitates an easy and efficient initial deployment of the Howso Platform.
 
 In the _basic_ examples, this type of configuration will be demonstrated.  It is recommended to start with this configuration before more complex arrangements.
+
 
 ### Considerations for Production Environments
 
@@ -41,17 +44,20 @@ While the default configurations are suitable for a quick start and testing purp
 
 Though not exhaustive, the included [air-gap](./helm-airgap/README.md) and [OpenShift](./helm-openshift/) examples will demonstrate how some of these configurations can be achieved. 
 
+
 ### Securing Howso Platform
 
 Securing the Howso Platform is discussed in the [security](security/README.md) section.  This includes the use of Service Mesh, Network Policies, and other security topics. 
 
+
 ## Example Structure
 
-The examples should work in any Kubernetes cluster, but for simple local installation demonstrations, [k3d](https://k3d.io/) has been used.  Checkout the [prereqs](prereqs/README.md) for more details. 
+The examples should work in any Kubernetes cluster, but for simple local installation demonstrations, [k3d](https://k3d.io/) has been used.  Check out the [prereqs](prereqs/README.md) for more details. 
 
 When running commands, all paths are relative to the root of this repository.  Since you may end up with examples files under the repo root, they have been added to the `.gitignore` file.
 
 
 ## Licensing Note
+
 MinIO is used as the default S3 object store with the Howso Platform.  For production deployments ensure you have a valid license for MinIO.
 MinIO, under the AGPL license, is included with Howso Inc.'s OEM license for commercial Howso Platform deployments, covering usage up to 1 terabyte.

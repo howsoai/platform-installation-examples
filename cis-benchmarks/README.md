@@ -3,7 +3,7 @@
 ## Introduction
 https://www.cisecurity.org/benchmark/kubernetes
 
-CIS Publish security guidelines for Kubernetes.  Installed On Prem via helm charts - most of the items apply to the customer's Kubernetes cluster.  Though many of the items are applicable.  The following information is intended to help administrators and security resources tasked with ensuring their Kubernetes cluster running Howso Platform meets the CIS benchmarks standards.
+CIS Publish security guidelines for Kubernetes.  Installed On Prem via Helm charts - most of the items apply to the customer's Kubernetes cluster.  Though many of the items are applicable.  The following information is intended to help administrators and security resources tasked with ensuring their Kubernetes cluster running Howso Platform meets the CIS benchmarks standards.
 
 ## Howso's Approach
 Howso Platform, installed via Helm charts, intends to provide configuration options that allow customers to meet CIS benchmarks.  Where appropriate Howso Platform will choose defaults that represent secure best practices. Doing so has to balance with other trade-offs for the default configuration.  These other considerations include :- 

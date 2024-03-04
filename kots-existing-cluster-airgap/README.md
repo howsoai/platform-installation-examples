@@ -1,6 +1,6 @@
 # Kots Existing Cluster - Air-gapped Installation for Howso Platform 
 
-> Note - it is recommended to install the Howso Platform via the Replicated hosted helm charts, and not the KOTS installer.
+> Note - it is recommended to install the Howso Platform via the Replicated hosted Helm charts, and not the KOTS installer.
 
 ## Introduction
 This guide details the process of deploying the Howso Platform using Replicated (KOTS)[https://kots.io/] into an existing Air-gapped Kubernetes cluster.  This approach wraps the Howso Platform into a single installable unit; it also provides a UI for updating, configuring, and troubleshooting the platform. 

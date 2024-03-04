@@ -16,7 +16,7 @@
 
 The simplest approach for air-gap helm installs is to Download the Kots air-gap bundle and use the `kubectl kots` command to push the images to a container registry.  Alternatively, extract the credentials to access the container registry directly - and download the images yourself.
 
-If you need to process the images in a pipeline, before running the install (i.e. to scan them), either approach is viable, either extract them from the registry after importing with kots or capture the image names from the helm chart and access them from the Replicated container registry directly. 
+If you need to process the images in a pipeline, before running the install (i.e. to scan them), either approach is viable, either extract them from the registry after importing with kots or capture the image names from the Helm chart and access them from the Replicated container registry directly. 
 
 
 ## Download Air-gap Bundle
@@ -69,7 +69,7 @@ tar -xzOf "${AIRGAP_ARCHIVE}" airgap.yaml | yq e '.spec.savedImages[]' # The air
 
 ## Container registry 
 
-Replicated hosted helm charts embed an customer's container secret in the chart, to simplify the installation process.  Extract your organization's container registry credentials from the Helm chart with the following one liner.  Make sure to have logged in first, as per the [prerequisites](../prereqs/README.md).
+Replicated hosted Helm charts embed an customer's container secret in the chart, to simplify the installation process.  Extract your organization's container registry credentials from the Helm chart with the following one liner.  Make sure to have logged in first, as per the [prerequisites](../prereqs/README.md).
 ```
 helm template oci://registry.how.so/howso-platform/stable/howso-platform --namespace howso --show-only templates/image-pull-secret.yaml 2> /dev/null | yq eval '.data.".dockerconfigjson"'  | base64 -d | jq . > /tmp/config.json
 ```
