@@ -9,7 +9,7 @@
 
 ## Introduction
 
-Howso Platform installed on-prem via Helm charts requires a number of security considerations.  Firstly - it is necessarilly a shared security model - between the Howso Platform application, and the operators of the Kubernetes cluster.
+Howso Platform installed on-prem via Helm charts requires a number of security considerations.  Firstly - it is necessarily a shared security model - between the Howso Platform application, and the operators of the Kubernetes cluster.
 
 Kubernetes is a highly customizable platform, and many aspects that come under application security (i.e. establishing TLS between components) by best practice are bes best done at the framework level, using components such as a service mesh.  As such Howso Platform, when distributed as a Helm chart, can not independently claim to be secure by default - it is the wrong layer for that requirement.  It is designed to easilly fit into a secure environment - this section will cover the main topics to consider.
 
