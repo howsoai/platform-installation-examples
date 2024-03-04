@@ -92,7 +92,7 @@ For assistance, consult the documentation:-
 
 - [Howso Platform](https://portal.howso.com) 
 - [Helm](https://helm.sh/docs/)
-- [ArgoCD](https://argoproj.github.io/argo-cd/)
+- [Argo CD](https://argoproj.github.io/argo-cd/)
 - [Bitnami PostgreSQL Chart](https://github.com/bitnami/charts/tree/main/bitnami/postgresql)
 - [Bitnami Redis Chart](https://github.com/bitnami/charts/tree/main/bitnami/redis)
 - [MinIO Community Chart](https://github.com/minio/minio/tree/master/helm/minio)

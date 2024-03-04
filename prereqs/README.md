@@ -110,7 +110,7 @@ The Howso Platform uses a number of subdomains under a parent domain.  For a loc
 127.0.0.1 www.local.howso.com
 127.0.0.1 management.local.howso.com
 127.0.0.1 registry-localhost # For air-gap install example
-127.0.0.1 argocd.local.howso.com # For ArgoCD install example
+127.0.0.1 argocd.local.howso.com # For Argo CD install example
 ```
 
 ## Uninstalling the Howso Platform

@@ -5,8 +5,11 @@ This guide covers how the Howso Platform installation may be configured for depl
 
 Ensure you have completed the [prerequisites](../prereqs/README.md) before proceeding, have a OpenShift cluster running, with a howso project, and are logged into the Helm registry.
 
+
+### Prerequisites TLDR
+
+Not your first run-through?  Apply the following to get up and running quickly. 
 ```sh
-# prerequisites TLDR
 # Create OpenShift Local environment
 # add local.howso.com pypi|api|www|management.local.howso.com to /etc/hosts 
 # helm registry login registry.how.so --username your_email@example.com --password your_license_id 
@@ -46,7 +49,7 @@ The Howso Platform application uses Custom Resource Definitions (CRDs) to run wo
 
 To extract and apply the CRD directly, use the following command:
 ```sh
-helm template oci://registry.how.so/howso-platform/stable/howso-platform --show-only templates/crds/trainee-crd.yaml | kubectl apply -f -
+helm template oci://registry.how.so/howso-platform/stable/howso-platform --show-only 'templates/crds/*.yaml' | kubectl apply -f -
 ```
 
 This command uses Helm's template functionality to generate the necessary CRD manifest from the Howso Platform Helm chart and pipes it directly to kubectl to apply. 

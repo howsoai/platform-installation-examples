@@ -1,15 +1,17 @@
-# Installation Example: ArgoCD Installation for Howso Platform
+# Installation Example: Argo CD Installation for Howso Platform
 
 ## Overview
 
-This guide demonstrates deploying the Howso Platform using ArgoCD, a GitOps tool for Kubernetes. It emphasizes the use of ArgoCD's Helm chart capabilities to deploy the Howso Platform along with its dependent charts.
+This guide demonstrates deploying the Howso Platform using Argo CD, a GitOps tool for Kubernetes. It emphasizes the use of Argo CD's Helm chart capabilities to deploy the Howso Platform along with its dependent charts.
 
-This documentation covers basic ArgoCD usage for deploying the Howso Platform. It is not a comprehensive guide to all ArgoCD features.
+This documentation covers basic Argo CD usage for deploying the Howso Platform. It is not a comprehensive guide to Argo CD features.
 
 Ensure you have completed the [prerequisites](../prereqs/README.md) before proceeding, and have a Kubernetes cluster running, with a howso namespace, and the argocd cli installed. 
 
+### Prerequisites TLDR
+
+Not your first run-through?  Apply the following to get up and running quickly. 
 ```sh
-# prerequisites TLDR
 # install argocd cli https://argo-cd.readthedocs.io/en/stable/cli_installation/
 # helm registry login registry.how.so --username your_email@example.com --password your_license_id 
 # add local.howso.com pypi|api|www|management|argocd.local.howso.com to /etc/hosts 
@@ -19,47 +21,52 @@ kubectl create namespace howso
 
 ## Steps
 
-### Install ArgoCD
+### Install Argo CD
 
-To get a basic deployment of ArgoCD, run the following commands:
+To get a [basic deployment of Argo CD](https://github.com/argoproj/argo-cd/releases/latest), run the following command:
 
 ```sh
-# https://github.com/argoproj/argo-cd/releases/latest
 kubectl apply -k argocd-basic/manifests/argocd/
 ```
 
-> Note: Since detailed ArgoCD installation instructions are beyond the scope of these examples - the above kustomize installation wraps up an ArgoCD installation and the configuration to use the traeffik ingress that is part of the k3d cluster. 
+> Note: Since detailed Argo CD installation instructions are beyond the scope of these examples - the above kustomize installation wraps up an Argo CD installation and the configuration to use the traefik ingress that is part of the k3d cluster. 
 
-Make sure the ArgoCD server is running before proceeding.  
+Make sure the Argo CD server is running before proceeding.  
 ```sh
 watch kubectl get po -A
 ```
 
-### Login to the argocd
+### Login to Argo CD 
 
-From a terminal with the argocd cli installed - the below instructions will get the initial pw and login.  The cli will be used to add a repo - and monitor the app deployments.
+The example will use the Argo CD cli tool to add a Helm repository and to monitor the app deployments.
+
+From a terminal with the `argocd` cli installed - the below instructions will get the initial credentials and login cli.
 
 ```sh
 initial_argocd_pw=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
 argocd --insecure --grpc-web login argocd.local.howso.com  --username admin --password $initial_argocd_pw
 echo "Log into argocd at https://argocd.local.howso.com with username admin and password $initial_argocd_pw"
 ```
-> Note: Argocd ingress can be tricky to get working.  If you have trouble, you can port-forward to the argocd server (`kubectl -n argocd port-forward svc/argocd-server 8080:80`) and use http://localhost:8080.
+
+Try and access the UI in a browser (accept the certificate warning) and login with the credentials provided.
+
+> Note: Argo CD ingress can be tricky to get working.  If you have trouble, you can port-forward to the argocd server (`kubectl -n argocd port-forward svc/argocd-server 8080:80`) and use http://localhost:8080 to access the UI.
+
 
 ### Apply the CRD
 
-Argocd uses projects to limit access to Kubernetes resources.  The Howso Platform uses a CRD, a cluster level component.  Installing this seperately, allows the rest of the components to be installed in a project with only namespace-level permissions. 
+Argo CD uses [projects](https://argo-cd.readthedocs.io/en/stable/user-guide/projects/) to limit access to Kubernetes resources for applications.  The Howso Platform uses CRDs, a cluster-level component.  Installing this separately allows the rest of the components to be installed in a project with only [namespace-level permissions](./manifests/argocd-project.yaml).
 
-To extract and apply the CRD directly, use the following command.
+To extract and apply the CRD directly, use the following command:
 ```sh
-helm template oci://registry.how.so/howso-platform/stable/howso-platform --show-only templates/crds/trainee-crd.yaml | kubectl apply -f -
+helm template oci://registry.how.so/howso-platform/stable/howso-platform --show-only 'templates/crds/*.yaml' | kubectl apply -f -
 ```
 
+### Add the Chart registry to Argo CD
 
-### Add the Chart registry to ArgoCD
-See the [prerequisites](../prereqs/README.md#accessing-the-howso-platform-helm-registry) for information on how to get the credentials to access the Howso Platform Helm registry.
+See the [prerequisites](../prereqs/README.md#accessing-the-howso-platform-helm-registry) for information on how to get credentials to access the Howso Platform Helm registry.
 
-> Note: The helm registry is of type oci - so the command to add it includes the `--enable-oci` flag.
+> Note: The helm registry is of type `oci` - so the command includes the `--enable-oci` flag.
 
 ```sh
 argocd repo add registry.how.so --type helm --name replicated --username youremail@example.com --password <your-license-id> --enable-oci
@@ -81,20 +88,21 @@ kubectl create secret generic platform-redis --from-literal=redis-password="$(op
 
 ### Install Argocd Project and Application
 
-If you open up the [project manifest](manifests/argocd-project.yaml), you will see that it is configured to use the `howso` namespace.  Since the CRD was installed seperately, and the Howso Platform [application manifest](manifests/argocd-howso-platform-app.yaml) is configured to skip them, the project does not need to give any cluster level permissions.
+If you open up the [project manifest](manifests/argocd-project.yaml), you will see that it is configured to use the `howso` namespace.  Since the CRD was installed separately, and the Howso Platform [application manifest](manifests/argocd-howso-platform-app.yaml) is configured to skip CRD installation, the project does not need to give any cluster-scoped permissions.
 
-Also note in the [app manifests](manifests/argocd-required-apps.yaml), the information previously in values files (in direct helm installs), is embedded in to the manifests.  
+> Note: In the [Argo CD Application manifests](manifests/argocd-required-apps.yaml) configuration provided in values files during a direct Helm Install is embedded into the Application manifests.  
 
 ```sh
 kubectl apply -f argocd-basic/manifests/argocd-project.yaml
-kubectl apply -f argocd-basic/manifests/argocd-requirement-apps.yaml
+kubectl apply -f argocd-basic/manifests/argocd-required-apps.yaml
 kubectl apply -f argocd-basic/manifests/argocd-howso-platform-app.yaml
 ```
 
-Check via the UI - or the CLI, that the ArgoCD project and application are created and healthy.
+Check via the [UI](https://argocd.local.howso.com) - or the CLI, that the Argo CD project and application are created and healthy.
 
 ```sh
-argocd app list
+argocd app list # Check the Argo CD app status
+kubectl get po -n howso # Check the pod status
 ```
 
 <img src="../assets/argocd-success.png" width="300">
