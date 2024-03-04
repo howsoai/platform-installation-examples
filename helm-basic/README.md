@@ -22,7 +22,7 @@ kubectl create namespace howso
 
 The datastore Helm charts used by the Howso Platform require random credentials generated before they initialize.  The charts, in their default configuration, will create these credentials directly as part of Kubernetes' secret resources.  However, this is not an approach that should be taken in a production environment for the following reasons:   
 
-- There are circumstances where random secrets managed by Helm can be unstable (change when you don't expect them to).  However if configured to do so, Helm will look-up an existing value, and try to keep the secret the same when upgrading a release; tools like Argo CD, that do not directly install with the Helm cli (rather they template out the resources and apply them directly) will not necessarily have the same behavior. 
+- There are circumstances where random secrets managed by Helm can be unstable (change when you don't expect them to).  However if configured to do so, Helm will look-up an existing value, and try to keep the secret the same when upgrading a release; tools like Argo CD, that do not directly install with the Helm CLI (rather they template out the resources and apply them directly) will not necessarily have the same behavior. 
 - It is harder to avoid the secrets being stored in places they shouldn't be, like in a repository used for gitops.
 - It is also a common requirement to have these secrets managed by different tooling i.e. Hashicorp Vault, or Azure Key Vault. 
 

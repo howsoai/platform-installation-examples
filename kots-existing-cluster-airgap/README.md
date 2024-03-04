@@ -11,22 +11,26 @@ Further details about aspects of the KOTS installation process are in the non-ai
 
 Ensure you have completed the [prerequisites](../prereqs/README.md) before proceeding, and have a Kubernetes cluster running, with a howso namespace, the kubectl kots plugin installed.
 
+### Prerequisites TLDR
+
+Not your first run-through?  Apply the following to get up and running quickly. 
 ```sh
-# prerequisites TLDR
 # Have your license file available on the local filesystem 
-# install the kots cli https://kots.io/install/
+# install the kots CLI https://kots.io/install/
 # add local.howso.com pypi|api|www|management.local.howso.com to /etc/hosts 
 k3d cluster create --config prereqs/k3d-single-node.yaml
 kubectl create namespace howso
 ```
 
-## Download Howso Platform container images
+## Steps
+
+### Download Howso Platform container images
 
 Download an air-gap bundle as per the [instructions here](../container-images/README.md#download-air-gap-bundle).
 
-> Note the KOTS cli bundles can also be downloaded, and moved into the air-gapped environment.  This is not covered in this guide.
+> Note the KOTS CLI bundles can also be downloaded, and moved into the air-gapped environment.  This is not covered in this guide.
 
-## Download KOTS Admin container images
+### Download KOTS Admin container images
 
 Download the kotsadm container images either via the [Howso Customer Portal](https://portal.howso.com) alongside the Howso Platform airgap bundle, or from the [KOTS release page](https://github.com/replicatedhq/kots/releases).
 
@@ -37,9 +41,9 @@ wget https://github.com/replicatedhq/kots/releases/download/v1.106.0/kotsadm.tar
 
 > Make sure the kots plugin version (`kubectl kots version`) matches the container bundle version.
 
-## Install Certmanager
+### Install cert-manager
 
-Certmanager is used to manage the TLS certificates for the Howso Platform, and is a requirement of KOTS installations.  
+cert-manager is used to manage the TLS certificates for the Howso Platform, and is a requirement of KOTS installations.  
 
 ```sh
 # https://cert-manager.io/docs/installation/ 
@@ -53,7 +57,7 @@ watch kubectl get po -n cert-manager
 
 > Note - installing cert-manager in an air-gapped environment is outside the scope of this guide, but a basic process might involve pulling the images indicated in the manifest, pushing to a local registry, editing the cert-manager.yaml file to point to images in a local registry, and deploying the update manifest.
 
-## Check Local Registry
+### Check Local Registry
 
 The k3d cluster used in these examples is configured to include a local registry.  In this example we'll use the [kots cli](https://kots.io/kots-cli/) - which will upload images from the air-gap bundle to the registry as part of the installation.  
 
@@ -66,7 +70,7 @@ curl -s http://registry-localhost:5000/v2/_catalog | jq .
 ```
 > If the above command fails - troubleshoot your container engine setup, and ensure k3d was installed correctly. 
 
-## Install Howso Platform with KOTS 
+### Install Howso Platform with KOTS 
 
 This example will show a CLI driven install.  The KOTS UI can also be used, use `kubectl kots install --namespace howso howso-platform` to initiate the UI driven install.
 

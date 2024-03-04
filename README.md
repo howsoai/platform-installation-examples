@@ -42,7 +42,7 @@ In the _basic_ examples, this type of configuration will be demonstrated.  It is
 
 While the default configurations are suitable for a quick start and testing purposes, they are not intended for hardened, production-level deployments. Key aspects such as air-gapping (deploying to environments with no internet access), securing communication tunnels, adhering to OpenShift policies, and scaling, all require additional configuration. 
 
-Though not exhaustive, the included [air-gap](./helm-airgap/README.md) and [OpenShift](./helm-openshift/) examples will demonstrate how some of these configurations can be achieved. 
+Though not exhaustive, the included [air-gap](./helm-airgap/README.md) and [OpenShift](./helm-openshift/) examples will demonstrate how some more complex configurations can be achieved. 
 
 
 ### Securing Howso Platform

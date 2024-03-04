@@ -22,7 +22,7 @@ overrideIngressCerts:
   secretName: platform-custom-ingress-tls
 ```
 
-## Certmanager Issuer Ingress TLS
+## cert-manager Issuer Ingress TLS
 
 Create a ClusterIssuer or Issuer according to the cert-manager [documentation](https://cert-manager.io/docs/concepts/issuer/).  
 

@@ -34,7 +34,7 @@ If you need to process the images in a pipeline, before running the install (i.e
 
 ### Extracting the images 
 
-The air-gap bundle format has changed, so it no longer directly contains the image tar.gz files.  Instead it splits the image layers, allowing images with shared layers to be combined.  Whilst this is efficient, it maeans extracting the images first requires using the `kots` cli to extract the images, push them to a registry - and then pull them back out again.  The following commands show how to do this.
+The air-gap bundle format has changed, so it no longer directly contains the image tar.gz files.  Instead it splits the image layers, allowing images with shared layers to be combined.  Whilst this is efficient, it maeans extracting the images first requires using the `kots` CLI to extract the images, push them to a registry - and then pull them back out again.  The following commands show how to do this.
 
 
 ```sh 
@@ -90,7 +90,7 @@ helm template oci://registry.how.so/howso-platform/stable/howso-platform --value
 
 ### Pull the images
 
-#### Pull with docker cli 
+#### Pull with docker CLI 
 DOCKER_CONFIG takes a directory, so use the one you extracted the config.json file to earlier.
 i.e.
 ```
@@ -101,7 +101,7 @@ DOCKER_CONFIG=/tmp/  docker pull proxy.replicated.com/proxy/howso-platform/dpbui
 
 ### Pull with skopeo 
 
-Docker cli can pull images - and is a commonly available tool.  Other options don't require a running daemon so are often used in CI/CD pipelines, etc.
+Docker CLI can pull images - and is a commonly available tool.  Other options don't require a running daemon so are often used in CI/CD pipelines, etc.
 
 To pull the image with skopeo.  Note this example downloads the image to a tar file.  It overrides the arch and os to ensure the image pulled is correct for the target environment (and not the workstation i.e. mac). 
 

@@ -6,13 +6,13 @@ This guide demonstrates deploying the Howso Platform using Argo CD, a GitOps too
 
 This documentation covers basic Argo CD usage for deploying the Howso Platform. It is not a comprehensive guide to Argo CD features.
 
-Ensure you have completed the [prerequisites](../prereqs/README.md) before proceeding, and have a Kubernetes cluster running, with a howso namespace, and the argocd cli installed. 
+Ensure you have completed the [prerequisites](../prereqs/README.md) before proceeding, and have a Kubernetes cluster running, with a howso namespace, and the argocd CLI installed. 
 
 ### Prerequisites TLDR
 
 Not your first run-through?  Apply the following to get up and running quickly. 
 ```sh
-# install argocd cli https://argo-cd.readthedocs.io/en/stable/cli_installation/
+# install argocd CLI https://argo-cd.readthedocs.io/en/stable/cli_installation/
 # helm registry login registry.how.so --username your_email@example.com --password your_license_id 
 # add local.howso.com pypi|api|www|management|argocd.local.howso.com to /etc/hosts 
 k3d cluster create --config prereqs/k3d-single-node.yaml
@@ -38,9 +38,9 @@ watch kubectl get po -A
 
 ### Login to Argo CD 
 
-The example will use the Argo CD cli tool to add a Helm repository and to monitor the app deployments.
+The example will use the Argo CD CLI tool to add a Helm repository and to monitor the app deployments.
 
-From a terminal with the `argocd` cli installed - the below instructions will get the initial credentials and login cli.
+From a terminal with the `argocd` CLI installed - the below instructions will get the initial credentials and login cli.
 
 ```sh
 initial_argocd_pw=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)

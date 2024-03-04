@@ -12,7 +12,7 @@ Howso Platform, installed via Helm charts, intends to provide configuration opti
 > For example - encrypted communication controlled by identity, between all components, is best tackled with components such as service mesh. Howso Platform communications can all be configured individually to use TLS - but for in-cluster communication is not a recommended approach. 
 
 - Does meeting the benchmark with default configuration require complicating the installation of dependent components.
-> Enabling initial installs of the Howso Platform to be straight-foward is also a prority.  Since Howso Platform relies on a number of datastores, that must be provided - it is a deliberate choice to hone defaults to work with select, production level, charts in their default, or near default configurations.  It is expected that customers alter their chart configurations to meet their own security requirements - and adjust the Howso Platform configuration to match. 
+> Enabling initial installs of the Howso Platform to be straight-foward is also a prority.  Since Howso Platform relies on a number of data stores, that must be provided - it is a deliberate choice to hone defaults to work with select, production level, charts in their default, or near default configurations.  It is expected that customers alter their chart configurations to meet their own security requirements - and adjust the Howso Platform configuration to match. 
 
 - Not all Kubernetes distributions work well with some configuration.
 > Openshift will object to run ids that are not in the range of the security context constraints, but certain security benchmarks will 
