@@ -1,6 +1,6 @@
 # Kots Existing Cluster Installation for Howso Platform 
 
-> Note - unless constrained to installing on VMs, it is recommended to install the Howso Platform via the Replicated hosted Helm charts, and not the KOTS installer.
+> Note - unless constrained to installing on VMs (which is an option for KOTS installs, though these examples use an existing cluster), it is recommended to install the Howso Platform via the Replicated hosted Helm charts and not the KOTS installer.
 
 ## Introduction
 
@@ -25,7 +25,7 @@ kubectl create namespace howso
 
 ## Steps
 
-### Install cert-manager
+### Install Cert-manager
 
 Cert-manager is used to manage the TLS certificates for the Howso Platform.  With the KOTS-driven install - it is a **requirement**; the Howso Platform KOTS implementation will use cert-manager to create a certificate authority for the platform, and configure TLS for all the communication channels between the Howso Platform, its data stores, and message queue. 
 
