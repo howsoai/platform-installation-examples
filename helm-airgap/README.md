@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This guide details the process of deploying the Howso Platform using Helm in an air-gapped Kubernetes environment.  The main goal is to avoid internet hosted registries for both container images and Helm charts; allowing the Kubernetes environment to have restricted network access.  As such additional steps are required to download/upload these components and the chart values are modified to use the local registry.
+This guide details the process of deploying the Howso Platform using Helm in an air-gapped Kubernetes environment.  The main goal is to avoid public internet registries for both container images and Helm charts; allowing the Kubernetes environment to have restricted network access.  As such additional steps are required to download/upload these components and the chart values are modified to use the local registry.
 
 Production air-gapped Kubernetes environments will likely have pipelines for [scanning images](../container-scanning/README.md) and secured container registries.  This illustrative example will use the unsecured local registry setup by k3d.
 
@@ -18,6 +18,8 @@ Not your first run-through?  Apply the following to get up and running quickly.
 k3d cluster create --config prereqs/k3d-single-node.yaml
 kubectl create namespace howso
 ```
+
+## Steps
 
 ### Download container images
 

@@ -16,6 +16,8 @@ k3d cluster create --config prereqs/k3d-single-node.yaml
 kubectl create namespace howso
 ```
 
+## Steps
+
 ### Create datastore secrets 
 The datastore Helm charts used by Howso Platform require random credentials generated before they initialize.  The charts, in their default configuration, will create these credentials directly as part of Kubernetes secret resources.  However this is not an approach that should be taken in a production environment for the following reasons:   
 

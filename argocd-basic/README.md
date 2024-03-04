@@ -17,7 +17,9 @@ k3d cluster create --config prereqs/k3d-single-node.yaml
 kubectl create namespace howso
 ```
 
-## Install ArgoCD
+## Steps
+
+### Install ArgoCD
 
 To get a basic deployment of ArgoCD, run the following commands:
 
@@ -33,7 +35,7 @@ Make sure the ArgoCD server is running before proceeding.
 watch kubectl get po -A
 ```
 
-## Login to the argocd
+### Login to the argocd
 
 From a terminal with the argocd cli installed - the below instructions will get the initial pw and login.  The cli will be used to add a repo - and monitor the app deployments.
 
@@ -44,7 +46,7 @@ echo "Log into argocd at https://argocd.local.howso.com with username admin and 
 ```
 > Note: Argocd ingress can be tricky to get working.  If you have trouble, you can port-forward to the argocd server (`kubectl -n argocd port-forward svc/argocd-server 8080:80`) and use http://localhost:8080.
 
-## Apply the CRD
+### Apply the CRD
 
 Argocd uses projects to limit access to Kubernetes resources.  The Howso Platform uses a CRD, a cluster level component.  Installing this seperately, allows the rest of the components to be installed in a project with only namespace-level permissions. 
 
@@ -54,7 +56,7 @@ helm template oci://registry.how.so/howso-platform/stable/howso-platform --show-
 ```
 
 
-## Add the Chart registry to ArgoCD
+### Add the Chart registry to ArgoCD
 See the [prerequisites](../prereqs/README.md#accessing-the-howso-platform-helm-registry) for information on how to get the credentials to access the Howso Platform Helm registry.
 
 > Note: The helm registry is of type oci - so the command to add it includes the `--enable-oci` flag.
@@ -63,7 +65,7 @@ See the [prerequisites](../prereqs/README.md#accessing-the-howso-platform-helm-r
 argocd repo add registry.how.so --type helm --name replicated --username youremail@example.com --password <your-license-id> --enable-oci
 ```
 
-## Create datastore secrets
+### Create datastore secrets
 
 See the explanation in [basic installation](../helm-basic/README.md#create-datastore-secrets) for more details.
 
@@ -77,7 +79,7 @@ kubectl create secret generic platform-redis --from-literal=redis-password="$(op
 ```
 
 
-## Install Argocd Project and Application
+### Install Argocd Project and Application
 
 If you open up the [project manifest](manifests/argocd-project.yaml), you will see that it is configured to use the `howso` namespace.  Since the CRD was installed seperately, and the Howso Platform [application manifest](manifests/argocd-howso-platform-app.yaml) is configured to skip them, the project does not need to give any cluster level permissions.
 
