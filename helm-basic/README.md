@@ -49,38 +49,44 @@ Now install the Helm charts.  It is encouraged to check the [values manifest fil
 
 
 #### Minio
+
 [Standalone mode](./manifests/minio.yaml) is used as an alternative to a much more heavyweight default configuration.
 ```
 helm install platform-minio oci://registry.how.so/howso-platform/stable/minio --namespace howso --values helm-basic/manifests/minio.yaml --wait
 ```
 
 #### NATS
+
 NATS with [Jetstream](./manifests/nats.yaml) enabled is a mandatory component.
 ```
 helm install platform-nats oci://registry.how.so/howso-platform/stable/nats --namespace howso --values helm-basic/manifests/nats.yaml --wait
 ```
 
 #### Postgres
+
 [Existing secrets](./manifests/postgres.yaml) are used as described [above](#create-datastore-secrets) 
 ```yaml
 helm install platform-postgres oci://registry.how.so/howso-platform/stable/postgresql --namespace howso --values helm-basic/manifests/postgres.yaml --wait
 ```
 
 #### Redis
-[Read replicas](./manifests/redis.yaml) are scaled down to for a smaller/basic installation. 
+
+[Read replicas](./manifests/redis.yaml) are scaled down for a smaller/basic installation. 
 ```
 helm install platform-redis oci://registry.how.so/howso-platform/stable/redis --namespace howso --values helm-basic/manifests/redis.yaml --wait
 ```
 
-#### Howso Platform
-Howso Platform is installed last - when all other components are ready.  The [only configuration changes](./manifests/howso-platform.yaml) are to configure the the Replicated container registry.  The registry credentials are injected into the chart in your customer specific Helm registry.
+#### Howso Platform 
+
+Howso Platform is installed last - when all other components are ready.  The [only configuration changes](./manifests/howso-platform.yaml) are to configure the Replicated container registry and to choose a parent domain name (matching the one setup in our [hosts file](../prereqs/README.md#setup-hosts)).  The registry credentials are injected into the chart in your customer-specific Helm registry.
 ```
 helm install howso-platform oci://registry.how.so/howso-platform/stable/howso-platform --namespace howso --values helm-basic/manifests/howso-platform.yaml
 ```
 
-Time to install may vary significantly depending on network and resources -so the install command avoids waiting.  Instead check the status of the pods in the howso namespace, as they come online (CTRL-C to exit).
+Time to install may vary significantly depending on network speed and resources -so the above install command avoids waiting.  Instead check the status of the pods in the howso namespace, as they come online (CTRL-C to exit).
+
 ```
 watch kubectl -n howso get po 
 ```
 
-Setup a test user and environment using the [instructions here](../common/README.md#login-to-the-howso-platform).
+Set up a test user and environment using the [instructions here](../common/README.md#login-to-the-howso-platform).
