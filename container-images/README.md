@@ -8,24 +8,29 @@
   - [Container registry](#container-registry)
     - [List all the images](#list-all-the-images)
     - [Pull the images](#pull-the-images)
+      - [Pull with docker cli](#pull-with-docker-cli)
+    - [Pull with skopeo](#pull-with-skopeo)
+    - [Pull all the images](#pull-all-the-images)
 
 ## Overview 
 
-The simplest approach for air-gap helm installs is to Download the air-gap bundle, and use the `kubect kots` command to push the images to a container registry.  Alternatively it is possible to access the container registry directly - and download the images yourself.
+The simplest approach for air-gap helm installs is to Download the Kots air-gap bundle and use the `kubectl kots` command to push the images to a container registry.  Alternatively, extract the credentials to access the container registry directly - and download the images yourself.
 
-If you need to process the images in a pipeline, before running the install (i.e. to scan them), either approach is viable, it is possible to extract them from the bundle, by first pushing them to a registry.  Alternatively, if you capture the image names from the helm chart - you can access them from the registry directly. 
+If you need to process the images in a pipeline, before running the install (i.e. to scan them), either approach is viable, either extract them from the registry after importing with kots or capture the image names from the helm chart and access them from the Replicated container registry directly. 
 
 
 ## Download Air-gap Bundle
 
 - Navigate to the Howso Customer Portal at [https://portal.howso.com/](https://portal.howso.com)
 - In the top right drop-down, where your name appears, select 'Organizations', and select the appropriate value (usually your company name).
-- Scroll down the organization page, and you'll see any licenses.  Air-gap enabled licenses will have buttons to download the bundle and reset the password.  If you don't see an air-gapped license, contact your Howso representative.
+- Scroll down the organization page, and you'll see any licenses associated with your account.  Air-gap enabled licenses will have buttons to download the bundle and reset the password.  If you don't see an air-gapped license contact your Howso representative.
 - If this is your first time downloading an application bundle, or you've forgotten the password, select 'Reset Bundle Password' then copy the password and click OK.
 - Select 'Air-gap Bundle' and enter the password to get to the Download Portal.
-- In the 'Latest Howso Platform Air-gap bundle' Section select 'Download air-gap bundle'
+- In the 'Howso Platform Air-gap bundle' Section select 'Download air-gap bundle'.  If you prefer, copy the link and use wget or curl (put the full URL in quotes, to avoid character issues).
 - Save the file (~ 1 Gig) via the browser, or copy the link and use wget or curl. 
-- The [kots cli](https://kots.io/kots-cli/) can be used to push the images to a container registry.
+- The [kots cli](https://kots.io/kots-cli/) can be used to push the images to a container registry.  See the [air-gap install instructions](../helm-airgap/README.md) for details.
+
+> Note. Only licenses for the Howso Platform Kots application (howso-platform vs legacy diveplane-platform licenses) will work with the Howso Platform Helm charts.  If you have a legacy license, contact your Howso representative to get a new one.
 
 ### Extracting the images 
 

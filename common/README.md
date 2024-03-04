@@ -66,7 +66,7 @@ i.e.
 ```sh
 pip install -U --trusted-host pypi.local.howso.com --extra-index-url https://mySecretPypiToken@pypi.local.howso.com/simple/ howso-platform-client[full]
 ```
-> Note - a fuller install would create a secret for the Platform PyPi server token - above is the default.
+> Note: A productionized install would create a secret for the Platform PyPi server token - above is the default.
 
 ### Test the install
 

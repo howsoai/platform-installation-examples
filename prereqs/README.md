@@ -40,9 +40,12 @@ You can find your license ID in two ways: either from the address bar on the dow
 
 The charts are stored in an OCI (Open Container Initiative) type registry, and you'll log in using the email registered with the customer portal and your license ID. Use the following command to log in, replacing `your_email@example.com` with your registered email and `your_license_id` with your actual license ID:
 
+
 ```bash
 helm registry login registry.how.so --username your_email@example.com --password your_license_id
 ```
+
+> Note. Only licenses for the Howso Platform Kots application (howso-platform vs legacy diveplane-platform licenses) will work with the Howso Platform Helm charts.  If you have a legacy license, contact your Howso representative to get a new one.
 
 
 ## Local Kubernetes Cluster Setup 

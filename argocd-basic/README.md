@@ -26,7 +26,7 @@ To get a basic deployment of ArgoCD, run the following commands:
 kubectl apply -k argocd-basic/manifests/argocd/
 ```
 
-> Note, since detailed ArgoCD installation instructions are beyond the scope of these examples - the above kustomize installation wraps up an ArgoCD installation and the configuration to use the traeffik ingress that is part of the k3d cluster. 
+> Note: Since detailed ArgoCD installation instructions are beyond the scope of these examples - the above kustomize installation wraps up an ArgoCD installation and the configuration to use the traeffik ingress that is part of the k3d cluster. 
 
 Make sure the ArgoCD server is running before proceeding.  
 ```sh
@@ -42,7 +42,7 @@ initial_argocd_pw=$(kubectl -n argocd get secret argocd-initial-admin-secret -o 
 argocd --insecure --grpc-web login argocd.local.howso.com  --username admin --password $initial_argocd_pw
 echo "Log into argocd at https://argocd.local.howso.com with username admin and password $initial_argocd_pw"
 ```
-> Note argocd ingress can be tricky to get working.  If you have trouble, you can port-forward to the argocd server (`kubectl -n argocd port-forward svc/argocd-server 8080:80`) and use http://localhost:8080.
+> Note: Argocd ingress can be tricky to get working.  If you have trouble, you can port-forward to the argocd server (`kubectl -n argocd port-forward svc/argocd-server 8080:80`) and use http://localhost:8080.
 
 ## Apply the CRD
 
@@ -57,7 +57,7 @@ helm template oci://registry.how.so/howso-platform/stable/howso-platform --show-
 ## Add the Chart registry to ArgoCD
 See the [prerequisites](../prereqs/README.md#accessing-the-howso-platform-helm-registry) for information on how to get the credentials to access the Howso Platform Helm registry.
 
-> Note the helm registry is of type oci - so the command to add it includes the `--enable-oci` flag.
+> Note: The helm registry is of type oci - so the command to add it includes the `--enable-oci` flag.
 
 ```sh
 argocd repo add registry.how.so --type helm --name replicated --username youremail@example.com --password <your-license-id> --enable-oci

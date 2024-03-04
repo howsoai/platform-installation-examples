@@ -7,9 +7,9 @@ This example emphasizes a straightforward installation process for environments 
 Ensure you have completed the [prerequisites](../prereqs/README.md) before proceeding, and have a Kubernetes cluster running, with a howso namespace, and the argocd cli installed.   
 
 ### Prerequisites TLDR
+
 Not your first run-through?  Apply the following to get up and running quickly. 
 ```sh
-# prerequisites TLDR
 # helm registry login registry.how.so --username your_email@example.com --password your_license_id 
 # add local.howso.com pypi|api|www|management.local.howso.com to /etc/hosts 
 k3d cluster create --config prereqs/k3d-single-node.yaml
