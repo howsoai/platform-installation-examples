@@ -3,14 +3,17 @@
 Prerequisites for the Howso Platform installation examples.
 
 ## Resources
+
 To run the examples well requires a workstation with at least 32GB of RAM and 8 CPU cores.  If you are low on resources, shut down any other applications you can, and try the single node k3d cluster.
 
 ## Workstation OS
+
 These examples use local workstation installs to inform production Howso Platform installations.  Production installations are expected to be amd64 on a supported Linux distribution.  These local examples should work on Windows, Mac (x86 or arm64), or Linux (x86 or arm64) should work. 
 
 > Note the air-gap examples use image archives that only contain amd64 images.  Mac Silicon amd64 emulation (rosetta) will work enough that the environment will start, but it is not able to complete machine learning tasks. 
 
 ## Container Runtime
+
 Docker for Windows/Mac or equivilent.  On mac increase the memory and cpu limits.
 
 ## Tools
@@ -30,6 +33,7 @@ For Openshift examples, you'll need to install the following:-
 
 
 ## Accessing the Howso Platform Helm Registry
+
 Access to the Helm registry for the Howso Platform requires a Howso Platform license.  Log in with your email, registered with the customer portal, and your license ID as the credential.
 
 You can find your license ID in two ways: either from the address bar on the downloads page or within your license file, where it's listed under the `license_id:` field.
