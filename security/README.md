@@ -17,12 +17,15 @@ Kubernetes is a highly customizable platform, and many aspects that are part of 
 
 ## Encrypted Communication
 
-Howso Platform consists of several services, data stores, and a message queue (NATS). The basic installation examples in this documentation do not encrypt this traffic.  In the case where communication between these components is considered to be within a trusted network, this may be acceptable. However, in many cases, it is necessary to establish encrypted communication between these components. 
+Howso Platform consists of several services, data stores, and a message queue (NATS). The basic installation examples in this documentation do not encrypt this traffic.  In the case where communication between these components is considered to be within a trusted network, this may be acceptable. 
+However, in many cases, it is necessary to establish encrypted communication between these components. 
 
 These docs will cover two approaches:
 
 - Using a service mesh to automatically provide mTLS between all components
 - Manually configuring TLS to NATS and external data stores
+
+> Note: In a Kubernetes cluster, depending on the Container Network Interface (CNI) used, traffic between nodes may be encrypted. Overlay networks, such as Calico or Weave, can be configured to encrypt traffic between nodes. This is a separate concern from the application-level encryption discussed here, but may be a relevant consideration when assessing the security posture of the cluster and its applications. 
 
 
 ### Service Mesh
