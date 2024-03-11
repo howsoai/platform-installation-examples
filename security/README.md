@@ -66,9 +66,6 @@ TODO -
 
 If using a service mesh, the logic of which podSelectors to use changes, more information can be found in the [Linkerd and Network Policies](linkerd/README.md) section.
 
-### Service Mesh
-
-As mentioned in the Encrypted Communication section, a service mesh can be used to secure communication between the Howso Platform components. More information on using a service mesh with the Howso Platform can be found in the [Linkerd and Network Policies](linkerd/README.md) section.
 
 ## Custom Ingress Certs
 
