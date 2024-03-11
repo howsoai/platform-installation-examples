@@ -27,6 +27,7 @@ These docs will cover two approaches:
 
 > Note: In a Kubernetes cluster, depending on the Container Network Interface (CNI) used, traffic between nodes may be encrypted. Overlay networks, such as Calico or Weave, can be configured to encrypt traffic between nodes. This is a separate concern from the application-level encryption discussed here, but may be a relevant consideration when assessing the security posture of the cluster and its applications. 
 
+For information about ingress traffic TLS see the [Custom Ingress](#custom-ingress-certs) section.
 
 ### Service Mesh
 
@@ -67,11 +68,11 @@ See the [Container Scanning](../container-images/README.md#howsos-approach) sect
 
 Network policies can be used to control traffic between pods and limit access to the Howso Platform components.
 
-TODO - 
+TODO - example
 
-If using a service mesh, the logic of which podSelectors to use changes, more information can be found in the [Linkerd and Network Policies](linkerd/README.md) section.
+> Note: If using a service mesh, the logic of which podSelectors to use changes, more information can be found in the [Linkerd and Network Policies](linkerd/README.md) section.
 
 
-## Custom Ingress Certs
+## Ingress Certs
 
-Custom ingress certificates can be used to secure external access to the Howso Platform. More information on configuring custom ingress certificates can be found in the [Custom Ingress](custom-ingress/README.md) section.
+See the [Custom Ingress](../custom-ingress/README.md) section for information on using custom ingress certificates with the Howso Platform.

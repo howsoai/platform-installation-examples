@@ -1,16 +1,24 @@
-# Ingress TLS
+## Ingress Certs
 
-Out of the box the Howso Platform will create a certificate `platform-ingress-tls` which is signed by the platform CA (a self-signed root certificate).  This certificate will be offered up by the ingress controller to incoming requests through the browser or python client to any of the domains of the platform.
+Howso Platform uses Ingress resources to expose several services to users via HTTPS.
 
-If the platform certificate [extracted](../common/README.md#extract-the-platform-ca-cert)is added to root trust stores of the operating system (and/or browser) then the browser will not show a warning when visiting the platform.  The python client configuration (`howso.yml`) can be [updated to trust the platform certificate](../common/README.md#update-the-howsoyml-to-trust-the-platform-ca) as well.
+The default TLS certificates used by the Howso Platform are created by the `platform-cert-generation-initial` job shortly after the installation and managed on an ongoing basis by the `platform-cert-generation` cronjob.  These certificates are signed by a Certificate Authority (CA) that is created and stored as a secret at `platform-ca`.  This CA can be [extracted and trusted by users](../common/README.md#trust-the-certs) so that a browser or Python client will trust and verify the Howso Platform's certificates. 
 
-A common customization is to change the certificates offered up by the ingress controller to custom certs; this opens an opportunity for them to be signed by a globally trusted root, or corporate CA.  The Howso Platform can be configured to reference custom ingress provided in a kuberenetes secret.
+Ingress certificates signed by this platform CA will be offered up by the ingress controller to incoming requests through the browser or Python client, to any of the domains of the platform.  Trusting the CA, rather than the ingress certificate directly, will remove the need to trust individual certificates, and certificates that have been rotated will be automatically trusted. 
 
-For those using cert-manager, the Howso Platform can be configured to annotate the ingress to use a named issuer.  This configuration can leverege cert-manager's suite of cabilities, including the ability to get letsencrypt certificates for public DNS, and automatically roll expiry dates. 
+> Howso Platform must be accessed via HTTPS; HTTP only access is not supported and is expected to break elements of the application, including UI authentication.  HSTS headers will help enforce this, users may also wish to add additional annotations (via the [chart values](../common/README.md#howso-platform-helm-chart-values)) to the Ingress resources to force redirects.
 
-## Custom Ingress TLS 
 
-With `tls.key` and `tls.crt` files, create a kubernetes secret.
+To use custom ingress certificates, with your own CA, there are two options:
+- Configure a custom Ingress TLS secret 
+- Configure a cert-manager issuer
+
+
+### Custom Ingress Certs
+The Howso Platform can be configured to use a custom ingress certificate provided in a Kubernetes secret; allowing the use of a certificate signed with a corporate CA, or a globally trusted root CA.  
+
+
+With `tls.key` and `tls.crt` files, create a Kubernetes secret.
 
 ```sh
 kubectl create secret tls platform-custom-ingress-tls --key tls.key --cert tls.crt
@@ -22,7 +30,8 @@ overrideIngressCerts:
   secretName: platform-custom-ingress-tls
 ```
 
-## cert-manager Issuer Ingress TLS
+### Cert-Manager Issuer
+For those using cert-manager, the Howso Platform can be configured to annotate the ingress to use a named issuer.  This configuration can leverage Cert-manager's suite of capabilities, including the ability to get [Let's Encrypt](https://letsencrypt.org/) certificates for public DNS, and automatically roll expiry dates. 
 
 Create a ClusterIssuer or Issuer according to the cert-manager [documentation](https://cert-manager.io/docs/concepts/issuer/).  
 
@@ -40,8 +49,3 @@ internalPKI:
 ```
 
 
-
-
-
-
-## Trusting the platform CA
