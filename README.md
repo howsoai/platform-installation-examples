@@ -2,7 +2,7 @@
 
 # Howso Platform Setup Examples
 
-This repository contains examples of how to set up the Howso Platform in various configurations predominantly based on the use of Helm charts.
+This repository contains runnable examples of Howso Platform installations, in various configurations, predominantly based on the use of Helm charts.
 
 ## Examples
 - [Prerequisites](prereqs/README.md)

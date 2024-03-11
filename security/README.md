@@ -1,61 +1,61 @@
 # Securing Howso Platform 
 
 ## Examples
-[prerequisites](../prereqs/README.md)
+
+- [Prerequisites](../prereqs/README.md)
 ---
-[Linkerd and Network Policies](linkerd/README.md)
-[Container Scanning](container-scanning/README.md)
+- [Linkerd and Network Policies](linkerd/README.md)
+- [Container Scanning](container-scanning/README.md)
 
 
 ## Introduction
 
-Howso Platform installed on-prem via Helm charts requires a number of security considerations.  Firstly - it is necessarily a shared security model - between the Howso Platform application, and the operators of the Kubernetes cluster.
+Howso Platform installed on-prem via Helm charts requires several security considerations. Firstly, it is necessarily a shared security model between the Howso Platform application and the operators of the Kubernetes cluster.
 
-Kubernetes is a highly customizable platform, and many aspects that come under application security (i.e. establishing TLS between components) by best practice are bes best done at the framework level, using components such as a service mesh.  As such Howso Platform, when distributed as a Helm chart, can not independently claim to be secure by default - it is the wrong layer for that requirement.  It is designed to easilly fit into a secure environment - this section will cover the main topics to consider.
+Kubernetes is a highly customizable platform, and many aspects that come under application security (i.e., establishing TLS between components) are best done at the framework level, using components such as a service mesh. As such, Howso Platform, when distributed as a Helm chart, cannot independently claim to be secure by default – it is the wrong layer for that requirement. It is however designed to easily fit into a secure environment, and this section will cover the main topics to consider.
 
+## Encrypted Communication
 
-## Encrypted Communication 
+Howso Platform consists of several services, data stores, and a message queue (NATS). The basic installation examples in this documentation do not encrypt this traffic traffic.  In the case where communication between these components is considered to be within a trusted network, this may be acceptable. However, in many cases, it is necessary to encrypt this traffic. 
 
-Howso Platform consists of a number of services and data stores, and a message queue (NATS).  Communication between these components may be considered to be within a trusted network, and only external communication needing to be encrypted.  Alternatively these docs will cover 2 approaches:
+These docs will cover two approaches:
 
-- Manually configuring TLS to NATS and external data stores.
-- Using a service mesh to automatically provide mTLS between all components 
-
-Manually configuring TLS between all components is possible - and is how the KOTS configuration of the the Howso Platform is provided.  It is a significantly more complex set-up.  Since Howso Platform consists of seperately installed (or otherwise provided) data stores, it necessarilly can't all work out of the box. Secure communications require secret management and Public Key Infrastructure (PKI) tooling that works with Kubernetes.
-
-Customers looking to install into an existing Kubernetes, where secure communication between the internal components is required it is recommended to use a service mesh. If your enterprise does not use a service mesh, but also insists that running containers that are part of the same application use mTLS, it is worth analysing the requirement and the pre-condition, before deciding to manually configure all the TLS. 
-
-
-
-### Manually Configuring TLS
-
-> Note as stated - this documentation is for advanced use cases - or for showing how to securely configure external data stores (i.e. a managed cloud postgres).  It is unlikely to be the best solution for customers with existing Kubernetes operations.
-
-Configuration is required both in the Howso Platform Chart, and the datastore/NATS charts in order to establish secure communication.  This configuration will involved Kubernetes Public Key Infrastructure (PKI) tools to do efficiently.  It will be required to create  
-
-
-#### Cert Manager
-
-Cert Manager is a Kubernetes add-on that automates the management and issuance of TLS certificates from various issuing sources
-
-
-
-
+- Using a service mesh to automatically provide mTLS between all components
+- Manually configuring TLS to NATS and external data stores
 
 ### Service Mesh
-Alternatively - Service mesh can be installed to `automatically` provide mTLS between all communicating end points.  Typically a larger Kubernetes installation will 
 
+Service mesh can be installed to automatically provide mTLS between all communicating endpoints. Typically, customers with larger Kubernetes teams will likely have a service mesh that they use.
 
+With multiple data stores and a message queue, the Howso Platform can be complex to secure. A service mesh provides a single, uniform way to secure communication between all components, alongside other benefits such as observability and traffic control.  It is therefore the recommended approach for securing communication between the Howso Platform components.
 
-identity.
+See the [Linkerd and Network Policies](../linkerd/README.md) section and [Istio](../istio/README.md) section for examples using a service mesh with the Howso Platform.
+
+### Manually configuring TLS between components
+
+It is possible to manually configure TLS between the Howso Platform and its data stores and message queue. 
+
+Within the Howso Platform values file, under the `datastores` and `nats` sections, is the configuration for setting up TLS connections.  To configure TLS communication to external data stores (i.e. an AWS RDS Postgres, or S3) override the values in this section.
+
+If configuring TLS to the data stores and message queue charts, then the corresponding configuration will be required in the NATS, minio, Redis, and Postgres chart installations.
+
+> Setting up TLS manually between Howso Platform and all backend charts is considered an advanced use-case.  To do this efficiently will involve setting up Kubernetes Public Key Infrastructure (PKI) tools i.e. cert-manager; alongside significant configuration of the Howso Platform and backend charts.  It is recommended to use a service mesh for this purpose.  Reach out to Howso Support for further guidance. 
+
 
 
 ## Encrypted Storage
-framework level 
 
-## Security Scanning
-Howso internally scans our container images for vulnerabilities.  Internally we use Artifactory x-Ray across the components of our stack.  Our customers use their own scanning tools, and we  
+Howso Platform itself does not directly use Persistent Volumes, though the minio, Postgres, Redis (optionally), and NATS chart configurations will create Persistent Volume Claims (PVCs).  In the documented examples, these PVCs will use the default storage class of the Kubernetes cluster, though they can be configured to use a specific storage class. 
 
+Using a Storage Class that meets your security requirements is considered to be on the Kubernetes operator's side of the shared security model. 
+
+## Secrets Management
+
+> TODO: 
+
+## Security Scanning 
+
+See the [Container Scanning](../container-images/README.md#howsos-approach) section for information on scanning the Howso Platform container images, and Howso Platform's approach to container security.
 
 
 
@@ -63,24 +63,29 @@ Howso internally scans our container images for vulnerabilities.  Internally we 
 
 ### Network Policies
 
-### Service Mesh 
+Network policies can be used to control traffic between pods and limit access to the Howso Platform components. More information on using network policies with the Howso Platform can be found in the [Linkerd and Network Policies](linkerd/README.md) section.
 
-- reporting CVES (support@howso.com)
-- airgap
-- container scanning
-- RBAC
-- Secrets Management - external secrets operator
-- Pod security scanning 
-- datree
+### Service Mesh
+
+As mentioned in the Encrypted Communication section, a service mesh can be used to secure communication between the Howso Platform components. More information on using a service mesh with the Howso Platform can be found in the [Linkerd and Network Policies](linkerd/README.md) section.
+
 ## Custom Ingress Certs
-[Custom Ingress](custom-ingress/README.md)
+
+Custom ingress certificates can be used to secure external access to the Howso Platform. More information on configuring custom ingress certificates can be found in the [Custom Ingress](custom-ingress/README.md) section.
+
+## App Security
+
+### OIDC
+
+The Howso Platform supports OIDC for authentication and authorization. Brief overview of how to configure OIDC for the Howso Platform.
+
+### OIDC SSO with AD
+
+The Howso Platform can be integrated with Active Directory using OIDC for single sign-on. Brief overview of how to set up OIDC SSO with AD.
+
+### Platform-admin Bootstrapping
 
 
-## App security 
 
-#### oidc
 
-#### oidc sso
-AD
-
-platform-admin bootstrapping
+-- airgap

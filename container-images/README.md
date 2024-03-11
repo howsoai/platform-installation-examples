@@ -8,9 +8,10 @@
   - [Container registry](#container-registry)
     - [List all the images](#list-all-the-images)
     - [Pull the images](#pull-the-images)
-      - [Pull with docker cli](#pull-with-docker-cli)
+      - [Pull with docker CLI](#pull-with-docker-cli)
     - [Pull with skopeo](#pull-with-skopeo)
     - [Pull all the images](#pull-all-the-images)
+  - [Howso's Approach](#howsos-approach)
 
 ## Overview 
 
@@ -118,3 +119,14 @@ helm template oci://registry.how.so/howso-platform/stable/howso-platform --value
 unset DOCKER_CONFIG
 ```
 > Note - any issues are likely to be swallowed up in the pipes - so you may want to run the commands individually to troubleshoot.
+
+
+
+## Howso's Approach
+
+Howso Platform contains many containers, including those ultimately produced by third parties (i.e. NATS, Bitnami).  Our internal processes include continuous scanning of the images, principally using Artifactory's X-Ray and the open-source tool Trivy.
+
+Our internal policies are to, at least, mitigate high or critical CVE, marked as fixable, publicly disclosed within a 10-day window of each Howso Platform release.  Known CVEs that meet these criteria, but are not fixed in a release, will be documented in the corresponding release notes.
+
+We encourage customers to scan the images themselves and to raise issues back to us via support@howso.com or the support portal. 
+
