@@ -12,16 +12,18 @@
 
 Howso Platform installed on-prem via Helm charts requires several security considerations. Firstly, it is necessarily a shared security model between the Howso Platform application and the operators of the Kubernetes cluster.
 
-Kubernetes is a highly customizable platform, and many aspects that come under application security (i.e., establishing TLS between components) are best done at the framework level, using components such as a service mesh. As such, Howso Platform, when distributed as a Helm chart, cannot independently claim to be secure by default – it is the wrong layer for that requirement. It is however designed to easily fit into a secure environment, and this section will cover the main topics to consider.
+Kubernetes is a highly customizable platform, and many aspects that are part of the application security (i.e., establishing TLS between components) are best done at the framework level, using components such as a service mesh. As such, Howso Platform, when distributed as a Helm chart, cannot independently claim to be secure by default – it is the wrong layer for that requirement. It is however designed to fit into a secure environment, and this section will cover the main topics to consider.
+
 
 ## Encrypted Communication
 
-Howso Platform consists of several services, data stores, and a message queue (NATS). The basic installation examples in this documentation do not encrypt this traffic traffic.  In the case where communication between these components is considered to be within a trusted network, this may be acceptable. However, in many cases, it is necessary to encrypt this traffic. 
+Howso Platform consists of several services, data stores, and a message queue (NATS). The basic installation examples in this documentation do not encrypt this traffic.  In the case where communication between these components is considered to be within a trusted network, this may be acceptable. However, in many cases, it is necessary to establish encrypted communication between these components. 
 
 These docs will cover two approaches:
 
 - Using a service mesh to automatically provide mTLS between all components
 - Manually configuring TLS to NATS and external data stores
+
 
 ### Service Mesh
 
