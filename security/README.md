@@ -30,22 +30,22 @@ These docs will cover two approaches:
 
 ### Service Mesh
 
-Service mesh can be installed to automatically provide mTLS between all communicating endpoints. Typically, customers with larger Kubernetes teams will likely have a service mesh that they use.
+Service mesh can be installed to automatically provide mTLS between all communicating endpoints. Typically, organizations with larger Kubernetes teams will likely have a service mesh that they use.
 
-With multiple data stores and a message queue, the Howso Platform can be complex to secure. A service mesh provides a single, uniform way to secure communication between all components, alongside other benefits such as observability and traffic control.  It is therefore the recommended approach for securing communication between the Howso Platform components.
+With multiple data stores and a message queue, the Howso Platform can be complex to configure communication paths individually. A service mesh provides a single, uniform way to secure communication between all components, alongside other benefits such as observability and traffic control.  It is therefore the recommended approach for securing communication between the Howso Platform components.
 
 See the [Linkerd and Network Policies](../linkerd/README.md) section for an example of using a service mesh with the Howso Platform.
+
 
 ### Manually configuring TLS between components
 
 It is possible to manually configure TLS between the Howso Platform and its data stores and message queue. 
 
-Within the Howso Platform values file, under the `datastores` and `nats` sections, is the configuration for setting up TLS connections.  To configure TLS communication to external data stores (i.e. an AWS RDS Postgres, or S3) override the values in this section.
+Within the Howso Platform [values file](../common/README.md#howso-platform-helm-chart-values), under the `datastores` and `nats` sections, is the configuration for setting up TLS connections.  To configure TLS communication to external data stores (i.e. an AWS RDS Postgres, or S3) override the values in this section when installing the chart.
 
-If configuring TLS to the data stores and message queue charts, then the corresponding configuration will be required in the NATS, minio, Redis, and Postgres chart installations.
+If configuring TLS to the data stores and message queue charts, then corresponding configuration will be required in the NATS, minio, Redis, and Postgres chart installations.
 
-> Though possible, setting up TLS manually between Howso Platform and all backend charts is considered an advanced use-case.  To do this efficiently will involve setting up Kubernetes Public Key Infrastructure (PKI) tools i.e. cert-manager; alongside significant configuration of the Howso Platform and backend charts.  It is recommended to use a service mesh for this purpose.  Reach out to Howso Support for further guidance. 
-
+> Though possible, setting up TLS manually between Howso Platform and all backend charts is considered an advanced use-case.  To do this efficiently will involve setting up Kubernetes Public Key Infrastructure (PKI) tools i.e. cert-manager; alongside significant configuration of the Howso Platform and backend charts.  It is recommended instead to use a service mesh for providing mTLS.  Reach out to Howso Support for further guidance. 
 
 
 ## Encrypted Storage
