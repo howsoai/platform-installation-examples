@@ -2,7 +2,6 @@ domain: local.howso.com
 images:
   registry: registry-localhost:5000 
   registryNamespace: "" 
-worker:
-  imageLoader:
-    pauseImage: registry-localhost:5000/pause:3.9
+imageLoader:
+  pauseImage: registry-localhost:5000/pause:3.9
 

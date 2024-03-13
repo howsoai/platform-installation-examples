@@ -1,0 +1,14 @@
+config:
+  jetstream:
+    enabled: true
+service:
+  merge:
+    metadata:
+      annotations:
+        config.linkerd.io/opaque-ports: "4222"
+
+podTemplate:
+  merge:
+    metadata:
+      annotations:
+        config.linkerd.io/opaque-ports: "4222"

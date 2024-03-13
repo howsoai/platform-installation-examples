@@ -2,30 +2,37 @@
 
 ## Introduction
 
-This guide details the process of deploying the Howso Platform using Helm in a air-gapped Kubernetes environment.  The main goal is not use external registries for both container images, and Helm charts.  Instead additional steps are added to download/upload these components. The chart values are also modified to use the local registry.
+This guide details the process of deploying the Howso Platform using Helm in an air-gapped Kubernetes environment.  The main goal is to avoid public internet registries for both container images and Helm charts; allowing the Kubernetes environment to have restricted network access.  As such additional steps are required to download/upload these components and the chart values are modified to use the local registry.
 
-Production air-gapped Kubernetes environments will have pipelines for [scanning images](../container-scanning/README.md), and their own secured container registries.  This example will use a local registry setup by k3d.
+Production air-gapped Kubernetes environments will likely have pipelines for [scanning images](../container-scanning/README.md) and secured container registries.  This illustrative example will use the unsecured local registry setup by k3d.
 
-Ensure you have completed the [pre-requisites](../prereqs/README.md) before proceeding, and have a Kubernetes cluster running, with a howso namespace, the kubectl kots plugin installed, and are logged into the Helm registry.
+Ensure you have completed the [prerequisites](../prereqs/README.md) before proceeding.
 
+### Prerequisites TLDR
+
+Not your first run-through?  Apply the following to get up and running quickly. 
 ```sh
-# pre-requisites TLDR
-# install kots cli https://kots.io/kots-cli/ 
+# install kots CLI https://kots.io/kots-cli/ 
 # add local.howso.com pypi|api|www|management.local.howso.com and registry-localhost to /etc/hosts 
 # helm registry login registry.how.so --username your_email@example.com --password your_license_id 
 k3d cluster create --config prereqs/k3d-single-node.yaml
 kubectl create namespace howso
 ```
 
+## Steps
+
 ### Download container images
 
 Download an air-gap bundle as per the [instructions here](../container-images/README.md#download-air-gap-bundle).
 
+> Note the air-gap bundle is a tarball of the images, but also includes the manifests and scripts for a [kots install](../kots-existing-cluster-airgap/README.md) - those additional artifacts are not used in helm installations - the bundle is simply used to get the images into the air-gapped environment.
+
+
 ### Download Helm charts
 
-This steps shows how you can pull the charts on a machine with internet access, and then copy them to the air-gapped environment.
+This step shows how you can pull the charts on a machine with internet access, and then copy them to the air-gapped environment.
 
-Note the use of untar is just so you don't need to know the version, for the next step (the tarball is named with the version).  
+> Note: The use of `--untar` is just so you don't need to know the version for the next step (the actual tarball will be named with the version).  
 
 ```bash
 tmp_dir=$(mktemp -d) # Create a temporary directory to store the charts
@@ -42,27 +49,30 @@ tar -czvf howso-platform-charts.tar.gz -C $tmp_dir . # Create a tarball of the c
 echo "Charts are in $tmp_dir/howso-platform-charts.tar.gz"
 ```
 
-### Upload images to container registry 
+### Upload images to the container registry 
 
-In this example we'll use the [kots cli](https://kots.io/kots-cli/) - which can upload images directly from the air-gap bundle in one step (other methods are possible).
-> Note registry-localhost was set up as a loopback host entry in the [prerequisites](../prereqs/README.md) - it should resolve to the registry container setup by k3d when the cluster was created. 
-It is assumed that the downloaded air-gap bundle has been moved to the air-gapped environment - and is available at the path `~/2024.1.0.airgap`.
+In this example, we'll use the [kots cli](https://kots.io/kots-cli/) - which can upload the images directly from the air-gap bundle to the k3d local registry in one step (other methods are possible).  It can also drive [Kots](../kots-existing-cluster/README.md) installations, but we're not using that feature here.
+
+> Note: registry-localhost was set up as a loopback host entry in the [prerequisites](../prereqs/README.md) - it should resolve to the registry container setup by k3d when the cluster was created. 
+
+This example will assume that the downloaded air-gap bundle has been moved to the air-gapped environment - and is available at the path `~/2024.3.0.airgap`.  Adjust the path as necessary.
 
 #### Check connectivity to the local registry
 
 ```sh
 curl -s http://registry-localhost:5000/v2/_catalog | jq .
 ```
-> If the above command fails - troubleshoot your container engine setup, and ensure k3d was installed correctly. 
+> If the above command fails (an empty json response object is expected) - troubleshoot your container engine setup, and ensure k3d was installed correctly. 
 
 #### Push the images to the local registry
 
-> With this dev setup, the registry credentials, though required by the cli, are ultimately ignored.
-```
-kubectl kots admin-console push-images ~/2024.1.0.airgap registry-localhost:5000 --registry-username reguser --registry-password pw --namespace howso --skip-registry-check
+> Note: With this dev setup, the registry credentials, though required by the cli, are ultimately ignored.
+
+```sh
+kubectl kots admin-console push-images ~/2024.3.0.airgap registry-localhost:5000 --registry-username reguser --registry-password pw --namespace howso --skip-registry-check
 ```
 
-You can check the images in the local registry with the command from the earlier [step](#check-connectivity-to-the-local-registry).
+You can check the images are in the local registry with the command from the earlier [step](#check-connectivity-to-the-local-registry).
 
 ### Create datastore secrets
 
@@ -89,7 +99,7 @@ diff helm-basic/manifests/ helm-airgap/manifests/ --color
 
 ### Install Helm charts 
 
-The chart [tarball](#download-helm-charts) can be copied to the airgapped environment, and then extracted and installed.
+The chart [tarball](#download-helm-charts) can be copied to the air-gapped environment, and then extracted and installed.
 > In this case we're using the same machine, if not, make sure a _tmp_dir_ variable is set to the directory where the charts are extracted.
 
 
@@ -113,7 +123,7 @@ Redis
 helm install platform-redis $tmp_dir/redis --namespace howso --values helm-airgap/manifests/redis.yaml --wait
 ```
 
-Howso Platform (install last - when all other components are ready).
+Howso Platform
 ```sh
 helm install howso-platform $tmp_dir/howso-platform --namespace howso --values helm-airgap/manifests/howso-platform.yaml
 ```
@@ -127,7 +137,7 @@ watch kubectl -n howso get po
 
 If there are any issues, check the logs of the pods, and the [troubleshooting](../common/README.md#troubleshooting) section.
 
-Setup a test user and environment using the [instructions here](../common/README.md#login-to-the-howso-platform).
+Set up a test user and environment using the [instructions here](../common/README.md#login-to-the-howso-platform).
 
 Confirm that the images are all pulled from the internal registry, and not the external registry.
 ```sh

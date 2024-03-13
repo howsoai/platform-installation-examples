@@ -1,3 +1,5 @@
+.vscode
+*.airgap
 howso.yaml*
 howso.yml*
 howso_stacktrace.txt
@@ -5,3 +7,7 @@ howso_stacktrace.txt
 .direnv
 howso-platform.crt
 howso-platform-charts.tar.gz
+linkerd*.key
+linkerd*.crt
+tls.key
+tls.crt

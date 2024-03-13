@@ -1,0 +1,6 @@
+domain: local.howso.com
+images:
+  registry: proxy.replicated.com 
+  registryNamespace: proxy/howso-platform/dpbuild-docker-edge.jfrog.io/dp
+overrideIngressCerts:
+  secretName: platform-custom-ingress-tls
