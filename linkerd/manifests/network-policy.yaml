@@ -32,7 +32,7 @@ spec:
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
-  name: platform-ui-v1-ingress-policy
+  name: platform-ui-v2-ingress-policy
 spec:
   podSelector:
     matchLabels:
