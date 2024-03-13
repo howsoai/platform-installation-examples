@@ -37,7 +37,7 @@ overrideIngressCerts:
   secretName: platform-custom-ingress-tls
 ```
 
-If you install the [helm basic example](../helm-basic/README.md) with the above configuration, you can update to use the custom ingress certs with the following command. 
+If you install the [helm basic example](../helm-basic/README.md), you can update to use the custom ingress certs with the following command - checkout the [manifests](./manifests/howso-platform.yaml) additions. 
 ```sh
 helm upgrade howso-platform oci://registry.how.so/howso-platform/stable/howso-platform --namespace howso --values custom-ingress/manifests/howso-platform.yaml 
 ```
