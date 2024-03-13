@@ -20,16 +20,15 @@ The Howso Platform can be configured to use a custom ingress certificate provide
 > Note: The following [step CLI](https://smallstep.com/docs/step-cli/) command is provided as an example to help you quickly generate a self-signed certificate and private key, without having to deal with your network's PKI.
 
 ```sh
-# Generate a self-signed certificate and private key .. just for testing
-step certificate create local.howso.com tls.crt tls.key --profile self-signed --not-after 8760h --no-password --insecure --subtle
+# Generate a self-signed certificate and private key - just for testing
+step certificate create local.howso.com tls.crt tls.key --profile self-signed --not-after 8760h --no-password --insecure --subtle \
+  --san www.local.howso.com --san management.local.howso.com --san api.local.howso.com --san pypi.local.howso.com
 ```
 
 With `tls.key` and `tls.crt` files, create a Kubernetes secret.
 
 ```sh
-# Generate a self-signed certificate and private key - just for testing
-step certificate create local.howso.com tls.crt tls.key --profile self-signed --not-after 8760h --no-password --insecure --subtle \
-  --san www.local.howso.com --san management.local.howso.com --san api.local.howso.com --san pypi.local.howso.com
+kubectl -n howso create secret tls platform-custom-ingress-tls --key tls.key --cert tls.crt
 ```
 
 Augment the values file for the howso-platform chart to reference the custom ingress secret. 
