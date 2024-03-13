@@ -27,7 +27,7 @@ helm install howso-platform oci://registry.how.so/howso-platform/stable/howso-pl
 ```
 
 ## Install Linkerd
-Linkerd is a full featured tool - this guide will just touch on installing it, with Helm.  The [linkerd cli](https://linkerd.io/2/getting-started/) is optional, but simplifies accessing the Linkerd dashboard, and other features.  Refer to the [Linkerd documentation](https://linkerd.io/2/overview/) for up to date install information and troubleshooting.
+Linkerd is a feature-rich tool - this guide will just touch on installing it, with Helm.  The [linkerd cli](https://linkerd.io/2/getting-started/) is optional, but simplifies accessing the Linkerd dashboard, and other features.  Refer to the [Linkerd documentation](https://linkerd.io/2/overview/) for up to date install information and troubleshooting.
 
 Add the Linkerd Helm repository
 ```sh
