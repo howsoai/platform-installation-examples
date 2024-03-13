@@ -62,17 +62,6 @@ See the [Container Scanning](../container-images/README.md#howsos-approach) sect
 
 
 
-## Networking
-
-### Network Policies
-
-Network policies can be used to control traffic between pods and limit access to the Howso Platform components.
-
-TODO - example
-
-> Note: If using a service mesh, the logic of which podSelectors to use changes, more information can be found in the [Linkerd and Network Policies](linkerd/README.md) section.
-
-
 ## Ingress Certs
 
 See the [Custom Ingress](../custom-ingress/README.md) section for information on using custom ingress certificates with the Howso Platform.

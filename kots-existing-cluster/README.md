@@ -4,7 +4,7 @@
 
 ## Introduction
 
-This guide details the process of deploying the Howso Platform using Replicated (KOTS)[https://kots.io/] into an existing Kubernetes cluster.  This approach wraps the Howso Platform into a single installable unit; it also provides a UI for updating, configuring, and troubleshooting the platform. 
+This guide details the process of deploying the Howso Platform using Replicated [KOTS](https://kots.io/) into an existing cluster.  This approach wraps the Howso Platform into a single installable unit; it also provides a UI for updating, configuring, and troubleshooting the platform. 
 
 This formulation can be a convenient way to get started with the Howso Platform - but will not provide the same levers to control the deployments as Helm installs.  As such, if you have detailed Kubernetes requirements - you may not be able to meet them with this approach. 
 

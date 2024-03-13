@@ -4,7 +4,7 @@
 
 ## Introduction
 
-This guide details the process of deploying the Howso Platform using Replicated (KOTS)[https://kots.io/] into an existing Air-gapped Kubernetes cluster.  This approach wraps the Howso Platform into a single installable unit; it also provides a UI for updating, configuring, and troubleshooting the platform. 
+This guide details the process of deploying the Howso Platform using Replicated [KOTS](https://kots.io/) into an existing Air-gapped Kubernetes cluster.  This approach wraps the Howso Platform into a single installable unit; it also provides a UI for updating, configuring, and troubleshooting the platform. 
 
 With an air-gapped installation, there is a separate step to download the installation media which is then moved into the air-gapped environment.
 

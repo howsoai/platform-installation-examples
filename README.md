@@ -54,7 +54,9 @@ Securing the Howso Platform is discussed in the [security](security/README.md) s
 
 The examples should work in any Kubernetes cluster, but for simple local installation demonstrations, [k3d](https://k3d.io/) has been used.  Check out the [prereqs](prereqs/README.md) for more details. 
 
-When running commands, all paths are relative to the root of this repository.  Since you may end up with examples files under the repo root, they have been added to the `.gitignore` file.
+When running commands, all paths are relative to the root of this repository.
+
+> Note: Following the examples directly, you will end up with files (such as `howso.yml` or local platform certs) under the repo root, those have been added to the `.gitignore` file, so you won't see those files in your git status.
 
 
 ## Licensing Note
