@@ -17,7 +17,8 @@ To use custom ingress certificates, with your own CA, there are two options:
 ### Custom Ingress Certs
 The Howso Platform can be configured to use a custom ingress certificate provided in a Kubernetes secret; allowing the use of a certificate signed with a corporate CA, or a globally trusted root CA.  
 
-The following [step CLI](https://smallstep.com/docs/step-cli/) commands are provided as an example to help you quickly generate a self-signed certificate and private key, without having to deal with your network's PKI.
+> Note: The following [step CLI](https://smallstep.com/docs/step-cli/) commands are provided as an example to help you quickly generate a self-signed certificate and private key, without having to deal with your network's PKI.
+
 ```sh
 # Generate a root CA certificate and private key
 step certificate create root.howso.com tls.crt tls.key --profile root-ca --no-password --insecure
