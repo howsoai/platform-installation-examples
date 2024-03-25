@@ -4,8 +4,8 @@
 
 - [Prerequisites](../prereqs/README.md)
 ---
-- [Linkerd and Network Policies](linkerd/README.md)
-- [Container Scanning](container-scanning/README.md)
+- [Linkerd and Network Policies](../linkerd/README.md)
+- [Container Scanning](../container-images/README.md)
 
 
 ## Introduction
