@@ -108,13 +108,13 @@ DOCKER_CONFIG=/tmp/ docker pull proxy.replicated.com/proxy/howso-platform/dpbuil
 
 ### Pull with skopeo 
 
-Docker is a commonly available tool, but there are other options.  These alternatives often don't require a running daemon so use cases where you just need to pull images, they may be preferable (i.e. CI/CD pipelines).
+Docker is a commonly available tool, but there are other options.  These alternatives often don't require a running daemon, so may be preferable for use cases where you just need to manipulate images (i.e. CI/CD pipelines).
 
-To pull the image with [skopeo](https://github.com/containers/skopeo).  Note this example downloads the image to a tar file.  It overrides the arch and os to ensure the image pulled is correct for the target environment (and not the workstation i.e. mac). 
-
+To pull the image with [skopeo](https://github.com/containers/skopeo) cli.  
 ```sh
 REGISTRY_AUTH_FILE=/tmp/config.json skopeo copy --override-arch=amd64 --override-os=linux docker://proxy.replicated.com/proxy/howso-platform/dpbuild-docker-edge.jfrog.io/dp/platform-worker:1.1.992 docker-archive:/tmp/platform-cert-generator:1.0.18
 ```
+> Note - this example downloads the image to a tar file.  It overrides the `arch` and `os` to ensure the image pulled is correct for the target environment (and not the workstation i.e. mac). 
 
 ### Pull all the images
 
@@ -131,13 +131,13 @@ unset DOCKER_CONFIG
 
 ### Scan with Trivy
 
-[Trivy](https://github.com/aquasecurity/trivy) is a useful open-source tool for scanning container images for vulnerabilities.  To complete the example, it will be used to scan the images. 
+[Trivy](https://github.com/aquasecurity/trivy) is a useful open-source tool for scanning container images for vulnerabilities.  To complete the example, let's use it to scan the images. 
 
 ```sh
 helm template oci://registry.how.so/howso-platform/stable/howso-platform --values helm-basic/manifests/howso-platform.yaml  2> /dev/null | grep -E '^\s*image:' | sed -e 's/^[ \t]*image: \+//; s/^"//; s/"$//' | xargs -n 1 trivy i --severity=HIGH,CRITICAL --ignore-unfixed
 ```
 
-And the same for the other charts
+And the same for the additional charts.
 ```sh
 # Nats
 helm template oci://registry.how.so/howso-platform/stable/nats --values helm-basic/manifests/nats.yaml  2> /dev/null | grep -E '^\s*image:' | sed -e 's/^[ \t]*image: \+//; s/^"//; s/"$//' | xargs -n 1 trivy i --severity=HIGH,CRITICAL --ignore-unfixed

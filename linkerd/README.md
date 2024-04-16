@@ -62,6 +62,12 @@ To run the dashboard (port-forwarded locally)
 linkerd viz dashboard
 ```
 
+alternatively natively with kubectl ..
+```sh
+kubectl -n linkerd-viz port-forward svc/web 8084:8084
+```
+...and navigate to http://localhost:8084
+
 
 ## Annotating the Howso Platform
 
