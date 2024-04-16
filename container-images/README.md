@@ -40,12 +40,12 @@ The air-gap bundle format has changed, so it no longer directly contains the ima
 
 ```sh 
 # Use appropriate registry host and credentials
-kubectl kots admin-console push-images ~/2024.1.0.airgap registry-localhost:5000 --registry-username reguser --registry-password pw --namespace howso --skip-registry-check
+kubectl kots admin-console push-images ~/2024.4.0.airgap registry-localhost:5000 --registry-username reguser --registry-password pw --namespace howso --skip-registry-check
 ```
 
 If needed - you can list the images in the bundle with the following command. 
 ```sh
-AIRGAP_ARCHIVE=~/2024.1.0.airgap # or wherever you saved the file
+AIRGAP_ARCHIVE=~/2024.4.0.airgap # or wherever you saved the file
 tar -xzOf "${AIRGAP_ARCHIVE}" ./airgap.yaml | yq e '.spec.savedImages[]' # The air-gap.yaml file contains a list of the images in the bundle - if you don't have yq just remove that piped cmd
 ```
 
@@ -58,12 +58,12 @@ Alternatively, you can access the container registry directly - and download the
 
 The air-gap bundle contains the image layers, extracting them requires first using:
 ```sh
-kubectl kots admin-console push-images ~/2024.1.0.airgap registry-localhost:5000 --registry-username reguser --registry-password pw --namespace howso --skip-registry-check
+kubectl kots admin-console push-images ~/2024.4.0.airgap registry-localhost:5000 --registry-username reguser --registry-password pw --namespace howso --skip-registry-check
 ```
 
 You can list the images in the bundle with the following command. 
 ```sh
-AIRGAP_ARCHIVE=~/2024.1.0.airgap # or wherever you saved the file
+AIRGAP_ARCHIVE=~/2024.4.0.airgap # or wherever you saved the file
 tar -xzOf "${AIRGAP_ARCHIVE}" airgap.yaml | yq e '.spec.savedImages[]' # The airgap.yaml file contains a list of the images in the bundle - if you don't have yq just remove the piped cmd
 ```
 > Note the image registry and namespace are in their original format.  For the public images - in the datastore/message-queue charts, you can pull them directly.

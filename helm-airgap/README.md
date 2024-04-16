@@ -137,7 +137,7 @@ watch kubectl -n howso get po
 
 If there are any issues, check the logs of the pods, and the [troubleshooting](../common/README.md#troubleshooting) section.
 
-Set up a test user and environment using the [instructions here](../common/README.md#login-to-the-howso-platform).
+Set up a test user and python client environment using the [instructions here](../common/README.md#login-to-the-howso-platform).
 
 Confirm that the images are all pulled from the internal registry, and not the external registry.
 ```sh
