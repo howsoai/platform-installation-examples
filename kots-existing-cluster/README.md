@@ -89,7 +89,7 @@ watch kubectl get po -n howso
 
 ### Test the installation
 
-Set up a test user and python client environment using the [instructions here](../common/README.md#login-to-the-howso-platform).
+Set up a test user and Python client environment using the [instructions here](../common/README.md#login-to-the-howso-platform).
 
 If you need to additionally configure the Howso Platform - you can bring up the KOTS admin screen with the following command:
 ```sh

@@ -11,7 +11,8 @@
       - [Pull with docker CLI](#pull-with-docker-cli)
     - [Pull with skopeo](#pull-with-skopeo)
     - [Pull all the images](#pull-all-the-images)
-  - [Howso's Approach](#howsos-approach)
+    - [Scan with Trivy](#scan-with-trivy)
+  - [Howso's Approach to vulnerabilities](#howsos-approach-to-vulnerabilities)
 
 ## Overview 
 
@@ -94,41 +95,67 @@ helm template oci://registry.how.so/howso-platform/stable/howso-platform --value
 ### Pull the images
 
 #### Pull with docker CLI 
-DOCKER_CONFIG takes a directory, so use the one you extracted the config.json file to earlier.
+
+To pull the image with the docker CLI, you'll need to configure the config to point to the directory containing the extracted json file.
+
+The DOCKER_CONFIG environment variable takes a directory and not a file path.  Use the one you extracted the config.json file to earlier (in the example /tmp/ was used).
 i.e.
 ```
-DOCKER_CONFIG=/tmp/  docker pull proxy.replicated.com/proxy/howso-platform/dpbuild-docker-edge.jfrog.io/dp/platform-worker:1.1.992
+DOCKER_CONFIG=/tmp/ docker pull proxy.replicated.com/proxy/howso-platform/dpbuild-docker-edge.jfrog.io/dp/platform-cert-generator:1.0.18
 ```
 
-> Note - this requires a docker daemon to be running - and may require further modification to work if the DOCKER_CONFIG requires other required configuration.
+> Note - this requires a docker daemon to be running - and may require further modification to work if the DOCKER_CONFIG requires other required configuration (likely the case with Docker for Mac).
 
 ### Pull with skopeo 
 
-Docker CLI can pull images - and is a commonly available tool.  Other options don't require a running daemon so are often used in CI/CD pipelines, etc.
+Docker is a commonly available tool, but there are other options.  These alternatives often don't require a running daemon so use cases where you just need to pull images, they may be preferable (i.e. CI/CD pipelines).
 
-To pull the image with skopeo.  Note this example downloads the image to a tar file.  It overrides the arch and os to ensure the image pulled is correct for the target environment (and not the workstation i.e. mac). 
+To pull the image with [skopeo](https://github.com/containers/skopeo).  Note this example downloads the image to a tar file.  It overrides the arch and os to ensure the image pulled is correct for the target environment (and not the workstation i.e. mac). 
 
 ```sh
-REGISTRY_AUTH_FILE=/tmp/config.json skopeo copy --override-arch=amd64 --override-os=linux docker://proxy.replicated.com/proxy/howso-platform/dpbuild-docker-edge.jfrog.io/dp/platform-worker:1.1.992 docker-archive:/tmp/platform-worker_1.1.992.tar
+REGISTRY_AUTH_FILE=/tmp/config.json skopeo copy --override-arch=amd64 --override-os=linux docker://proxy.replicated.com/proxy/howso-platform/dpbuild-docker-edge.jfrog.io/dp/platform-worker:1.1.992 docker-archive:/tmp/platform-cert-generator:1.0.18
 ```
 
 ### Pull all the images
-This can be scripted, or combined with `| xargs -n 1 docker pull` to pull all the images.
 
-```
+This can be scripted as desired.  This simple example combines it with `| xargs -n 1 docker pull` to pull all the images in a one-liner.
+
+```sh
 export DOCKER_CONFIG=/tmp/
-helm template oci://registry.how.so/howso-platform/stable/howso-platform --values helm-basic/manifests/howso-platform.yaml  2> /dev/null | grep 'image: "' | sed 's/^[ \t]*//' | sed 's/image: "//' | sed 's/"$//' | xargs -n 1 docker pull
+helm template oci://registry.how.so/howso-platform/stable/howso-platform --values helm-basic/manifests/howso-platform.yaml 2> /dev/null | grep -E '^\s*image:' | sed -e 's/^[ \t]*image: \+//; s/^"//; s/"$//' | xargs -n 1 docker pull
 unset DOCKER_CONFIG
 ```
+
 > Note - any issues are likely to be swallowed up in the pipes - so you may want to run the commands individually to troubleshoot.
 
 
+### Scan with Trivy
 
-## Howso's Approach
+[Trivy](https://github.com/aquasecurity/trivy) is a useful open-source tool for scanning container images for vulnerabilities.  To complete the example, it will be used to scan the images. 
 
-Howso Platform contains many containers, including those ultimately produced by third parties (i.e. NATS, Bitnami).  Our internal processes include continuous scanning of the images, principally using Artifactory's X-Ray and the open-source tool Trivy.
+```sh
+helm template oci://registry.how.so/howso-platform/stable/howso-platform --values helm-basic/manifests/howso-platform.yaml  2> /dev/null | grep -E '^\s*image:' | sed -e 's/^[ \t]*image: \+//; s/^"//; s/"$//' | xargs -n 1 trivy i --severity=HIGH,CRITICAL --ignore-unfixed
+```
 
-Our policy is to, at least, mitigate high or critical CVE, marked as fixable, publicly disclosed within a 10-day window of each Howso Platform release.  Known CVEs that meet these criteria, but are not fixed in a release, will be documented in the corresponding release notes.
+And the same for the other charts
+```sh
+# Nats
+helm template oci://registry.how.so/howso-platform/stable/nats --values helm-basic/manifests/nats.yaml  2> /dev/null | grep -E '^\s*image:' | sed -e 's/^[ \t]*image: \+//; s/^"//; s/"$//' | xargs -n 1 trivy i --severity=HIGH,CRITICAL --ignore-unfixed
+# Minio
+helm template oci://registry.how.so/howso-platform/stable/minio --values helm-basic/manifests/minio.yaml  2> /dev/null | grep -E '^\s*image:' | sed -e 's/^[ \t]*image: \+//; s/^"//; s/"$//' | xargs -n 1 trivy i --severity=HIGH,CRITICAL --ignore-unfixed
+# Redis
+helm template oci://registry.how.so/howso-platform/stable/redis --values helm-basic/manifests/redis.yaml  2> /dev/null | grep -E '^\s*image:' | sed -e 's/^[ \t]*image: \+//; s/^"//; s/"$//' | xargs -n 1 trivy i --severity=HIGH,CRITICAL --ignore-unfixed
+# Postgres
+helm template oci://registry.how.so/howso-platform/stable/postgresql --values helm-basic/manifests/postgres.yaml  2> /dev/null | grep -E '^\s*image:' | sed -e 's/^[ \t]*image: \+//; s/^"//; s/"$//' | xargs -n 1 trivy i --severity=HIGH,CRITICAL --ignore-unfixed
+```
+
+> Note - the additional [charts](../common/README.md#addional-documentation) are hosted via the replicated helm repository, but are public charts.  They will be updated in the hosted repository as part of the Howso Release proces, at the tested version.  If desired, between Howso Platform releases, it is straightforward to adjust the referenced images with the usual helm process.
+
+## Howso's Approach to vulnerabilities
+
+Howso Platform contains many containers, including those ultimately produced by third parties (i.e. NATS, Bitnami).  Our internal processes include continuous scanning of all these images, principally using Artifactory's X-Ray and [Trivy](https://trivy.dev/).
+
+Our policy is to, at least, mitigate any high or critical CVE, marked as fixable, publicly disclosed within a 10-day window of each Howso Platform release.  Known CVEs that meet these criteria, but are not fixed in a release, will be documented in the corresponding release notes.
 
 We encourage customers to scan the images themselves and to raise issues back to us via support@howso.com or the support portal. 
 
