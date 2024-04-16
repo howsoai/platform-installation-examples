@@ -55,7 +55,7 @@ In this example, we'll use the [kots cli](https://kots.io/kots-cli/) - which can
 
 > Note: registry-localhost was set up as a loopback host entry in the [prerequisites](../prereqs/README.md) - it should resolve to the registry container setup by k3d when the cluster was created. 
 
-This example will assume that the downloaded air-gap bundle has been moved to the air-gapped environment - and is available at the path `~/2024.3.0.airgap`.  Adjust the path as necessary.
+This example will assume that the downloaded air-gap bundle has been moved to the air-gapped environment - and is available at the path `~/2024.4.0.airgap`.  Adjust the path as necessary.
 
 #### Check connectivity to the local registry
 
@@ -69,7 +69,7 @@ curl -s http://registry-localhost:5000/v2/_catalog | jq .
 > Note: With this dev setup, the registry credentials, though required by the cli, are ultimately ignored.
 
 ```sh
-kubectl kots admin-console push-images ~/2024.3.0.airgap registry-localhost:5000 --registry-username reguser --registry-password pw --namespace howso --skip-registry-check
+kubectl kots admin-console push-images ~/2024.4.0.airgap registry-localhost:5000 --registry-username reguser --registry-password pw --namespace howso --skip-registry-check
 ```
 
 You can check the images are in the local registry with the command from the earlier [step](#check-connectivity-to-the-local-registry).
