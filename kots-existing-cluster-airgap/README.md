@@ -80,7 +80,7 @@ curl -s http://registry-localhost:5000/v2/_catalog | jq .
 
 This example will show a CLI-driven install.  The KOTS UI can also be used, use `kubectl kots install --namespace howso howso-platform` to initiate the UI-driven install.
 
-To use the following commands _as-is_ - download your license and make it available at `~/howso-platform-license.yaml`, your kotsadm container bundle at `~/kotsadm.tar.gz` and your air-gapped bundle available at `~/2024.3.0.airgap`
+To use the following commands _as-is_ - download your license and make it available at `~/howso-platform-license.yaml`, your kotsadm container bundle at `~/kotsadm.tar.gz` and your air-gapped bundle available at `~/2024.4.0.airgap`
 
 
 Push the kotsadm images to the local registry.
@@ -99,7 +99,7 @@ kubectl kots install howso-platform --skip-preflights \
                      --namespace howso --no-port-forward \
                      --registry-username reguser --registry-password pw \
                      --kotsadm-registry registry-localhost:5000 --skip-registry-check \
-                     --kotsadm-namespace howso --airgap-bundle ~/2024.3.0.airgap \
+                     --kotsadm-namespace howso --airgap-bundle ~/2024.4.0.airgap \
                      --license-file  ~/howso-platform-license.yaml \
                      --shared-password kotspw --wait-duration 20m \
                      --config-values kots-existing-cluster-airgap/manifests/kots-howso-platform.yaml
@@ -115,7 +115,7 @@ watch kubectl get po -n howso
 
 ### Test the installation
 
-Set up a test user and environment using the [instructions here](../common/README.md#login-to-the-howso-platform).
+Set up a test user and Python client environment using the [instructions here](../common/README.md#login-to-the-howso-platform).
 
 If you need to additionally configure the Howso Platform - you can bring up the KOTS admin screen with the following command:
 ```sh

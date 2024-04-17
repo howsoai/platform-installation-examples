@@ -106,3 +106,5 @@ kubectl get po -n howso # Check the pod status
 ```
 
 <img src="../assets/argocd-success.png" width="300">
+
+Set up a test user and Python client client environment using the [instructions here](../common/README.md#login-to-the-howso-platform).

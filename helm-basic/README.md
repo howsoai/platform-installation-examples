@@ -92,4 +92,4 @@ Time to install may vary significantly depending on network speed and resources 
 watch kubectl -n howso get po 
 ```
 
-Set up a test user and environment using the [instructions here](../common/README.md#login-to-the-howso-platform).
+Set up a test user and Python client environment using the [instructions here](../common/README.md#login-to-the-howso-platform).

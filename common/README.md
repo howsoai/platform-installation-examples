@@ -18,8 +18,8 @@ As you navigate you will be redirected to other subdomains - each of which will 
 ### Create Client Credentials
 
 This is just a quick setup to test the installation.  The platform admin user wouldn't typically have client credentials, but would be used to bootstrap other users.
- - From the Home (Projects Page) > New Project > "Test Project".
- - From Howso Admin drop-down > Profile > Preferences > Default Project > "Test Project" > Save
+ - From the Home (Projects Page) > Create New Project > Project Name > "Test Project".
+ - From Howso Admin drop-down > My Account > Preferences > Default Project > "Test Project" > Save
  - From Howso Admin drop-down > Credentials > New Credential > "test" > Create
  - Copy|Download as howso.yml to `~/.howso/howso.yml` or in your local working directory.
 
@@ -59,7 +59,7 @@ howso:
 
 - Create a Python virtual environment using your preferred method. 
 
-- Navigate to Howso Admin drop-down > Client Setup. 
+- Navigate to Client Setup tab. 
 
 - Copy the pip install command, and run in your new virtual environment. 
 i.e.
