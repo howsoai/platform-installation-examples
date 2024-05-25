@@ -59,7 +59,7 @@ In this example myCustomIssuer is a ClusterIssuer.
 
 ```yaml
 overrideIngressCerts:
-  enabled: true
+  enabled: false
 internalPKI:
   ingressCertIssuer: myCustomIssuer 
   useClusterIssuer: true 
