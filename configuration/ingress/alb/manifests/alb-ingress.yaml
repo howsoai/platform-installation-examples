@@ -9,6 +9,7 @@ ums:
       alb.ingress.kubernetes.io/scheme: internet-facing
       alb.ingress.kubernetes.io/ssl-redirect: "443"
       alb.ingress.kubernetes.io/target-type: ip
+      alb.ingress.kubernetes.io/load-balancer-name: howso-platform-api-alb
 
 restapi:
   ingress:
@@ -19,6 +20,7 @@ restapi:
       alb.ingress.kubernetes.io/scheme: internet-facing
       alb.ingress.kubernetes.io/ssl-redirect: "443"
       alb.ingress.kubernetes.io/target-type: ip
+      alb.ingress.kubernetes.io/load-balancer-name: howso-platform-api-alb
 
 api:
   ingress:
@@ -29,6 +31,7 @@ api:
       alb.ingress.kubernetes.io/scheme: internet-facing
       alb.ingress.kubernetes.io/ssl-redirect: "443"
       alb.ingress.kubernetes.io/target-type: ip
+      alb.ingress.kubernetes.io/load-balancer-name: howso-platform-api-alb
 
 ui2:
   ingress:
@@ -37,14 +40,8 @@ ui2:
       alb.ingress.kubernetes.io/scheme: internet-facing
       alb.ingress.kubernetes.io/ssl-redirect: "443"
       alb.ingress.kubernetes.io/target-type: ip
+      alb.ingress.kubernetes.io/load-balancer-name: howso-platform-ui-alb
 
-docs:
-  ingress:
-    annotations:
-      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
-      alb.ingress.kubernetes.io/scheme: internet-facing
-      alb.ingress.kubernetes.io/ssl-redirect: "443"
-      alb.ingress.kubernetes.io/target-type: ip
 
 pypi:
   ingress:
@@ -53,4 +50,5 @@ pypi:
       alb.ingress.kubernetes.io/scheme: internet-facing
       alb.ingress.kubernetes.io/ssl-redirect: "443"
       alb.ingress.kubernetes.io/target-type: ip
+      alb.ingress.kubernetes.io/load-balancer-name: howso-platform-pypi-alb
 
