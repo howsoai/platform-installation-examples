@@ -65,4 +65,4 @@ See the [Container Scanning](../container-images/README.md#howsos-approach) sect
 
 ## Ingress Certs
 
-See the [Custom Ingress](../custom-ingress/README.md) section for information on using custom ingress certificates with the Howso Platform.
+See the [Custom Ingress](../custom-ingress-certs/README.md) section for information on using custom ingress certificates with the Howso Platform.

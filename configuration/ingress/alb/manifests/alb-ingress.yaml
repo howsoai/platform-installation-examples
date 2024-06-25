@@ -1,0 +1,68 @@
+ingressClassName: alb
+
+ums:
+  ingress:
+    annotations:
+      alb.ingress.kubernetes.io/group.name: api
+      alb.ingress.kubernetes.io/group.order: "100"
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/ssl-redirect: "443"
+      alb.ingress.kubernetes.io/target-type: ip
+      kubernetes.io/ingress.class: alb
+
+restapi:
+  ingress:
+    annotations:
+      alb.ingress.kubernetes.io/group.name: api
+      alb.ingress.kubernetes.io/group.order: "100"
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/ssl-redirect: "443"
+      alb.ingress.kubernetes.io/target-type: ip
+      kubernetes.io/ingress.class: alb
+
+api:
+  ingress:
+    annotations:
+      alb.ingress.kubernetes.io/group.name: api
+      alb.ingress.kubernetes.io/group.order: "100"
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/ssl-redirect: "443"
+      alb.ingress.kubernetes.io/target-type: ip
+      kubernetes.io/ingress.class: alb
+
+ui2:
+  ingress:
+    annotations:
+      alb.ingress.kubernetes.io/group.name: api
+      alb.ingress.kubernetes.io/group.order: "100"
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/ssl-redirect: "443"
+      alb.ingress.kubernetes.io/target-type: ip
+      kubernetes.io/ingress.class: alb
+
+docs:
+  ingress:
+    annotations:
+      alb.ingress.kubernetes.io/group.name: api
+      alb.ingress.kubernetes.io/group.order: "100"
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/ssl-redirect: "443"
+      alb.ingress.kubernetes.io/target-type: ip
+      kubernetes.io/ingress.class: alb
+
+pypi:
+  ingress:
+    annotations:
+      alb.ingress.kubernetes.io/group.name: api
+      alb.ingress.kubernetes.io/group.order: "100"
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/ssl-redirect: "443"
+      alb.ingress.kubernetes.io/target-type: ip
+      kubernetes.io/ingress.class: alb
+
