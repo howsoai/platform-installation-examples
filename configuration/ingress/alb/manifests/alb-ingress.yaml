@@ -4,7 +4,7 @@ ums:
   ingress:
     annotations:
       alb.ingress.kubernetes.io/group.name: api
-      alb.ingress.kubernetes.io/group.order: "100"
+      alb.ingress.kubernetes.io/group.order: "1"
       alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
       alb.ingress.kubernetes.io/scheme: internet-facing
       alb.ingress.kubernetes.io/ssl-redirect: "443"
@@ -15,7 +15,7 @@ restapi:
   ingress:
     annotations:
       alb.ingress.kubernetes.io/group.name: api
-      alb.ingress.kubernetes.io/group.order: "100"
+      alb.ingress.kubernetes.io/group.order: "3"
       alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
       alb.ingress.kubernetes.io/scheme: internet-facing
       alb.ingress.kubernetes.io/ssl-redirect: "443"
@@ -26,7 +26,7 @@ api:
   ingress:
     annotations:
       alb.ingress.kubernetes.io/group.name: api
-      alb.ingress.kubernetes.io/group.order: "100"
+      alb.ingress.kubernetes.io/group.order: "2"
       alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
       alb.ingress.kubernetes.io/scheme: internet-facing
       alb.ingress.kubernetes.io/ssl-redirect: "443"

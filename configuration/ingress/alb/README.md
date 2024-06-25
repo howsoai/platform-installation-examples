@@ -13,21 +13,21 @@ The following additional annotations are required, otherwise multiple ALBs will 
 
 ```yaml
 alb.ingress.kubernetes.io/group.name: api
-alb.ingress.kubernetes.io/group.order: "100"
+alb.ingress.kubernetes.io/group.order: "3"
 ```
 
 ### platform-api-v3
 
 ```yaml
 alb.ingress.kubernetes.io/group.name: api
-alb.ingress.kubernetes.io/group.order: "100"
+alb.ingress.kubernetes.io/group.order: "2"
 ```
 
 ### platform-ums
 
 ```yaml
 alb.ingress.kubernetes.io/group.name: api
-alb.ingress.kubernetes.io/group.order: "10"
+alb.ingress.kubernetes.io/group.order: "1"
 ```
 
 For more information on the available annotations see the [AWS Load Balancer Controller documentation](https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.2/guide/ingress/annotations/).
