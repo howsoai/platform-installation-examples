@@ -1,0 +1,15 @@
+redirectParentDomain: false
+pypi:
+  subdomain: howso-pypi
+restapi:
+  subdomain: howso-api
+api:
+  subdomain: howso-api
+ums:
+  subdomain: howso-auth
+ui2:
+  subdomain: howso-www
+presigned:
+  subdomain: howso-presigned
+
+
