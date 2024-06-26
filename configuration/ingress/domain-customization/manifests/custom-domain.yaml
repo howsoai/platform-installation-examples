@@ -1,4 +1,5 @@
 redirectParentDomain: false
+domain: howso-platform.example.com
 pypi:
   subdomain: howso-pypi
 restapi:

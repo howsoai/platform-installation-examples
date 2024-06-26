@@ -9,6 +9,8 @@ The following additional annotations are required, otherwise multiple ALBs will 
 - `alb.ingress.kubernetes.io/group.name`: Specifies the ingress group name - which groups multiple ingress resources into a single ALB.
 - `alb.ingress.kubernetes.io/group.order`: Defines the order of processing within the ingress group.
 
+Set them in the values files as shown [here](manifests/alb-ingress.yaml) under the ingress annotations sections.
+
 ### platform-api-v2
 
 ```yaml

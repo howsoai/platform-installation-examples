@@ -36,4 +36,10 @@ restapi:
 
 These settings allow you to tailor the URLs for different components of the Howso Platform typically this might be done to avoid a conflict with an existing service. 
 
-For a complete example of a values file for configuring domain customization, see the [custom-domain.yaml](./manifests/custom-domain.yaml).
+For a complete example of a values file for configuring domain customization, see the [custom-domain.yaml](./manifests/custom-domain.yaml), this example will result in the following subdomains:
+
+Main entrypoint (parent) domain:  https://howso-platform.example.com
+UI subdomain: https://howso-www.howso-platform.example.com
+API subdomain: https://howso-api.howso-platform.example.com
+UMS/Auth subdomain: https://howso-auth.howso-platform.example.com
+PyPi subdomain: https://howso-pypi.howso-platform.example.com
