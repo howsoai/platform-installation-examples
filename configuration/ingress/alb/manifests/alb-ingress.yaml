@@ -10,6 +10,10 @@ ums:
       alb.ingress.kubernetes.io/ssl-redirect: "443"
       alb.ingress.kubernetes.io/target-type: ip
       alb.ingress.kubernetes.io/load-balancer-name: howso-platform-api-alb
+      alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+      alb.ingress.kubernetes.io/healthcheck-port: '8000'
+      alb.ingress.kubernetes.io/healthcheck-path: /
+      alb.ingress.kubernetes.io/success-codes: '400,404'
 
 restapi:
   ingress:
@@ -21,6 +25,10 @@ restapi:
       alb.ingress.kubernetes.io/ssl-redirect: "443"
       alb.ingress.kubernetes.io/target-type: ip
       alb.ingress.kubernetes.io/load-balancer-name: howso-platform-api-alb
+      alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+      alb.ingress.kubernetes.io/healthcheck-port: '8080'
+      alb.ingress.kubernetes.io/healthcheck-path: /
+      alb.ingress.kubernetes.io/success-codes: '400,404'
 
 api:
   ingress:
@@ -32,6 +40,10 @@ api:
       alb.ingress.kubernetes.io/ssl-redirect: "443"
       alb.ingress.kubernetes.io/target-type: ip
       alb.ingress.kubernetes.io/load-balancer-name: howso-platform-api-alb
+      alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+      alb.ingress.kubernetes.io/healthcheck-port: '8080'
+      alb.ingress.kubernetes.io/healthcheck-path: /
+      alb.ingress.kubernetes.io/success-codes: '400,404'
 
 ui2:
   ingress:
@@ -52,3 +64,17 @@ pypi:
       alb.ingress.kubernetes.io/target-type: ip
       alb.ingress.kubernetes.io/load-balancer-name: howso-platform-pypi-alb
 
+
+pypi:
+  service:
+    annotations:
+      alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+      alb.ingress.kubernetes.io/healthcheck-port: '8080'
+      alb.ingress.kubernetes.io/healthcheck-path: /
+      alb.ingress.kubernetes.io/success-codes: '200'
+ui2:
+  service:
+    annotations:
+      alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+      alb.ingress.kubernetes.io/healthcheck-port: '8080'
+      alb.ingress.kubernetes.io/healthcheck-path: /ui-health

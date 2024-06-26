@@ -30,6 +30,10 @@ alb.ingress.kubernetes.io/group.name: api
 alb.ingress.kubernetes.io/group.order: "1"
 ```
 
+### Health checks
+
+In the [alb-ingress.yaml](manifests/alb-ingress.yaml) health checks have also been configured in the Application Load Balancer (ALB).  This involved both service and ingress annotations.
+
 For more information on the available annotations see the [AWS Load Balancer Controller documentation](https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.2/guide/ingress/annotations/).
 
 ## Example Manifest
