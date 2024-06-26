@@ -10,7 +10,9 @@ The Howso Platform uses ingress to manage external access to services in your Ku
 
 Many ingress controllers will only process ingresses with a specific `ingressClassName`.
 
-Specify this with the `ingress.ingressClassName` key in the Howso Platform values.  It will be used for all ingresses.
+Specify this with the `ingress.ingressClassName` key in the Howso Platform values.  It will be used for all ingresses.  The default value is `null` - which will leave it unset.
+
+> Note: If a default ingress is set for the cluster, with the `ingressclass.kubernetes.io/is-default-class: "true"` then it is not necessary to set the `ingress.ingressClassName` value.
 
 ## Domain Configuration
 
