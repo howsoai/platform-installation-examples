@@ -26,4 +26,4 @@ These [examples](../../custom-ingress-cert/README.md) show how to configure the 
 
 Configuration pertinant to specific ingress types:
 
-[ALB configuration](./alb/README.md)
+[AWS ALB configuration](./alb/README.md)
