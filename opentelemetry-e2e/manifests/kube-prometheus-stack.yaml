@@ -1,0 +1,14 @@
+grafana:
+  ingress:
+    enabled: true
+    hosts:
+    - grafana.local.howso.com
+prometheus:
+  ingress:
+    enabled: true
+    hosts:
+    - prometheus.local.howso.com
+    paths:
+    - /
+  prometheusSpec:
+    enableRemoteWriteReceiver: true

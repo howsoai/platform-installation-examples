@@ -1,0 +1,24 @@
+config:
+  exporters:
+    otlp/jaeger:
+      endpoint: jaeger-collector:4317
+      tls:
+        insecure: true
+    prometheusremotewrite:
+      endpoint: http://kube-prometheus-stack-prometheus:9090/api/v1/write
+  receivers:
+    jaeger: null
+    prometheus: null
+    zipkin: null
+  service:
+    pipelines:
+      metrics:
+        exporters:
+        - prometheusremotewrite
+        receivers:
+        - otlp
+      traces:
+        exporters:
+        - otlp/jaeger
+        receivers:
+        - otlp
