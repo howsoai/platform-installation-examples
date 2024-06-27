@@ -45,6 +45,11 @@ While the default configurations are suitable for a quick start and testing purp
 Though not exhaustive, the included [air-gap](./helm-airgap/README.md) and [OpenShift](./helm-openshift/) examples will demonstrate how some more complex configurations can be achieved. 
 
 
+### Observability
+
+The Howso Platform can publish metrics and traces using the [OpenTelemetry](https://opentelemetry.io) system.  This depends on a collector being installed in the cluster.  There is a [basic OpenTelemetry sample setup](opentelemetry/README.md) that installs the collector and configures the Howso Platform to send it data.  An [extended end-to-end OpenTelemetry sample setup](opentelemetry-e2e/README.md) installs additional open-source observability tools to examine and monitor the system state.
+
+
 ### Securing Howso Platform
 
 Securing the Howso Platform is discussed in the [security](security/README.md) section.  This includes the use of Service Mesh, Network Policies, and other security topics. 
