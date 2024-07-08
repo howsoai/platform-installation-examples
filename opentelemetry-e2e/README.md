@@ -12,7 +12,9 @@ and then configures the OpenTelemetry collector to publish to these components.
 
 The [Kube-Prometheus Stack](https://github.com/prometheus-operator/kube-prometheus) is a prepackaged metric-management system for Kubernetes.  It includes both Prometheus and Grafana, a set of prebuilt Grafana dashboards, and a Kubernetes operator to manage these tools via in-cluster configuration.  The stack can be installed via a [Helm chart](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) which we will use for consistency with our other tools.
 
-There are two options that need to be configured.  The Helm chart includes Kubernetes Ingress resources that allow external callers to reach Prometheus and Grafana, and we need to configure their host names.  We also need to enable an endpoint in Prometheus to allow the OpenTelemetry collector to push metrics to it.  These settings are included in the [sample Helm values](manifests/kube-prometheus-stack.yaml).
+This setup is designed as an integrated end-to-end monitoring system, including the ability to deploy Prometheus itself.  The embedded operator requires [significant cluster-level permissions](https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/templates/prometheus-operator/clusterrole.yaml), including global unrestricted permissions over StatefulSets, ConfigMaps, and Secrets.  The Howso Platform only directly communicates with the OpenTelemetry collector, which can also work with other Prometheus installations requiring less permissions.
+
+There are two options that need to be configured in Kube-Prometheus Stack.  The Helm chart includes Kubernetes Ingress resources that allow external callers to reach Prometheus and Grafana, and we need to configure their host names.  We also need to enable an endpoint in Prometheus to allow the OpenTelemetry collector to push metrics to it.  These settings are included in the [sample Helm values](manifests/kube-prometheus-stack.yaml).
 
 ```sh
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts

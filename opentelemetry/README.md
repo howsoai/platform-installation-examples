@@ -7,7 +7,7 @@
 
 ## Introduction
 
-[OpenTelemetry](https://opentelemetry.io) is a unified open-source observability tool.  It includes common code for collecting metrics, traces, and logs across a distributed system.
+[OpenTelemetry](https://opentelemetry.io) is a unified open-source observability tool.  It includes common code for collecting metrics, traces, and logs across a distributed system.  Starting with release 2024.6.1, the Howso Platform can publish observability data to OpenTelemetry.
 
 To process telemetry data, the Howso Platform requires that the cluster be running an [OpenTelemetry collector](https://opentelemetry.io/docs/collector/).  Individual components of the system forward data to the collector, which in turn forwards it onwards to other observability tools.  An OpenTelemetry collector might forward traces to a [Jaeger](https://www.jaegertracing.io/) instance and metrics to [Prometheus](https://prometheus.io), for example.  So long as the collector is running, the Howso Platform is agnostic to the specific choice of observability backends.
 
@@ -28,6 +28,8 @@ helm install platform-opentelemetry-collector \
 This default configuration installs a collector, but does not necessarily send its output anywhere.  The chart can take [extended configuration options](https://opentelemetry.io/docs/kubernetes/helm/collector/#configuration) that tell it where to forward traces and metrics when it receives them.
 
 In the [Helm configuration](manifests/opentelemetry-collector.yaml) we enable the "contrib" version of the collector.  This includes a number of extended destinations and processing options.  We also configure the collector to inject Kubernetes-related metadata into traces and metrics as it receives them.  The collector has a number of other configuration settings, and different configurations may require it to be run as a Deployment (fixed number of cluster-wide collector instances) or as a DaemonSet (one collector on each cluster node).
+
+The sample configuration uses the Kubernetes API to collect Kubernetes-related attributes that are attached to observability data.  This requires permissions to read Kubernetes Namespace, Pod, and ReplicaSet objects; also see the [collector's Kubernetes ClusterRole](https://github.com/open-telemetry/opentelemetry-helm-charts/blob/main/charts/opentelemetry-collector/templates/clusterrole.yaml).  The collector does not require additional permissions, unless it is configured to read broader Kubernetes metrics.  In the sample configuration, annotating data with `kubernetesAttributes:` can be disabled to avoid needing these permissions.
 
 The Howso Platform also needs to be configured to enable OpenTelemetry data collection, with the URL of the collector.  This is a small [Helm configuration](manifests/howso-platform.yaml) that can be included with the other configuration for the Howso Platform.  Working from the [basic Helm installation](../helm-basic/README.md) this can be added in as additional Helm values
 
