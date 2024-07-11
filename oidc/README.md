@@ -74,16 +74,18 @@ You can also navigate to the Dex dashboard and hit the (Dex Login Page)[https://
 
 Update your Howso Platform Helm values file (e.g., `howso-platform-values.yaml`) with the following OIDC configuration:
 
+Note this uses the Dex service name, as the Howso Platform authentication component will connect via the Kubernetes network.  The https://dex.local.howso.com/token could be used, but in this case as it resolves to localhost - it will not be accessible from the Howso Platform authentication pod.
+
 ```yaml
 oidc:
   enabled: true
   clientID: "howso-platform"
   clientSecret: "your-client-secret-here"
   algorithm: "RS256"
-  jwksEndpoint: "https://dex.local.howso.com/keys"
-  authorizeEndpoint: "https://dex.local.howso.com/auth"
-  tokenEndpoint: "https://dex.local.howso.com/token"
-  userinfoEndpoint: "https://dex.local.howso.com/userinfo"
+  jwksEndpoint: "http://dex.dex.svc.cluster.local:5556/keys"
+  authorizeEndpoint: "http://dex.dex.svc.cluster.local:5556/auth"
+  tokenEndpoint: "http://dex.dex.svc.cluster.local:5556/token"
+  userinfoEndpoint: "http://dex.dex.svc.cluster.local:5556/userinfo"
   scopes: "openid email profile"
 ```
 
@@ -96,9 +98,12 @@ helm upgrade howso-platform oci://registry.how.so/howso-platform/stable/howso-pl
 
 ## Verification
 
-1. Access the Howso Platform UI.
-2. You should be redirected to the Dex login page.
-3. Log in using the static user credentials (admin@example.com / password).
+Access the Howso Platform UI.
+https://local.howso.com/
+You should be redirected to the Dex login page.
+
+Log in using the static user credentials (admin@example.com / password).
+
 4. Upon successful authentication, you should be redirected back to Howso Platform.
 
 ## Notes
