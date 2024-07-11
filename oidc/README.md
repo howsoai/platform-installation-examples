@@ -2,7 +2,9 @@
 
 ## Introduction
 
-This guide details the process of deploying Dex as an identity provider and integrating it with Howso Platform as an OpenID Connect (OIDC) client.  This allows Howso Platform to authenticate users using Dex, demonstrating a Single Sign-On (SSO) setup, where your Identity Provider (Dex) is responsible for user authentication and many applications including Howso Platform can rely on it for user authentication. 
+This guide details the process of deploying Dex as an identity provider and integrating it with Howso Platform as an OpenID Connect (OIDC) client.
+
+This demonstrates a self-container Single Sign-On (SSO) setup, where the Identity Provider (Dex) is responsible for user authentication for the application (Howso Platform).
 
 Use the [basic helm install guide](../helm-basic/README.md) to install Howso Platform, and ensure it is running correctly.
 
@@ -50,7 +52,7 @@ Create a namespace for Dex.
 kubectl create namespace dex
 ```
 
-Before applying, take a look at the [Dex configuration](./manifests/dex.yaml).  To demonstrate the SSO features of Howso Platform Dex is configured to have a single static user.  That user can be used to authenticate against Dex, and when Howso Platform is configured as an OAuth application with Dex as the Identity Provider, it will be possible to use this user to log into Howso Platform.
+Before applying, take a look at the [Dex configuration](./manifests/dex.yaml).  For demonstration purposes Dex is configured to have a single static user, the credentials are supplied in the values file.  That user can be used to authenticate against Dex.  Once the Howso Platform is configured as an OAuth application with Dex as the Identity Provider, it will be possible to log in to Howso Platform using these credentials.
 
 In addition the [client](https://www.oauth.com/oauth2-servers/definitions/) is configured to represent Howso Platform in an Oauth2 with OpenID Connect flow.
 
@@ -58,7 +60,7 @@ In addition the [client](https://www.oauth.com/oauth2-servers/definitions/) is c
 Install Dex from Helm.
 
 ```bash
-helm install dex dex/dex --namespace dex -f oidc/manifests/dex.yaml
+helm install dex dex/dex --namespace dex -f oidc/manifests/dex.yaml --wait
 ```
 
 Check Dex is running.
@@ -69,12 +71,12 @@ This endpoint is the OpenID Connect discovery document, if it is accessible Dex 
 curl -k https://dex.local.howso.com/.well-known/openid-configuration
 ```
 
-You can also navigate to the Dex dashboard and hit the [Dex Login Page](https://dex.local.howso.com/auth).  You will have to accept the self signed certificate to proceed.  At this point it will display, but error.  It is configured to only be used during a login flow, so this is expected.  
+You can also navigate to the Dex dashboard and hit the [Dex Login Page](https://dex.local.howso.com/auth).  You will have to accept the self signed certificate to proceed.  At this point it will display, but show an error.  This is expected, the Dex login page is expecting to be used only as part of a SSO flow.
 
 
 ## Configure Howso Platform
 
-Take a look at the [config](./manifests/howso-platform.yaml) for Howso Platform.  the required endpoints are configured to point at the Dex installation.   
+Take a look at the [config](./manifests/howso-platform.yaml) for Howso Platform.  The required endpoints are configured under the `oidc` key to point at the Dex installation.   
 
 > Note: The configuraiton uses the Dex Kubernetes service DNS address (`dex.dex.svc.cluster.local`) for all endpoints except the authorize endpoint.  This is because Dex is only accessible to the Howso Platform application via the Kubernetes network (due to it using localhost, which will resolve differently from a pod in the cluster), however the users browser can hit the external address (dex.local.howso.com), but not the service.  The authorize endpoint is the one used to construct the redirect URL to dex during the Login flow.
 
