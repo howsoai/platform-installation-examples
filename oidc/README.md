@@ -50,7 +50,7 @@ Create a namespace for Dex.
 kubectl create namespace dex
 ```
 
-Before applying, take a look at the [Dex configuration](./manifests/dex.yaml).  To demostrate the SSO features of Howso Platform Dex is configured to have a single static user.  That user can be used to authenticate against Dex, and when Howso Platform is configured as an OAuth application with Dex as the Identity Provider, it will be possible to use this user to log into Howso Platform.
+Before applying, take a look at the [Dex configuration](./manifests/dex.yaml).  To demonstrate the SSO features of Howso Platform Dex is configured to have a single static user.  That user can be used to authenticate against Dex, and when Howso Platform is configured as an OAuth application with Dex as the Identity Provider, it will be possible to use this user to log into Howso Platform.
 
 In addition the [client](https://www.oauth.com/oauth2-servers/definitions/) is configured to represent Howso Platform in an Oauth2 with OpenID Connect flow.
 
@@ -74,7 +74,7 @@ You can also navigate to the Dex dashboard and hit the [Dex Login Page](https://
 
 ## Configure Howso Platform
 
-Take a look at the (config)[./manifests/howso-platform.yaml] for Howso Platform.  the required endpoints are configured to point at the Dex installation.   
+Take a look at the [config](./manifests/howso-platform.yaml) for Howso Platform.  the required endpoints are configured to point at the Dex installation.   
 
 > Note: The configuraiton uses the Dex Kubernetes service DNS address (`dex.dex.svc.cluster.local`) for all endpoints except the authorize endpoint.  This is because Dex is only accessible to the Howso Platform application via the Kubernetes network (due to it using localhost, which will resolve differently from a pod in the cluster), however the users browser can hit the external address (dex.local.howso.com), but not the service.  The authorize endpoint is the one used to construct the redirect URL to dex during the Login flow.
 
@@ -91,9 +91,8 @@ Upgrade the Howso Platform Helm release with the OIDC configuration:
 
 ## Verification
 
-Access the Howso Platform UI via https://local.howso.com/.
-You should be redirected to the Dex login page.
+- Access the Howso Platform UI via https://local.howso.com/.  You should be redirected to the Dex login page.
 
-Log in using the static user credentials (admin@example.com / password).
+- Log in using the static user credentials (admin@example.com / password).
 
-4. Upon successful authentication, you should be redirected back to Howso Platform.
+- Upon successful authentication, you should be redirected back to Howso Platform.
