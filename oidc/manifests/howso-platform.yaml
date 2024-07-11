@@ -1,0 +1,10 @@
+oidc:
+  enabled: true
+  clientID: "howso-platform"
+  clientSecret: "your-client-secret-here"
+  algorithm: "RS256"
+  jwksEndpoint: "https://dex.local.howso.com/keys"
+  authorizeEndpoint: "https://dex.local.howso.com/auth"
+  tokenEndpoint: "https://dex.local.howso.com/token"
+  userinfoEndpoint: "https://dex.local.howso.com/userinfo"
+  scopes: "openid email profile"
