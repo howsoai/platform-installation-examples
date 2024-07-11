@@ -84,11 +84,6 @@ Update your Howso Platform configuration to configure OIDC with Dex as the ident
 helm upgrade howso-platform oci://registry.how.so/howso-platform/stable/howso-platform --namespace howso --values manifest/howso-platform.yaml  --values ../helm-basic/manifests/howso-platform.yaml --wait
 ```
 
-
-
-Upgrade the Howso Platform Helm release with the OIDC configuration:
-
-
 ## Verification
 
 - Access the Howso Platform UI via https://local.howso.com/.  You should be redirected to the Dex login page.
