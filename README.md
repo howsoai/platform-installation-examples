@@ -4,6 +4,16 @@
 
 This repository contains runnable examples of Howso Platform installations, in various configurations, predominantly based on the use of Helm charts.
 
+## Documentation Approach
+
+The Howso Platform installation and configuration guides focus on setting up fully functional local environments.  
+
+Real production installations often involve multiple teams with split responsibilities and permissions; complex security procedures; delays for provisioning and approval processes.  Navigating these institutional challenges whilst also applying multiple advanced configurations and integrations to Howso Platform is complex.
+
+By providing self-contained local workstation setups the documentation aims to:- - Avoid delaying seeing a working system until all other things are in place.
+- Provide a real environment to gain hands on experience and a place to experiment with configuration options.
+
+
 ## Examples
 - [Prerequisites](prereqs/README.md)
 ---
@@ -57,6 +67,13 @@ The examples should work in any Kubernetes cluster, but for simple local install
 When running commands, all paths are relative to the root of this repository.
 
 > Note: Following the examples directly, you will end up with files (such as `howso.yml` or local platform certs) under the repo root, those have been added to the `.gitignore` file, so you won't see those files in your git status.
+
+
+## Configuration
+
+The Howso Platform supports configuration options to tailor your installation. These include ingress setup, authentication methods, domain customization, etc.
+
+For details on configuring your Howso Platform deployment, refer to the [Configuration Guide](configuration/README.md).
 
 
 ## Licensing Note
