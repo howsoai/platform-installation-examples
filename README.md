@@ -10,7 +10,8 @@ The Howso Platform installation and configuration guides focus on setting up ful
 
 Real production installations often involve multiple teams with split responsibilities and permissions; complex security procedures; delays for provisioning and approval processes.  Navigating these institutional challenges whilst also applying multiple advanced configurations and integrations to Howso Platform is complex.
 
-By providing self-contained local workstation setups the documentation aims to:- - Avoid delaying seeing a working system until all other things are in place.
+By providing self-contained local workstation setups the documentation aims to:-
+- Avoid delaying seeing a working system until all other things are in place.
 - Provide a real environment to gain hands on experience and a place to experiment with configuration options.
 
 
