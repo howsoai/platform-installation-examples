@@ -1,0 +1,23 @@
+domain: local.howso.com
+images:
+  registry: proxy.replicated.com 
+  registryNamespace: proxy/howso-platform/dpbuild-docker-edge.jfrog.io/dp
+oidc:
+  # oidc.enabled will enable SSO to the User Management Service via OpenID Connect
+  enabled: true
+  # clientID is the client id identifying the Howso Platform as an application in your identity provider.
+  clientID: "howso-platform"
+  # clientSecret is the client secret shared with the Howso Platform to establish the Howso Platform as trusted to the identity provider.
+  clientSecret: "your-client-secret-here"
+  # algorithm is the algorithm the IdP uses to sign ID tokens - RS256 is the only supported value.
+  algorithm: "RS256"
+  # jwksEndpoint is the URL for the identity server JWKS endpoint i.e. https://mycompany.idp.exmaple.com/keys.
+  jwksEndpoint: "http://dex.dex.svc.cluster.local:5556/keys"
+  # authorizeEndpoint is the URL for the identity server authorize endpoint i.e. https://mycompany.idp.example.com/authorize.
+  authorizeEndpoint: "https://dex.local.howso.com/auth"
+  # tokenEndpoint is the URL for the identity server token endpoint i.e. https://mycompany.idp.example.com/token.
+  tokenEndpoint: "http://dex.dex.svc.cluster.local:5556/token"
+  # userinfoEndpoint is the URL for the identity server userinfo endpoint i.e. https://mycompany.idp.example.com/userinfo.
+  userinfoEndpoint: "http://dex.dex.svc.cluster.local:5556/userinfo"
+  # scopes is set to the OpenID Connect scopes to request during login.  Use 'openid email profile' unless your idp requires additional scopes.
+  scopes: "openid email profile"
