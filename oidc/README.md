@@ -4,7 +4,7 @@
 
 This guide details the process of deploying Dex as an identity provider and integrating it with Howso Platform as an OpenID Connect (OIDC) client.
 
-This demonstrates a self-container Single Sign-On (SSO) setup, where the Identity Provider (Dex) is responsible for user authentication for the application (Howso Platform).
+This demonstrates a self-contained Single Sign-On (SSO) setup, where the Identity Provider (Dex) is responsible for user authentication for the application (Howso Platform).
 
 In this example Dex takes the place of your actual Identity Provider (IdP) such as Active Directory or Okta, but shows a working system without external dependencies.
 
@@ -80,15 +80,17 @@ You can also navigate to the Dex dashboard and hit the [Dex Login Page](https://
 
 Take a look at the [config](./manifests/howso-platform.yaml) for Howso Platform.  The required endpoints are configured under the `oidc` key to point at the Dex installation.   
 
-> Note: The configuraiton uses the Dex Kubernetes service DNS address (`dex.dex.svc.cluster.local`) for all endpoints except the authorize endpoint.  This is because Dex is only accessible to the Howso Platform application via the Kubernetes network (due to it using localhost, which will resolve differently from a pod in the cluster), however the users browser can hit the external address (dex.local.howso.com), but not the service.  The authorize endpoint is the one used to construct the redirect URL to dex during the Login flow.  In the case of an Identity Provider that is consistently accessible from the browser and the application, likely the case for a production setup, the same address can be used for all endpoints.
+> Note: The configuration uses the Dex Kubernetes service DNS address (`dex.dex.svc.cluster.local`) for all endpoints except the authorize endpoint.  This is because Dex is only accessible to the Howso Platform application via the Kubernetes network (due to it using localhost, which will resolve differently from a pod in the cluster), however the users browser can hit the external address (dex.local.howso.com), but not the service.  The authorize endpoint is the one used to construct the redirect URL to dex during the Login flow.  In the case of an Identity Provider that is consistently accessible from the browser and the application, likely the case for a production setup, the same address can be used for all endpoints.
 
 Update your Howso Platform configuration to configure OIDC with Dex as the identity provider.
 
 ```bash
-helm upgrade howso-platform oci://registry.how.so/howso-platform/stable/howso-platform --namespace howso --values manifest/howso-platform.yaml  --values ../helm-basic/manifests/howso-platform.yaml --wait
+helm upgrade howso-platform oci://registry.how.so/howso-platform/stable/howso-platform --namespace howso --values oidc/manifests/howso-platform.yaml --wait
 ```
 
 ## Verification
+
+> Note: Without [trusted TLS certificates configured](../custom-ingress-cert/README.md) Expect to hit a number of warnings, for each subdomain of Howso Platform.  Go to https://api.local.howso.com/ and https://management.local.howso.com accept those certificate warnings first.  Otherwise errors will be hidden, as those domains are accessed indirectly from pages hosted at other subdomains.  
 
 - Access the Howso Platform UI via https://local.howso.com/.  You should be redirected to the Dex login page.
 
