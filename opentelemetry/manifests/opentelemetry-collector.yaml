@@ -1,0 +1,8 @@
+image:
+  repository: otel/opentelemetry-collector-contrib
+command:
+  name: otelcol-contrib
+mode: deployment
+presets:
+  kubernetesAttributes:
+    enabled: true

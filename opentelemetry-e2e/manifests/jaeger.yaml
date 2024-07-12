@@ -1,0 +1,17 @@
+allInOne:
+  enabled: true
+  ingress:
+    enabled: true
+    hosts:
+      - jaeger.local.howso.com
+storage: 
+  type: badger
+
+agent:
+  enabled: false
+collector:
+  enabled: false
+provisionDataStore:
+  cassandra: false
+query:
+  enabled: false

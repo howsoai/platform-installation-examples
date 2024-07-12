@@ -1,0 +1,3 @@
+opentelemetry:
+  enabled: true
+  url: http://platform-opentelemetry-collector:4317
