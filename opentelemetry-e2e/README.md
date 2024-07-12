@@ -21,7 +21,8 @@ helm repo add prometheus-community https://prometheus-community.github.io/helm-c
 helm repo update
 helm install kube-prometheus-stack prometheus-community/kube-prometheus-stack \
   --namespace howso \
-  --values opentelemetry-e2e/manifests/kube-prometheus-stack.yaml
+  --values opentelemetry-e2e/manifests/kube-prometheus-stack.yaml \
+  --wait
 ```
 
 ## Jaeger
@@ -35,7 +36,8 @@ helm repo add jaegertracing https://jaegertracing.github.io/helm-charts
 helm repo update
 helm install jaeger jaegertracing/jaeger \
   --namespace howso \
-  --values opentelemetry-e2e/manifests/jaeger.yaml
+  --values opentelemetry-e2e/manifests/jaeger.yaml \
+  --wait
 ```
 
 ## OpenTelemetry Collector
@@ -47,7 +49,8 @@ helm upgrade --install platform-opentelemetry-collector \
   open-telemetry/opentelemetry-collector \
   --namespace howso \
   --values opentelemetry/manifests/opentelemetry-collector.yaml \
-  --values opentelemetry-e2e/manifests/opentelemetry-collector.yaml
+  --values opentelemetry-e2e/manifests/opentelemetry-collector.yaml \
+  --wait
 ```
 
 ## Accessing the Observability UIs

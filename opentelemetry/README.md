@@ -11,7 +11,7 @@
 
 To process telemetry data, the Howso Platform requires that the cluster be running an [OpenTelemetry collector](https://opentelemetry.io/docs/collector/).  Individual components of the system forward data to the collector, which in turn forwards it onwards to other observability tools.  An OpenTelemetry collector might forward traces to a [Jaeger](https://www.jaegertracing.io/) instance and metrics to [Prometheus](https://prometheus.io), for example.  So long as the collector is running, the Howso Platform is agnostic to the specific choice of observability backends.
 
-The Howso Platform does not require an OpenTelemetry collector for standard data processing and synthesis tasks.  It is only required to collect more detailed metrics about individual components' operation and to debug performance and scaling problems in the system.
+The Howso Platform does not require an OpenTelemetry collector for standard data processing and synthesis tasks.  It is only required to collect more detailed metrics about individual components' operations and to debug performance and scaling problems in the system.
 
 ## Installing the Collector
 
@@ -22,7 +22,8 @@ helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm
 helm install platform-opentelemetry-collector \
   open-telemetry/opentelemetry-collector \
   --namespace howso \
-  --values opentelemetry/manifests/opentelemetry-collector.yaml
+  --values opentelemetry/manifests/opentelemetry-collector.yaml \
+  --wait
 ```
 
 This default configuration installs a collector, but does not necessarily send its output anywhere.  The chart can take [extended configuration options](https://opentelemetry.io/docs/kubernetes/helm/collector/#configuration) that tell it where to forward traces and metrics when it receives them.
@@ -34,10 +35,11 @@ The sample configuration uses the Kubernetes API to collect Kubernetes-related a
 The Howso Platform also needs to be configured to enable OpenTelemetry data collection, with the URL of the collector.  This is a small [Helm configuration](manifests/howso-platform.yaml) that can be included with the other configuration for the Howso Platform.  Working from the [basic Helm installation](../helm-basic/README.md) this can be added in as additional Helm values
 
 ```sh
-helm upgrade --install install howso-platform \
+helm upgrade --install howso-platform \
   oci://registry.how.so/howso-platform/stable/howso-platform \
   --namespace howso \
   --values helm-basic/manifests/howso-platform.yaml \
+  --wait \
   --values opentelemetry/manifests/howso-platform.yaml  # <-- add to basic setup
 ```
 
