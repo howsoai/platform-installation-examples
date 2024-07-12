@@ -1,10 +1,12 @@
-# Setting up Dex as Identity Provider for Howso Platform
+# Setting up Dex as an Identity Provider for Howso Platform
 
 ## Introduction
 
 This guide details the process of deploying Dex as an identity provider and integrating it with Howso Platform as an OpenID Connect (OIDC) client.
 
 This demonstrates a self-container Single Sign-On (SSO) setup, where the Identity Provider (Dex) is responsible for user authentication for the application (Howso Platform).
+
+In this example Dex takes the place of your actual Identity Provider (IdP) such as Active Directory or Okta, but shows a working system without external dependencies.
 
 Use the [basic helm install guide](../helm-basic/README.md) to install Howso Platform, and ensure it is running correctly.
 
@@ -52,7 +54,7 @@ Create a namespace for Dex.
 kubectl create namespace dex
 ```
 
-Before applying, take a look at the [Dex configuration](./manifests/dex.yaml).  For demonstration purposes Dex is configured to have a single static user, the credentials are supplied in the values file.  That user can be used to authenticate against Dex.  Once the Howso Platform is configured as an OAuth application with Dex as the Identity Provider, it will be possible to log in to Howso Platform using these credentials.
+Before applying, take a look at the [Dex configuration](./manifests/dex.yaml).  For demonstration purposes Dex is configured with a single static user, the credentials are supplied in the values file.  This user can be used to authenticate against Dex.  Once the Howso Platform is configured as an OAuth application with Dex as the Identity Provider, it will be possible to log in to Howso Platform using these credentials.
 
 In addition the [client](https://www.oauth.com/oauth2-servers/definitions/) is configured to represent Howso Platform in an Oauth2 with OpenID Connect flow.
 
@@ -78,7 +80,7 @@ You can also navigate to the Dex dashboard and hit the [Dex Login Page](https://
 
 Take a look at the [config](./manifests/howso-platform.yaml) for Howso Platform.  The required endpoints are configured under the `oidc` key to point at the Dex installation.   
 
-> Note: The configuraiton uses the Dex Kubernetes service DNS address (`dex.dex.svc.cluster.local`) for all endpoints except the authorize endpoint.  This is because Dex is only accessible to the Howso Platform application via the Kubernetes network (due to it using localhost, which will resolve differently from a pod in the cluster), however the users browser can hit the external address (dex.local.howso.com), but not the service.  The authorize endpoint is the one used to construct the redirect URL to dex during the Login flow.
+> Note: The configuraiton uses the Dex Kubernetes service DNS address (`dex.dex.svc.cluster.local`) for all endpoints except the authorize endpoint.  This is because Dex is only accessible to the Howso Platform application via the Kubernetes network (due to it using localhost, which will resolve differently from a pod in the cluster), however the users browser can hit the external address (dex.local.howso.com), but not the service.  The authorize endpoint is the one used to construct the redirect URL to dex during the Login flow.  In the case of an Identity Provider that is consistently accessible from the browser and the application, likely the case for a production setup, the same address can be used for all endpoints.
 
 Update your Howso Platform configuration to configure OIDC with Dex as the identity provider.
 
