@@ -6,7 +6,7 @@ This section covers various configuration options for the Howso Platform. Simila
 ## Contents
 
 - [Ingress Configuration](ingress/README.md)
-- [Authentication and Single Sign-On](oidc/README.md)
+- [Authentication and Single Sign-On](../oidc/README.md)
 - [Domain Customization](ingress/domain-customization/README.md)
 - [Security Considerations](../security/README.md)
 
