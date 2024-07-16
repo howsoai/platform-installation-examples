@@ -95,7 +95,7 @@ Increasing the verbosity of the logs by setting the `ums.logLevel` in the Howso 
 
 ```yaml
 ums:
-  logLevel: 5
+  logLevel: 10 
 ```
 
 ## Debugging the SSO Flow
@@ -159,6 +159,15 @@ If the server requires PKCE, but it is not configured, this will result in an au
 Errors about matching state seen in the callback redirect, are caused by a mismatch between the authorization request and the callback request (which exchange a state value, to make sure they are from the same flow).  They are typically transient caching issues, more common when trying multiple logins (to debug SSO issues).  Try refreshing the page, or using an Incognito Browser whilst troubleshooting.
 
 
+#### Missing email for User in IdP
+
+Email is required by Howso Platform if the user does not have an email address, this will result in an authentication error, but the error will be shown in the [UMS Logs](#check-the-user-management-service-logs).
+
+```sh
+[WARNING] auth:328 - failed to get or create user: Claims verification failed
+```
+
+
 ### Server 500 Errors
 
 These errors are typically after a successful IdP login, and redirect, caused by failures during the Howso Platform server side processing of the rest of the authentication flow. 
@@ -208,4 +217,9 @@ _This partial error trace indicates a typical issue caused by missing claims (in
   File "/app/usersvc/authentication/backends/oidc.py", line 44, in generate_username
     return unicodedata.normalize('NFKC', email)[:150]
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+```
+
+_This partial error is caused 
+```sh
+auth:328 - failed to get or create user: Claims verification failed
 ```
