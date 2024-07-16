@@ -157,7 +157,7 @@ oidc:
 If you see this error on redirect, try refreshing the page, or using an Incognito Browser whilst troubleshooting.  It is caused by a mismatch between the authorization request and the callback request (which exchange a state value, to make sure they are from the same flow), but is typically due to caching issues when trying multiple logins.
 
 
-## Server 500 Errors
+### Server 500 Errors
 
 These errors are typically after a successful IdP login, and redirect, but the Howso Platform server side processing of the rest of the flow fails. 
 
