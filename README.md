@@ -8,7 +8,7 @@ This repository contains runnable examples of Howso Platform installations, in v
 
 The Howso Platform installation and configuration guides focus on setting up fully functional local environments.  
 
-Real production installations often involve multiple teams with split responsibilities and permissions; complex security procedures; delays for provisioning and approval processes.  Navigating these institutional challenges whilst also applying multiple advanced configurations and integrations to Howso Platform is complex.
+Real production installations often involve multiple teams with split responsibilities and permissions; complex security procedures; delays for provisioning and approval processes.  Navigating these institutional challenges whilst also applying configurations and integrations to Howso Platform is complex.
 
 By providing self-contained local workstation setups the documentation aims to:-
 - Avoid delaying seeing a working system until all other things are in place.
