@@ -6,9 +6,9 @@ This guide provides steps for troubleshooting Single Sign-On (SSO) issues with t
 
 When set up to SSO using an external Identity Provider, Howso Platform uses the Authorization Code Flow with OpenID Connect (OIDC) for user authentication and authorization, optionally implementing Proof Key for Code Exchange (PKCE).
 
-It is configured under the `oidc` section in the Howso Platform Helm values, and via configuration within the Identity Provider (IdP).
+The Howso Platform side of this is configured under the `oidc` section in the Helm values.  Additional configuration is required within the Identity Provider (IdP), to create an OAuth application that Howso Platform can use to authenticate users.
 
-> Note: The Howso Platform User Management Service is itself an Identity Provider and Authorization server, where other Howso Platform services are configured as applications.  This is a separate topic.
+> Note: The Howso Platform User Management Service is itself an Identity Provider and Authorization server, where other internal Howso Platform services are configured as applications.  This is a separate topic.
 
 Once the `application` is created within the IdP, and the Helm values are applied, unauthenticated users navigating to Howso Platform domains should see the following sign-on button.
 
@@ -66,11 +66,12 @@ kubectl exec -n howso -it $(kubectl get pod -n howso -l app.kubernetes.io/compon
 > Note: The `jwksEndpoint` should return a JSON document with a `keys` key containing an array of public keys.  Testing other endpoints will likely return an error, but that is fine, we're just testing for accessibility.
 
 
-## Debugging Browser Redirects
+## Troubleshooting tools
+### Debugging Browser Redirects
 
 Much of the OIDC flow happens in the browser.  Using the browser's developer tools can often reveal information that is otherwise not displayed.
 
-### Browser Developer Tools
+#### Browser Developer Tools
 
 Each Browser is different, consult the documentation for how to bring up the developer tools.  Open and navigate to the Network tab.  This will show all the requests made by the browser.  It is often useful to navigate to the initial login screen, and press the clear button before starting the login.
 
@@ -80,7 +81,7 @@ Upon logging in - look for the request to the `authorizeEndpoint` and check the 
 
 After logging in, look for a /oidc/callback request to the Howso Platform.
 
-## Check the User Management Service Logs
+### Check the User Management Service Logs
 
 ```sh
 kubectl logs -n howso -l app.kubernetes.io/component=user-management-service
@@ -95,18 +96,24 @@ ums:
 
 ## Debugging the SSO Flow
 
-### IDP Error Messages
+With the [debug tools](#troubleshooting-tools) ready, and basic [configuration](#configuration-verification) checked, initiate a login.  Typically failures will occur as either an [IdP Error page](#idp-error-messages), or an [Authentication Error](#authentication-errors), or [Server 500 Error](#server-500-errors) back at the Howso Platform.
 
+### IDP Error Messages
+This section covers issues that occurs with the initial authorization request, that do not try and redirect back to the Howso Platform.
+
+Included here is any issues with your users credentials in the IdP.
+
+Additionally, check the following:-
 
 #### Client ID is Invalid
 
-Issues with the client ID will result in an error at the IdP, this can vary but it will likely be a direct error from the `authorizeEndpoint` in the browser.  You may get a 400 error, or similar.
+An invalid client ID will likely fail directly as a 400 error in the IdP straight after clicking login.  The IdP may show helpful information, but may not.  You can also check any logs collected on the IdP side.
 
 #### Callback URL Issues
 
 Ensure the callback URL in IdP matches exactly: `https://<ums.subdomain>.<domain>/oidc/callback/`
 
-Note the `/oidc/callback/` path and trailing slash. A mismatching callback URL will typically result in an error within the Authorization server.
+Note the `/oidc/callback/` path and trailing slash. A mismatching callback URL will typically result in an error within the IdP, straight after the redirect to the `authorizeEndpoint`.
 
 
 ### Authentication Errors
@@ -140,16 +147,14 @@ oidc:
   pkceCodeVerifierSize: 64
 ```
 
-
 #### No Matching State Found in Storage
 
 If you see this error on redirect, try refreshing the page, or using an Incognito Browser whilst troubleshooting.  It is caused by a mismatch between the authorization request and the callback request, but is typically due to caching issues when trying multiple logins.
 
 
-
 ## Server 500 Errors
 
-These errors are typically after a successful IdP login, and redirect, but the processing of the rest of the flow fails.
+These errors are typically after a successful IdP login, and redirect, but the Howso Platform server side processing of the rest of the flow fails. 
 
 <img src="../assets/oidc-server-error-500.png" alt="Server 500 Error" width="300" />
 
@@ -167,7 +172,7 @@ Expect to see an error like this in the UMS logs, IdP dependent.
 
 In the UMS logs, look for errors, such as this:-
 ```sh
-400 Client Error: Bad Request for url: https://okta.example.com/oauth2/wrong/v1/userinfo
+400 Client Error: Bad Request for url: https://myidp.example.com/oauth2/wrong/v1/userinfo
 ```
 Indicating issues with the end points in the OIDC configuration.
 
