@@ -55,9 +55,9 @@ Verify that these values match your IdP's configuration exactly.
 
 ## Network Checks
 
-The `authorizeEndpoint` needs to be accessible from the workstation of the user's Browser.  The `tokenEndpoint`, `userinfoEndpoint`, and `jwksEndpoint` need to be accessible from the Howso Platform User Management Service.
+The `authorizeEndpoint` needs to be accessible from the workstation of the user's Browser.  The `tokenEndpoint`, `userinfoEndpoint`, and `jwksEndpoint` need to be accessible from the Howso Platform User Management Service (UMS).
 
-To test this, you can use `curl` from the Howso Platform User Management Service pod:
+To test the accessibility from the UMS, you can use `curl` from the Howso Platform UMS pod:
 
 ```bash
 kubectl exec -n howso -it \
@@ -70,7 +70,7 @@ kubectl exec -n howso -it \
 
 ## Troubleshooting tools
 
-The key tools for troubleshooting OIDC issues are the Browser Developer Tools and access to the User Management Service logs.
+The key tools for troubleshooting OIDC issues are the Browser Developer Tools and access to the UMS logs.
 
 ### Debugging Browser Redirects
 
@@ -163,7 +163,7 @@ These errors are typically after a successful IdP login, and redirect, but the H
 
 <img src="../assets/oidc-server-error-500.png" alt="Server 500 Error" width="300" />
 
-Look at the [User Management Service Logs](#check-the-user-management-service-logs) to narrow down the issue. 
+Look at the [UMS Logs](#check-the-user-management-service-logs) to narrow down the issue. 
 
 Common issues include:-
 
@@ -187,7 +187,7 @@ Scopes are the permissions that the Howso Platform is requesting from the IdP.  
 
 Empty or incorrect scopes will likely show up during the IdP authorization, and appear as [Authentication Errors](#authentication-errors).  However, if your IdP requires extra scopes from the default `openid profile email`, those may appear as server errors, as they result in issues when calling the `userinfoEndpoint` or the `tokenEndpoint`.
 
-These issues may not be in the actual call to the endpoint, but in the processing of the response.  So look for errors in the [User Management Service Logs](#check-the-user-management-service-logs) that might help indicate what is wrong. 
+These issues may not be in the actual call to the endpoint, but in the processing of the response.  So look for errors in the [UMS Logs](#check-the-user-management-service-logs) that might help indicate what is wrong. 
 ```sh
   File "/opt/venv/lib/python3.11/site-packages/mozilla_django_oidc/auth.py", line 117, in get_username
     return username_algo(claims.get("email"))
