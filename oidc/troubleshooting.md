@@ -102,11 +102,11 @@ ums:
 With the [debug tools](#troubleshooting-tools) ready, and basic [configuration](#configuration-verification) checked, initiate a login.  Typically failures will occur as either an [IdP Error page](#idp-error-messages), or an [Authentication Error](#authentication-errors), or [Server 500 Error](#server-500-errors) back at the Howso Platform.
 
 ### IdP Error Messages
-This section covers issues that occurs with the initial authorization request, that do not try and redirect back to the Howso Platform.
+This section covers issues that occurs with the initial authorization request and do not try and redirect back to the Howso Platform.
 
-Included here is any issues with your users credentials in the IdP.
+Here you may hit issues with your users credentials in the IdP.
 
-Additionally, check the following.
+Additionally.
 
 #### Client ID is Invalid
 
