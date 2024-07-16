@@ -19,7 +19,7 @@ Clicking will kick off the authentication flow.  Understanding the main steps of
 - Howso Platform redirects the user's browser to the `authorizeEndpoint` specified in the OIDC configuration.  This should bring up the IdP login page. 
 - Once the user has authenticated, the IdP redirects the user back to the [callback](#callback-url-issues) URL in the Howso Platform with an authorization code.  This callback URL is sent to the IdP in the original redirect, but is also part of the configuration supplied to the IdP when the OAuth application is created.  The IdP will check that the redirect URL in the query string and the application configuration match. 
 - If the authentication was successful, the redirect back to Howso Platform will include the authorization code.  Alternatively error information will be included in the query string.
-- On success, the User Management Service component of Howso Platform, the will then exchange this code for an access token and id token using the `tokenEndpoint` and use it to authenticate the user.
+- On success, the User Management Service component of Howso Platform, will then exchange this code for an access token and id token using the `tokenEndpoint` and use it to authenticate the user.
 - The User Management Service will then use the `userinfoEndpoint` to get information about the user, such as email address and groups.
 - The access token and id token are validated against the public key provided by the IdP at the `jwksEndpoint`.
 
