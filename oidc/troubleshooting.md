@@ -10,7 +10,7 @@ The Howso Platform configuration is under the `oidc` section in the Helm values.
 
 > Note: The Howso Platform User Management Service is itself an IdP and Authorization server, where other internal Howso Platform services are configured as applications.  This is a separate topic.
 
-Once the `application` is created within the IdP, and the Helm values are applied, unauthenticated users navigating to Howso Platform domains should see the following sign-on button.
+Once the application is created within the IdP, and the Helm values are applied, unauthenticated users navigating to Howso Platform domains should see the following sign-on button.
 
 <img src="../assets/oidc-sso-login.png" alt="OIDC Authentication Error" width="300" />
 
@@ -60,7 +60,9 @@ The `authorizeEndpoint` needs to be accessible from the workstation of the user'
 To test this, you can use `curl` from the Howso Platform User Management Service pod:
 
 ```bash
-kubectl exec -n howso -it $(kubectl get pod -n howso -l app.kubernetes.io/component=user-management-service -o jsonpath='{.items[0].metadata.name}') -- curl -v <jwks-endpoint-url>
+kubectl exec -n howso -it \
+             $(kubectl get pod -n howso -l app.kubernetes.io/component=user-management-service -o jsonpath='{.items[0].metadata.name}') \
+             -- curl -v <jwks-endpoint-url>
 ```
 
 > Note: The `jwksEndpoint` should return a JSON document with a `keys` key containing an array of public keys.  Testing other endpoints will likely return an error, but that is fine, we're just testing for accessibility.
@@ -101,7 +103,7 @@ ums:
 
 With the [debug tools](#troubleshooting-tools) ready, and basic [configuration](#configuration-verification) checked, initiate a login.  Typically failures will occur as either an [IdP Error page](#idp-error-messages), or an [Authentication Error](#authentication-errors), or [Server 500 Error](#server-500-errors) back at the Howso Platform.
 
-### IDP Error Messages
+### IdP Error Messages
 This section covers issues that occurs with the initial authorization request, that do not try and redirect back to the Howso Platform.
 
 Included here is any issues with your users credentials in the IdP.
@@ -183,7 +185,7 @@ Indicating issues with the endpoints in the OIDC configuration.
 
 Scopes are the permissions that the Howso Platform is requesting from the IdP.  Typically the default scopes should not need to be altered.
 
-Empty or incorrect scopes will likely show up during the IDP authorization, and appear as [Authentication Errors](#authentication-errors).  However, if your IdP requires extra scopes from the default `openid profile email`, those may appear as server errors, as they result in issues when calling the `userinfoEndpoint` or the `tokenEndpoint`.
+Empty or incorrect scopes will likely show up during the IdP authorization, and appear as [Authentication Errors](#authentication-errors).  However, if your IdP requires extra scopes from the default `openid profile email`, those may appear as server errors, as they result in issues when calling the `userinfoEndpoint` or the `tokenEndpoint`.
 
 These issues may not be in the actual call to the endpoint, but in the processing of the response.  So look for errors in the [User Management Service Logs](#check-the-user-management-service-logs) that might help indicate what is wrong. 
 ```sh
