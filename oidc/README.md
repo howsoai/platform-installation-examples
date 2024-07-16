@@ -14,7 +14,6 @@ Use the [basic helm install guide](../helm-basic/README.md) to install Howso Pla
 # prerequisites TLDR
 # helm registry login registry.how.so --username your_email@example.com --password your_license_id 
 # add local.howso.com pypi|api|www|management.local.howso.com to /etc/hosts 
-# Install the [linkerd cli](https://linkerd.io/2/getting-started/) and the certificate tool [step](https://smallstep.com/docs/step-cli/).
 # Setup the Kubernetes cluster
 k3d cluster create --config prereqs/k3d-single-node.yaml
 kubectl -n kube-system wait --for=condition=ready --timeout=180s pod -l k8s-app=metrics-server
@@ -97,3 +96,8 @@ helm upgrade howso-platform oci://registry.how.so/howso-platform/stable/howso-pl
 - Log in using the static user credentials (admin@example.com / password).
 
 - Upon successful authentication, you should be redirected back to Howso Platform.
+
+
+## Troubleshooting 
+
+If you encounter any issues with the SSO setup or login process, please refer to our detailed [SSO Troubleshooting Guide](./troubleshooting.md) for assistance.
