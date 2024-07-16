@@ -21,7 +21,3 @@ oidc:
   userinfoEndpoint: "http://dex.dex.svc.cluster.local:5556/userinfo"
   # scopes is set to the OpenID Connect scopes to request during login.  Use 'openid email profile' unless your idp requires additional scopes.
   scopes: "openid email profile"
-  # PKCE Configuration (added Howso Platform 2024.7.1+)
-  usePKCE: true
-  pkceCodeChallengeMethod: "S256"
-  pkceCodeVerifierSize: 64
