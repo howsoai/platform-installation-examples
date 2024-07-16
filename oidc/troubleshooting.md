@@ -24,7 +24,9 @@ Clicking will kick off the authentication flow.  Understanding the main steps of
 - The User Management Service will then use the `userinfoEndpoint` (and access token) to get information about the user, such as email address and groups.
 
 
-## Configuration Verification
+## Basic Checks
+
+### Configuration Verification
 
 Ensure all OIDC configuration items are correctly set in your Howso Platform Helm values:
 
@@ -47,13 +49,12 @@ oidc:
 
 Verify that these values match your IdP's configuration exactly.
 
-
-## Browser Checks
+### Browser Checks
 
 - Before attempting a login, ensure that you can access all subdomains of Howso Platform without certificate warnings. 
 - Clear your browser cache, or use an incognito window to avoid caching issues.
 
-## Network Checks
+### Network Checks
 
 The `authorizeEndpoint` needs to be accessible from the workstation of the user's Browser.  The `tokenEndpoint`, `userinfoEndpoint`, and `jwksEndpoint` need to be accessible from the Howso Platform User Management Service (UMS).
 
