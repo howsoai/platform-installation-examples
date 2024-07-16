@@ -4,11 +4,11 @@ This guide provides steps for troubleshooting Single Sign-On (SSO) issues with t
 
 ## Overview 
 
-When set up to SSO using an external Identity Provider (IdP), Howso Platform uses the Authorization Code Flow with OpenID Connect (OIDC) for user authentication and authorization, optionally implementing Proof Key for Code Exchange (PKCE).
+When set up to use SSO with an external Identity Provider (IdP), Howso Platform uses the Authorization Code Flow with OpenID Connect (OIDC) for user authentication and authorization, optionally implementing Proof Key for Code Exchange (PKCE).
 
 The Howso Platform configuration is under the `oidc` section in the Helm values.  Additional configuration is required within the IdP, to create an OAuth application that Howso Platform can use to authenticate users.
 
-> Note: The Howso Platform User Management Service is itself an IdP and Authorization server, where other internal Howso Platform services are configured as applications.  This is a separate topic.
+> Note: The Howso Platform User Management Service is itself an IdP and Authorization server, where other internal Howso Platform services are configured as applications.  This is a separate topic, but can cause confusion, as, for instance, there will also be authorize calls to the UMS observable in the browser network tab.
 
 Once the application is created within the IdP, and the Helm values are applied, unauthenticated users navigating to Howso Platform domains should see the following sign-on button.
 
@@ -82,7 +82,7 @@ Each browser is different, consult the documentation for how to bring up the dev
 
 ### Using the Tools to Debug
 
-Upon logging in - look for the request to the `authorizeEndpoint` and check the response.  The browser should redirect to the IdP login page.  If the user has an existing session with the IdP, it may immediately redirect back to Howso Platform.  The response should have a status code of 302, and the location header should be the /oidc/callback/ URL off the Howso Platform.  Look at the query string of the location header, errors during the authentication process will be included there.
+Upon logging in - look for the request to the `authorizeEndpoint` (note, make sure to distinguish between calls to the IdP authorize endpoint, and internal Howso Platform UMS authorize calls) and check the response.  The browser should redirect to the IdP login page.  If the user has an existing session with the IdP, it may immediately redirect back to Howso Platform.  The response should have a status code of 302, and the location header should be the /oidc/callback/ URL off the Howso Platform.  Look at the query string of the location header, errors during the authentication process will be included there.
 
 After logging in, look for a /oidc/callback request to the Howso Platform.
 
