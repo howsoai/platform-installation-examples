@@ -81,7 +81,7 @@ Each browser is different, consult the documentation for how to bring up the dev
 
 #### Using the Tools to Debug
 
-Upon logging in - look for the request to the `authorizeEndpoint` (note, make sure to distinguish between calls to the IdP authorize endpoint, and internal Howso Platform UMS authorize calls) and check the response.  The browser should redirect to the IdP login page.  If the user has an existing session with the IdP, it may immediately redirect back to Howso Platform.  The response should have a status code of 302, and the location header should be the /oidc/callback/ URL off the Howso Platform.  Look at the query string of the location header, errors during the authentication process will be included there.
+Upon logging in - look for the request to the `authorizeEndpoint` (note, make sure to distinguish between calls to the IdP authorize endpoint, and internal Howso Platform UMS authorize calls) and check the response.  The browser should redirect to the IdP login page.  If the user has an existing session with the IdP, it may immediately redirect back to Howso Platform.  The response should have a status code of 302 (either immediately, or via an additional call after login), and the location header should be the /oidc/callback/ URL off the Howso Platform.  Look at the query string of the location header, errors during the authentication process will be included there.
 
 After logging in, look for a /oidc/callback request to the Howso Platform.
 
@@ -91,11 +91,11 @@ After logging in, look for a /oidc/callback request to the Howso Platform.
 kubectl logs -n howso -l app.kubernetes.io/component=user-management-service
 ```
 
-Not usually required, but you can increase the verbosity of the logs by setting the `ums.logLevel` in the Howso Platform Helm values to 15, 10 or 5. 
+Increasing the verbosity of the logs by setting the `ums.logLevel` in the Howso Platform Helm values to 15, 10 or 5 may help expose issues particularly during the token exchange and userinfo calls. 
 
 ```yaml
 ums:
-  logLevel: 15
+  logLevel: 10 
 ```
 
 ## Debugging the SSO Flow
@@ -137,7 +137,10 @@ Check for the following:-
 - [PKCE](#proof-key-for-code-exchange-pkce) is required but not configured in Howso Platform.
 - No scopes are requested.
 - Invalid scopes are requested.
+- Correct scopes, not configured in the IdP application configuration.
 - [Browser caching issues](#no-matching-state-found-in-storage)
+
+> Note: Normally the details of the error are available through the front channel (the browser network).  But in certain cases, the Authentication Error is caused afterwards, during the server side processing of the authentication flow.  In this case, the error will be in the [UMS Logs](#check-the-user-management-service-logs).
 
 #### Proof Key for Code Exchange (PKCE)
 
@@ -155,6 +158,16 @@ If the server requires PKCE, but it is not configured, this will result in an au
 
 Errors about matching state seen in the callback redirect, are caused by a mismatch between the authorization request and the callback request (which exchange a state value, to make sure they are from the same flow).  They are typically transient caching issues, more common when trying multiple logins (to debug SSO issues).  Try refreshing the page, or using an Incognito Browser whilst troubleshooting.
 
+
+#### Missing email for User in IdP
+
+Email is required by Howso Platform if the user does not have an email address, this will result in an authentication error, but the error will be shown in the [UMS Logs](#check-the-user-management-service-logs).
+
+```sh
+[WARNING] auth:328 - failed to get or create user: Claims verification failed
+```
+
+
 ### Server 500 Errors
 
 These errors are typically after a successful IdP login, and redirect, caused by failures during the Howso Platform server side processing of the rest of the authentication flow. 
@@ -170,6 +183,15 @@ Expect to see an error like this in the UMS logs, IdP dependent.
 ```sh
  Get Token Error (url: https://myidp.example.com/oauth2/default/v1/token, status: 401, body: {"error":"invalid_client","error_description":"The client secret supplied for a confidential client is invalid."})
  ```
+
+#### Mismatched Client Authentication Method
+
+The authentication method used by the UMS for the call to the token endpoint does not match one configured for the application in the IdP. 
+
+The Howso Platform uses the Client Secret Post method, if the IdP is configured to use Basic Auth, this will result in a 500 error.
+
+Update the application configuration to use the post method.
+
 
 #### Incorrect Userinfo/JWKS/Token Endpoints, or network issues
 
@@ -195,4 +217,9 @@ _This partial error trace indicates a typical issue caused by missing claims (in
   File "/app/usersvc/authentication/backends/oidc.py", line 44, in generate_username
     return unicodedata.normalize('NFKC', email)[:150]
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+```
+
+_This partial error is caused 
+```sh
+auth:328 - failed to get or create user: Claims verification failed
 ```
