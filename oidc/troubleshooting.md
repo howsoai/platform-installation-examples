@@ -65,18 +65,16 @@ kubectl exec -n howso -it \
              -- curl -v <jwks-endpoint-url>
 ```
 
-> Note: The `jwksEndpoint` should return a JSON document with a `keys` key containing an array of public keys.  Testing other endpoints will likely return an error, but that is fine, we're just testing for accessibility.
+> Note: The `jwksEndpoint` should return a JSON document with a `keys` key containing an array of public keys.  Testing other endpoints will likely return errors, but as long as they are returned from the IdP (and don't hang), that is fine, we're just testing for accessibility.
 
 
 ## Troubleshooting tools
 
 The key tools for troubleshooting OIDC issues are the Browser Developer Tools and access to the UMS logs.
 
-### Debugging Browser Redirects
+#### Browser Developer Tools
 
 Much of the OIDC flow happens in the browser.  Using the browser's developer tools can often reveal information that is otherwise not displayed.
-
-#### Browser Developer Tools
 
 Each browser is different, consult the documentation for how to bring up the developer tools.  Open and navigate to the Network tab.  This will show all the requests made by the browser.  It is often useful to navigate to the initial login screen, and press the clear button before starting the login.
 
