@@ -152,12 +152,11 @@ If the server requires PKCE, but it is not configured, this will result in an au
 
 #### No Matching State Found in Storage
 
-If you see this error on redirect, try refreshing the page, or using an Incognito Browser whilst troubleshooting.  It is caused by a mismatch between the authorization request and the callback request (which exchange a state value, to make sure they are from the same flow), but is typically due to caching issues when trying multiple logins.
-
+Errors about matching state seen in the callback redirect, are caused by a mismatch between the authorization request and the callback request (which exchange a state value, to make sure they are from the same flow).  They are typically transient caching issues, more common when trying multiple logins (to debug SSO issues).  Try refreshing the page, or using an Incognito Browser whilst troubleshooting.
 
 ### Server 500 Errors
 
-These errors are typically after a successful IdP login, and redirect, but the Howso Platform server side processing of the rest of the flow fails. 
+These errors are typically after a successful IdP login, and redirect, caused by failures during the Howso Platform server side processing of the rest of the authentication flow. 
 
 <img src="../assets/oidc-server-error-500.png" alt="Server 500 Error" width="300" />
 
@@ -171,21 +170,23 @@ Expect to see an error like this in the UMS logs, IdP dependent.
  Get Token Error (url: https://myidp.example.com/oauth2/default/v1/token, status: 401, body: {"error":"invalid_client","error_description":"The client secret supplied for a confidential client is invalid."})
  ```
 
-#### Incorrect Userinfo/JWKS/Token Endpoints
+#### Incorrect Userinfo/JWKS/Token Endpoints, or network issues
 
 In the UMS logs, look for errors, such as this:-
 ```sh
 400 Client Error: Bad Request for url: https://myidp.example.com/oauth2/wrong/v1/userinfo
 ```
-Indicating issues with the endpoints in the OIDC configuration.
+Indicating issues with the endpoints in the OIDC configuration, or the network connectivity to the IdP from the UMS.
 
 #### Scope issues
 
-Scopes are the permissions that the Howso Platform is requesting from the IdP.  Typically the default scopes should not need to be altered.
+Scopes are the permissions that the Howso Platform is requesting from the IdP.  Typically the default scopes (email openid profile) should not need to be altered.
 
-Empty or incorrect scopes will likely show up during the IdP authorization, and appear as [Authentication Errors](#authentication-errors).  However, if your IdP requires extra scopes from the default `openid profile email`, those may appear as server errors, as they result in issues when calling the `userinfoEndpoint` or the `tokenEndpoint`.
+Empty or incorrect scopes will likely show up during the IdP authorization, and appear as [Authentication Errors](#authentication-errors).  However, if your IdP requires extra scopes from the default `openid profile email`, those may appear as server 500 errors, as they can result when processing the `userinfoEndpoint` or the `tokenEndpoint`.
 
 These issues may not be in the actual call to the endpoint, but in the processing of the response.  So look for errors in the [UMS Logs](#check-the-user-management-service-logs) that might help indicate what is wrong. 
+
+_This partial error trace indicates a typical issue caused by missing claims (information about the user in the id token), due to incorrect scopes:_
 ```sh
   File "/opt/venv/lib/python3.11/site-packages/mozilla_django_oidc/auth.py", line 117, in get_username
     return username_algo(claims.get("email"))
