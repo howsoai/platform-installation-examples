@@ -72,13 +72,13 @@ kubectl exec -n howso -it \
 
 The key tools for troubleshooting OIDC issues are the Browser Developer Tools and access to the UMS logs.
 
-#### Browser Developer Tools
+### Browser Developer Tools
 
 Much of the OIDC flow happens in the browser.  Using the browser's developer tools can often reveal information that is otherwise not displayed.
 
 Each browser is different, consult the documentation for how to bring up the developer tools.  Open and navigate to the Network tab.  This will show all the requests made by the browser.  It is often useful to navigate to the initial login screen, and press the clear button before starting the login.
 
-### Using the Tools to Debug
+#### Using the Tools to Debug
 
 Upon logging in - look for the request to the `authorizeEndpoint` (note, make sure to distinguish between calls to the IdP authorize endpoint, and internal Howso Platform UMS authorize calls) and check the response.  The browser should redirect to the IdP login page.  If the user has an existing session with the IdP, it may immediately redirect back to Howso Platform.  The response should have a status code of 302, and the location header should be the /oidc/callback/ URL off the Howso Platform.  Look at the query string of the location header, errors during the authentication process will be included there.
 
