@@ -91,11 +91,11 @@ After logging in, look for a /oidc/callback request to the Howso Platform.
 kubectl logs -n howso -l app.kubernetes.io/component=user-management-service
 ```
 
-Not usually required, but you can increase the verbosity of the logs by setting the `ums.logLevel` in the Howso Platform Helm values to 15, 10 or 5. 
+Increasing the verbosity of the logs by setting the `ums.logLevel` in the Howso Platform Helm values to 15, 10 or 5 may help expose issues particularly during the token exchange and userinfo calls. 
 
 ```yaml
 ums:
-  logLevel: 15
+  logLevel: 5
 ```
 
 ## Debugging the SSO Flow
