@@ -112,7 +112,7 @@ Additionally, check the following.
 
 #### Client ID is Invalid
 
-An invalid client ID will likely fail directly as a 400 error in the IdP straight after clicking login.  The IdP may show helpful information, but may not.  You can also check any logs collected on the IdP side.
+An invalid client ID will ofter result in a 400 error in the IdP straight after clicking login.  The IdP may show helpful information, but may not.  You can also check any logs collected on the IdP side.
 
 #### Callback URL Issues
 
