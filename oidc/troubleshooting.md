@@ -114,10 +114,9 @@ An invalid client ID will ofter result in a 400 error in the IdP straight after 
 
 #### Callback URL Issues
 
-Ensure the callback URL in IdP matches exactly: `https://<ums.subdomain>.<domain>/oidc/callback/`
+Ensure the callback URL in the IdP configuration matches exactly: `https://<ums.subdomain>.<domain>/oidc/callback/`
 
-Note the `/oidc/callback/` path and trailing slash. A mismatching callback URL will typically result in an error within the IdP, straight after the redirect to the `authorizeEndpoint`.
-
+Note the `/oidc/callback/` path and trailing slash. A mismatching callback URL (it is sent from the Howso Platform via the authorize request, and checked against the IdP configuration) will typically result in an error within the IdP, straight after the redirect to the `authorizeEndpoint`.
 
 ### Authentication Errors
 
@@ -127,14 +126,14 @@ These errors will be seen on return from the IdP to the Howso Platform.
 
 Use the [Browser Developer Tools](#browser-developer-tools) to examine the query string of the redirect URL to get more information.  Look for the `error` and `error_description` parameters.
 
-This is usually not directly an issue with the user having a valid account with the IdP, those issues will be shown on the IdP login page.  
+They are usually not directly issues with the user having a valid account with the IdP, those issues will be shown on the IdP login page.  
 
 Check for the following:-
 - The User does not have permissions to the Howso Platform application in the IdP.
-- [PKCE](#proof-key-for-code-exchange-pkce) is required but not configured in Howso Platform.
 - The User is locked out.
 - The User is not in the correct group.
 - The Group is not assigned correctly to the Howso Platform application in the IdP.
+- [PKCE](#proof-key-for-code-exchange-pkce) is required but not configured in Howso Platform.
 - No scopes are requested.
 - Invalid scopes are requested.
 - [Browser caching issues](#no-matching-state-found-in-storage)
@@ -149,6 +148,7 @@ oidc:
   pkceCodeChallengeMethod: "S256"
   pkceCodeVerifierSize: 64
 ```
+If the server requires PKCE, but it is not configured, this will result in an authentication error.  If the Howso Platform configures PKCE, the IdP may accept it, even if it is not required.
 
 #### No Matching State Found in Storage
 
