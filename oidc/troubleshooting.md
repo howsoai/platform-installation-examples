@@ -4,11 +4,11 @@ This guide provides steps for troubleshooting Single Sign-On (SSO) issues with t
 
 ## Overview 
 
-When set up to SSO using an external Identity Provider, Howso Platform uses the Authorization Code Flow with OpenID Connect (OIDC) for user authentication and authorization, optionally implementing Proof Key for Code Exchange (PKCE).
+When set up to SSO using an external Identity Provider (IdP), Howso Platform uses the Authorization Code Flow with OpenID Connect (OIDC) for user authentication and authorization, optionally implementing Proof Key for Code Exchange (PKCE).
 
-The Howso Platform side of this is configured under the `oidc` section in the Helm values.  Additional configuration is required within the Identity Provider (IdP), to create an OAuth application that Howso Platform can use to authenticate users.
+The Howso Platform configuration is under the `oidc` section in the Helm values.  Additional configuration is required within the IdP, to create an OAuth application that Howso Platform can use to authenticate users.
 
-> Note: The Howso Platform User Management Service is itself an Identity Provider and Authorization server, where other internal Howso Platform services are configured as applications.  This is a separate topic.
+> Note: The Howso Platform User Management Service is itself an IdP and Authorization server, where other internal Howso Platform services are configured as applications.  This is a separate topic.
 
 Once the `application` is created within the IdP, and the Helm values are applied, unauthenticated users navigating to Howso Platform domains should see the following sign-on button.
 
@@ -45,13 +45,13 @@ oidc:
   pkceCodeVerifierSize: 64
 ```
 
-Verify that these values match your Identity provider's configuration exactly.
+Verify that these values match your IdP's configuration exactly.
 
 
 ## Browser Checks
 
 - Before attempting a login, ensure that you can access all subdomains of Howso Platform without certificate warnings. 
-- Clear your browser, or use an incognito window to avoid caching issues.
+- Clear your browser cache, or use an incognito window to avoid caching issues.
 
 ## Network Checks
 
@@ -67,17 +67,20 @@ kubectl exec -n howso -it $(kubectl get pod -n howso -l app.kubernetes.io/compon
 
 
 ## Troubleshooting tools
+
+The key tools for troubleshooting OIDC issues are the Browser Developer Tools and access to the User Management Service logs.
+
 ### Debugging Browser Redirects
 
 Much of the OIDC flow happens in the browser.  Using the browser's developer tools can often reveal information that is otherwise not displayed.
 
 #### Browser Developer Tools
 
-Each Browser is different, consult the documentation for how to bring up the developer tools.  Open and navigate to the Network tab.  This will show all the requests made by the browser.  It is often useful to navigate to the initial login screen, and press the clear button before starting the login.
+Each browser is different, consult the documentation for how to bring up the developer tools.  Open and navigate to the Network tab.  This will show all the requests made by the browser.  It is often useful to navigate to the initial login screen, and press the clear button before starting the login.
 
 ### Using the Tools to Debug
 
-Upon logging in - look for the request to the `authorizeEndpoint` and check the response.  The browser should direct to the IdP login page.  If you are already logged in, it may immediately redirect back to Howso Platform.  The response should have a status code of 302, and the location header should be the /oidc/callback/ URL off the Howso Platform.  Look at the query string of the location header, errors during the authentication process will be included there.
+Upon logging in - look for the request to the `authorizeEndpoint` and check the response.  The browser should redirect to the IdP login page.  If the user has an existing session with the IdP, it may immediately redirect back to Howso Platform.  The response should have a status code of 302, and the location header should be the /oidc/callback/ URL off the Howso Platform.  Look at the query string of the location header, errors during the authentication process will be included there.
 
 After logging in, look for a /oidc/callback request to the Howso Platform.
 
@@ -103,7 +106,7 @@ This section covers issues that occurs with the initial authorization request, t
 
 Included here is any issues with your users credentials in the IdP.
 
-Additionally, check the following:-
+Additionally, check the following.
 
 #### Client ID is Invalid
 
@@ -149,7 +152,7 @@ oidc:
 
 #### No Matching State Found in Storage
 
-If you see this error on redirect, try refreshing the page, or using an Incognito Browser whilst troubleshooting.  It is caused by a mismatch between the authorization request and the callback request, but is typically due to caching issues when trying multiple logins.
+If you see this error on redirect, try refreshing the page, or using an Incognito Browser whilst troubleshooting.  It is caused by a mismatch between the authorization request and the callback request (which exchange a state value, to make sure they are from the same flow), but is typically due to caching issues when trying multiple logins.
 
 
 ## Server 500 Errors
@@ -174,9 +177,11 @@ In the UMS logs, look for errors, such as this:-
 ```sh
 400 Client Error: Bad Request for url: https://myidp.example.com/oauth2/wrong/v1/userinfo
 ```
-Indicating issues with the end points in the OIDC configuration.
+Indicating issues with the endpoints in the OIDC configuration.
 
 #### Scope issues
+
+Scopes are the permissions that the Howso Platform is requesting from the IdP.  Typically the default scopes should not need to be altered.
 
 Empty or incorrect scopes will likely show up during the IDP authorization, and appear as [Authentication Errors](#authentication-errors).  However, if your IdP requires extra scopes from the default `openid profile email`, those may appear as server errors, as they result in issues when calling the `userinfoEndpoint` or the `tokenEndpoint`.
 
