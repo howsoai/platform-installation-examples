@@ -1,0 +1,4 @@
+auth:
+  existingSecret: platform-postgres-postgresql
+primary:
+  resourcesPreset: large

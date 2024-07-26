@@ -9,6 +9,7 @@ This section covers various configuration options for the Howso Platform. Simila
 - [Authentication and Single Sign-On](../oidc/README.md)
 - [Domain Customization](ingress/domain-customization/README.md)
 - [Security Considerations](../security/README.md)
+- [Performance Tuning](../performance/README.md)
 
 Full configuration options are available in the Helm chart values.  For more information, see:
 

@@ -91,6 +91,11 @@ After logging in, look for a /oidc/callback request to the Howso Platform.
 kubectl logs -n howso -l app.kubernetes.io/component=user-management-service
 ```
 
+From Howso Platform version 2024.7.1+, you can filter the logs to show only OIDC related messages:
+```sh
+kubectl logs -n howso -l app.kubernetes.io/component=user-management-service -f | grep OIDC
+```
+
 Increasing the verbosity of the logs by setting the `ums.logLevel` in the Howso Platform Helm values to 15, 10 or 5 may help expose issues particularly during the token exchange and userinfo calls. 
 
 ```yaml
