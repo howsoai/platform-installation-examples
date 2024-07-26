@@ -11,8 +11,8 @@ Use a dedicated Kubernetes cluster for Howso Platform.  Increase the size of NAT
 
 ### Dedicated Cluster
 
-When run in Howso Platform trainees are created as new (stateful set) pods on demand.  
-- Individual trainees can be very large - it is not uncommon to dedicate 10s or cpu resources, and even more Gb of memory.  
+In the Howso Platform, trainees (also known as workers) are created as new (stateful set) pods on demand.  
+- Individual trainees can be very large - it is not uncommon to dedicate tens of cpu resources and even more Gb of memory.  
 - The Kubernetes API server is used to create and manage these pods.  The API server is a critical component of the cluster, can come under load, and be a bottleneck.
 
 As such, the profile of the cluster can be demanding and very dynamic.  Therefore it is recommended to run the Howso Platform on a dedicated cluster, for the best performance (for the Howso Platform and other workloads).
@@ -22,7 +22,7 @@ As such, the profile of the cluster can be demanding and very dynamic.  Therefor
 
 As discussed extensively elsewhere in this guide, Howso Platform relies on several dependent charts.  NATS, Redis, Postgres, Minio.  These charts can be tuned independently of the Howso Platform chart.  The included [manifests](./manifests) provide the basics for tuning these charts.
 
-The out of the box installations of these charts, particularly NATS, Redis and Postgres are small installations.  Even these should run reasonably well for basic examples, but for demanding workloads, simply increasing the resources allocated to their primary workloads is very beneficial. 
+The out of the box installations of these charts, particularly NATS, Redis and Postgres are small installations.  These should run reasonably well for basic examples, but for demanding workloads, increasing the resources allocated to their primary workloads is very beneficial. 
 
 In rough order of impact:
 
@@ -32,7 +32,7 @@ NATS is used for inter-service communication.  The [NATS manifest](./manifests/n
 
 #### Redis
 
-Redis is used for offloading large data messages from NATS and storing message responses from trainees.  Currently Howso Platform components all need to read & write to Redis, so there is no advantage in Read Replicas (without sentinel).  The [Redis manifest](./manifests/redis.yaml) provides a configuration that runs a single Redis server - with increased resources that should perform well for larger workloads.
+Redis is used for offloading large data messages from NATS and storing message responses from trainees.  Currently Howso Platform components need to both read and write to Redis, so there is no advantage in Read Replicas (without addionally adding sentinel).  The [Redis manifest](./manifests/redis.yaml) provides a configuration that runs a single Redis server - with increased resources that should perform well for larger workloads.
 
 #### Postgres
 
