@@ -63,6 +63,8 @@ For the best performance, Howso Platform workloads should be split into two node
 
 When configuring autoscaling configuration, it may be useful to refer to the [multi-node setup](../prereqs/README.md#multi-node-k3d-cluster) which demonstrates the use of labels and taints (in a local setup) to control pod scheduling across multiple nodes.
 
+> Note: labels are used to keep workers from running on core nodes, and taints are used to keep core services from running on worker nodes.  The different approaches allow for minimizing the configuration required for dependent charts, which would require tollerations for all their workloads. 
+
 ##### Core Services Nodes
 
 The core services of Howso Platform and its dependent charts should run on 2 or 3 dedicated cluster nodes utilizing a [node label](../prereqs/README.md#multi-node-k3d-cluster), to keep trainee pods from starting on them.
