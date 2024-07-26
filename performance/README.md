@@ -110,5 +110,5 @@ Howso Platform workloads are typically driven by a client python application.  F
 
 Use a dedicated client machine, with at least a core for every simultaneous trainee that the client application is expected run.  Also note that non Howso Platform activity from the client application, i.e. other miscellaneous data or machine learning tasks, can significantly increase the demands on the client machine - especially when running simultaneous threads.
 
-A stable network connection to the cluster is required.  A key reason that using even a powerful developer workstation can lead to issues is they frequently move, use WiFi and/or VPNs.  A large workload may expect to run for hours or days, such network interuptions can lead to the client application losing connection to the cluster, and the run failing. 
+A stable network connection to the cluster is required.  A key reason that using even a powerful developer workstation can lead to issues is they frequently move, use WiFi and/or VPNs.  A large workload may expect to run for hours or days, network interuptions can lead to the client application losing connection to the cluster, and the run failing. 
 
