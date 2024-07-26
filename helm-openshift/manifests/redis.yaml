@@ -1,6 +1,7 @@
 auth:
   existingSecret: platform-redis
-commonConfiguration: '# Enable AOF https://redis.io/topics/persistence#append-only-file
+commonConfiguration: |
+  # Enable AOF https://redis.io/topics/persistence#append-only-file
 
   appendonly yes
 
@@ -10,7 +11,7 @@ commonConfiguration: '# Enable AOF https://redis.io/topics/persistence#append-on
 
   # Enable keyspace events
 
-  notify-keyspace-events Kgh'
+  notify-keyspace-events Kgh
 master:
   containerSecurityContext:
     runAsUser: null

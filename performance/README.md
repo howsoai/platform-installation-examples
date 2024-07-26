@@ -31,7 +31,7 @@ In rough order of impact:
 
 #### NATS
 
-NATS is used for inter-service communication.  This [NATS manifest](./manifests/nats.yaml) provides a configuration that runs a cluster of 3 JetStream enabled NATS servers - with increased resources.  Check out the [NATS Chart](https://github.com/nats-io/k8s/tree/main/helm/charts/nats) documentation for more information.
+NATS is used for inter-service communication.  This [NATS manifest](./manifests/nats.yaml) provides a configuration that runs a cluster of 3 JetStream enabled NATS servers - with increased resources.  It also forces the NATS pods to run on seperate workers, so would need a core node pool of 3.  Check out the [NATS Chart](https://github.com/nats-io/k8s/tree/main/helm/charts/nats) documentation for more information.
 
 #### Redis
 
@@ -77,7 +77,7 @@ Note, since some core services are set up to [auto-scale](#core-service-horizont
 
 A node pool of worker nodes should be created; these nodes should be tainted with `howso.com/nodetype=worker:NoSchedule` allowing trainee pods to run on them.
 
-The worker node pool should be configured with cluster autoscaling to automatically add and remove nodes as needed.
+The worker node pool should be configured with cluster autoscaling to automatically add and remove nodes as needed.  The nodes should be large enough to accomodate the largest trainee pod that will be run.  A minimum of 16 cpu and 32Gb of memory is recommended.
 
 The minimum number of nodes can be 0 for maximum efficiency, but it is worth considering a miniumum of 1 worker nodes so that basic test workloads do not have to wait for a new node to be created.
 
@@ -86,7 +86,7 @@ The minimum number of nodes can be 0 for maximum efficiency, but it is worth con
 
 By default, the Howso Platform client will wait 30 seconds for a trainee to be created, before erroring.  If the cluster is autoscaling (or slow), this is not enough time for a new node to come online and the trainee pod to start.
 
-Increase the create wait time either via environment variable or in the client configuration (howso.yaml).  The value is in seconds, and 0 will wait indefinitely (though will be beholden to server timeouts).
+Increase the create wait time either via environment variable (visible to the python client application) or in the client configuration (howso.yaml).  The value is in seconds, and 0 will wait indefinitely (though will be beholden to server timeouts).
 
 ```sh
 export HOWSO_CLIENT_CREATE_MAX_WAIT_TIME=1200
@@ -106,7 +106,7 @@ Some of the core api services within Howso Platform use the [Horizontal Pod Auto
 
 ## Client Configuration 
 
-Howso Platform workloads are typically driven by a client python application.  For large workloads, using multiple threads (i.e. chunk scaling), the client machine is frequently a bottle neck.  Using developer workstations may be ok for small tasks or working on scripts, but for large workloads a permenant client machine, close to the cluster, is recommended. 
+Howso Platform workloads are typically driven by a client python application.  For large workloads, using multiple threads (i.e. chunk scaling), the client machine is frequently a bottle neck.  Using developer workstations may be ok for small tasks or working on scripts, but for large workloads a permanant client machine, close to the cluster, is recommended. 
 
 Use a dedicated client machine, with at least a core for every simultaneous trainee that the client application is expected run.  Also note that non Howso Platform activity from the client application, i.e. other miscellaneous data or machine learning tasks, can significantly increase the demands on the client machine - especially when running simultaneous threads.
 
