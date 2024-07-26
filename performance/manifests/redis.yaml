@@ -13,7 +13,5 @@ commonConfiguration: '# Enable AOF https://redis.io/topics/persistence#append-on
   notify-keyspace-events Kgh'
 replica:
   replicaCount: 0
-
 master:
-  resourcesPreset: medium
-
+  resourcesPreset: 2xlarge 

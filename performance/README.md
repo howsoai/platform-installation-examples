@@ -31,12 +31,68 @@ In rough order of impact:
 
 NATS is used for inter-service communication.  The [NATS manifest](./manifests/nats.yaml) provides a configuration that runs a cluster of 3 JetStream enabled NATS servers - with increased resources.  Check out the [NATS Chart](https://github.com/nats-io/k8s/tree/main/helm/charts/nats) documentation for more information.
 
+#### Redis
 
-## Autoscaling
+Redis is used for offloading large data messages from NATS and storing message responses from trainees.  Currently Howso Platform components all need to read & write to Redis, so there is no advantage in Read Replicas (without sentinel).  The [Redis manifest](./manifests/redis.yaml) provides a configuration that runs a single Redis server - with increased resources that should perform well for larger workloads.
 
-Kubernetes autoscaling can be leveraged to dynamically adjust resources based on the demands of the Howso Platform. This is particularly useful for handling the creation of 'trainees' which may require additional resources.
+#### Postgres
 
-For optimal autoscaling configuration, refer to the [multi-node setup](../prereqs/README.md#multi-node-k3d-cluster) which demonstrates the use of taints and tolerations to control pod scheduling across multiple nodes.
+Postgres is used for storing the state of the Howso Platform.  The [Postgres manifest](./manifests/postgres.yaml) provides a configuration that increases the resources allocated to the Postgres server - so that it should not be a bottleneck for larger workloads.
+
+#### Minio
+
+The [Minio manifest](./manifests/minio.yaml) standalone mode chart installation has usually been sufficient for most workloads.  However, for larger workloads, the [Minio Chart](https://github.com/minio/minio/blob/master/helm/minio/README.md) can be extensively tuned or swapped out for a cloud s3 compatible service.
+
+### Autoscaling / Node pools
+
+Howso Platform is built to naturally take advantage of Kubernetes [Cluster Autoscaling](https://kubernetes.io/docs/concepts/cluster-administration/cluster-autoscaling/).  It is highly recommended to use this feature, to efficiently scale the cluster during a Howso Platform workload, and scale back down when the workload is complete.
+
+Cluster Autoscaling setup is dependent on the cloud provider and/or the Kubernetes distribution. For example:
+- AWS: The [Cluster Autoscaler](https://docs.aws.amazon.com/eks/latest/userguide/cluster-autoscaler.html) can be installed as a DaemonSet.
+- GCP: The [Cluster Autoscaler](https://cloud.google.com/kubernetes-engine/docs/concepts/cluster-autoscaler) can be enabled on the cluster.
+- OpenShift: The [Cluster Autoscaler](https://docs.openshift.com/container-platform/latest/machine_management/applying-autoscaling.html) can be managed through the OpenShift web console or CLI.
+- Azure AKS: The [Cluster Autoscaler](https://learn.microsoft.com/en-us/azure/aks/cluster-autoscaler) can be enabled directly from the Azure portal or via Azure CLI.
+
+Cluster Autoscaling is conceptually simple.  When trainee pods are created, that do not fit in the existing cluster, the autoscaler will create new nodes to accommodate them.  When the trainee pods are deleted, the autoscaler will remove the nodes.
+
+For the best performance, Howso Platform workloads should be split into two node pools.  One for the core services, NATS and datastores, and one for the trainee pods.  This allows the core services to run without interference from the trainee pods, and allows the trainee pods to be scaled independently of the core services.  The core node pool should be permenant and will not autoscale.  The trainee node pool should be autoscaling, allowing only trainee pods to run on it.
+
+### Node Pool Configuration
+
+#### Core Services Nodes
+The core services of Howso Platform and its dependent charts should run on 2 or 3 dedicated cluster nodes utilizing a [node label](../prereqs/README.md#multi-node-k3d-cluster), to keep trainee pods from starting on them.
+
+```sh
+kubectl label nodes k3d-platformk8s-server-0 howso.com/allowWorkers=False --overwrite
+```
+
+Note, some core services are set up to [auto-scale](#core-service-horizontal-pod-autoscaler).  The core services nodes can be set to to autoscale, to accomodate the increased load, as long as they maintain the minimum number of nodes required to run the core services. 
+
+#### Trainee/Worker Pod Nodes
+A node pool of worker nodes should be created; these nodes should be tainted with `howso.com/nodetype=worker:NoSchedule` allowing trainee pods to run on them.
+
+The node pool should be configured with the cluster autoscaling to automatically add and remove nodes as needed.
+
+The minimum number of nodes can be 0 for maximum efficiency, but it is worth considering a miniumum of 1 worker nodes, so that basic test workloads do not have to wait for a new node to be created.
+
+
+#### Create wait time
+By default, the Howso Platform client will wait 30 seconds for a trainee to be created, before erroring.  If the cluster is autoscaling (or slow), this is not enough time for a new node to come online, the worker image to be downloaded (this is done by the image-loader daemonset) and the trainee to start.
+
+Increase the create wait time either via environment variable or in the client configuration (howso.yaml).  The value is in seconds, and 0 will wait indefinitely (though will be beholden to server timeouts).
+
+```sh
+export HOWSO_CLIENT_CREATE_MAX_WAIT_TIME=1200
+```
+
+```yaml
+howso:
+  ... 
+  options:
+    create_max_wait_time: 0
+```
+
+When configuring optimal autoscaling configuration, refer to the [multi-node setup](../prereqs/README.md#multi-node-k3d-cluster) which demonstrates the use of taints and tolerations to control pod scheduling across multiple nodes.
 
 Kubernetes offers several autoscaling mechanisms:
 
@@ -120,3 +176,7 @@ beta autoscaling
 verbose
 hardware
 network
+
+#### Over capacity
+
+### Core service Horizontal Pod Autoscaler
