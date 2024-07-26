@@ -2,11 +2,10 @@
 
 ## Overview
 
-This guide covers performance considerations for the Howso Platform.  It does not cover writing client-side code, i.e. use of chunk scaling, etc - it does cover other aspects of a performance client.
+This guide covers performance considerations for the Howso Platform and client installation. 
 
 ## TLDR
-Use a dedicated Kubernetes cluster for Howso Platform.  Increase the size of NATS, Redis, Postgres.  Use cluster autoscaling.  Run from a large dedicated client machine.
-
+Use a dedicated Kubernetes cluster for Howso Platform.  Increase the size of NATS, Redis, Postgres.  Use cluster autoscaling.  Run workloads from a large dedicated client machine.
 
 ## Cluster Configuration
 
@@ -58,6 +57,7 @@ Cluster Autoscaling is conceptually simple.  When trainee pods are created, that
 For the best performance, Howso Platform workloads should be split into two node pools.  One for the core services, NATS and datastores, and one for the trainee pods.  This allows the core services to run without interference from the trainee pods, and allows the trainee pods to be scaled independently of the core services.  The core node pool should be permenant and will not autoscale.  The trainee node pool should be autoscaling, allowing only trainee pods to run on it.
 
 ### Node Pool Configuration
+When configuring optimal autoscaling configuration, it may be useful to refer to the [multi-node setup](../prereqs/README.md#multi-node-k3d-cluster) which demonstrates the use of taints and tolerations (in a local setup) to control pod scheduling across multiple nodes.
 
 #### Core Services Nodes
 The core services of Howso Platform and its dependent charts should run on 2 or 3 dedicated cluster nodes utilizing a [node label](../prereqs/README.md#multi-node-k3d-cluster), to keep trainee pods from starting on them.
@@ -92,91 +92,20 @@ howso:
     create_max_wait_time: 0
 ```
 
-When configuring optimal autoscaling configuration, refer to the [multi-node setup](../prereqs/README.md#multi-node-k3d-cluster) which demonstrates the use of taints and tolerations to control pod scheduling across multiple nodes.
+### Core service Horizontal Pod Autoscaler
 
-Kubernetes offers several autoscaling mechanisms:
-
-1. Horizontal Pod Autoscaler (HPA): Automatically scales the number of pods based on CPU utilization or custom metrics.
-2. Vertical Pod Autoscaler (VPA): Automatically adjusts CPU and memory reservations for pods.
-3. Cluster Autoscaler: Automatically adjusts the number of nodes in the cluster based on resource demands.
-
-The Howso Platform can benefit from these autoscaling features, particularly when creating 'trainees' that may require additional resources. As new workloads are created, the autoscaler can provision new nodes to accommodate the increased demand.
-
-TODO: Add specific recommendations for autoscaling settings for the Howso Platform.
-
-## Dependent Charts Resource Allocation
-
-Proper resource allocation for dependent services is crucial for optimal Howso Platform performance. Below are considerations for each dependent chart:
-
-### NATS
-
-NATS is a critical component for inter-service communication in the Howso Platform.
-
-[Link to NATS performance configuration](TODO: Add link to NATS manifest with performance settings)
-
-TODO: Add specific NATS performance recommendations.
-
-### Redis
-
-Redis is used for caching and temporary data storage.
-
-[Link to Redis performance configuration](TODO: Add link to Redis manifest with performance settings)
-
-TODO: Add specific Redis performance recommendations.
-
-### PostgreSQL
-
-PostgreSQL serves as the primary database for the Howso Platform.
-
-[Link to PostgreSQL performance configuration](TODO: Add link to PostgreSQL manifest with performance settings)
-
-TODO: Add specific PostgreSQL performance recommendations.
-
-### MinIO
-
-MinIO is used for object storage within the Howso Platform.
-
-[Link to MinIO performance configuration](TODO: Add link to MinIO manifest with performance settings)
-
-TODO: Add specific MinIO performance recommendations.
-
-Ingress
-
-## Restapi, UMS
-HPAs
-
-## Additional Performance Considerations
-
-TODO: Add sections on:
-- Network optimization
-- Storage performance
-- Monitoring and profiling
-- Resource quotas and limits
-- Any Howso Platform-specific performance tuning options
-
-## Best Practices
-
-TODO: Summarize best practices for maintaining high performance in the Howso Platform.
-
-
-## Kubernetes API
-
-
-## Trouble shooting
-
-Removing all trainees
-Monitoring trainees
+Some of the core api services within Howso Platform use the [Horizontal Pod Autoscaler](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/) to scale the number of pods based on resource usage.  The built in configuration is likely to be sufficient for most workloads, but see the [manifests](./manifests/howso-platform.yaml) for the configuration or the [Helm Chart Values](../common/README.md#howso-platform-helm-chart-values) for more information.
 
 
 ## Client Configuration 
 
-Setting resources
-OOOM
-beta autoscaling
-verbose
-hardware
-network
 
-#### Over capacity
+### Client Machine
 
-### Core service Horizontal Pod Autoscaler
+Howso Platform workloads are typically driven by a client python application.  For large workloads, using multiple threads, i.e. using chunk scaling, the client machine is frequently a bottle neck.  Using developer workstations may be ok for small tasks or working on a script, but for large workloads - a permenant client machine close to the cluster is recommended. 
+
+Create a dedicated client machine, with at least a core for every simultaneous trainee that the application will run.  Also note that non Howso Platform activity on the client, i.e. other miscellaneous data or machine learning tasks using python libraries, can further increase the demands on the client machine - especially when running simultaneous threads.
+
+A stable network connection to the cluster is required.  A key reason that using, even a powerful developer workstations, can lead to issues is they frequently are using WiFi with VPNs, and may be expected to move - when a large run may expect to run for hours or days - this will result in issues. 
+
+
