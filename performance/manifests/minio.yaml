@@ -1,0 +1,5 @@
+existingSecret: platform-minio
+mode: standalone
+resources:
+  requests:
+    memory: 2Gi
