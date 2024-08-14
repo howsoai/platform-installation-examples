@@ -116,3 +116,27 @@ WARNING:urllib3.connectionpool:Retrying (Retry(total=2, connect=None, read=None,
 
 If you are running air-gapped installation examples on Mac Silicon - the verification script will attempt to create worker pods, but the amd64 images (from the air-gap image bundle) will not run correctly on the arm64 architecture (even using Rosetta emulation).  Online installation examples should download the correct image for the architecture.
 
+
+## TLDR
+
+### Basic Helm Install
+```sh
+# prerequisites TLDR
+# helm registry login registry.how.so --username your_email@example.com --password your_license_id 
+# add local.howso.com pypi|api|www|management.local.howso.com to /etc/hosts 
+# Install the [linkerd cli](https://linkerd.io/2/getting-started/) and the certificate tool [step](https://smallstep.com/docs/step-cli/).
+# Setup the Kubernetes cluster
+k3d cluster create --config prereqs/k3d-single-node.yaml
+kubectl -n kube-system wait --for=condition=ready --timeout=180s pod -l k8s-app=metrics-server
+kubectl create namespace howso
+# Create datastore secrets 
+kubectl create secret generic platform-minio --from-literal=rootPassword="$(openssl rand -base64 20)" --from-literal=rootUser="$(openssl rand -base64 20)" --dry-run=client -o yaml | kubectl -n howso apply -f -
+kubectl create secret generic platform-postgres-postgresql --from-literal=postgres-password="$(openssl rand -base64 20)" --dry-run=client -o yaml | kubectl -n howso apply -f -
+kubectl create secret generic platform-redis --from-literal=redis-password="$(openssl rand -base64 20)" --dry-run=client -o yaml | kubectl -n howso apply -f -
+# Install component charts 
+helm install platform-minio oci://registry.how.so/howso-platform/stable/minio --namespace howso --values helm-basic/manifests/minio.yaml --wait
+helm install platform-nats oci://registry.how.so/howso-platform/stable/nats --namespace howso --values helm-basic/manifests/nats.yaml --wait
+helm install platform-postgres oci://registry.how.so/howso-platform/stable/postgresql --namespace howso --values helm-basic/manifests/postgres.yaml --wait
+helm install platform-redis oci://registry.how.so/howso-platform/stable/redis --namespace howso --values helm-basic/manifests/redis.yaml --wait
+helm install howso-platform oci://registry.how.so/howso-platform/stable/howso-platform --namespace howso --values helm-basic/manifests/howso-platform.yaml --wait --timeout 20m
+```

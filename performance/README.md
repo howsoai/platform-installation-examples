@@ -83,6 +83,9 @@ The worker node pool should be configured with cluster autoscaling to automatica
 
 The minimum number of nodes can be 0 for maximum efficiency, but it is worth considering a miniumum of 1 worker nodes so that basic test workloads do not have to wait for a new node to be created.
 
+> Note: Most cluster autoscalers allow multiple Node Pools to be configured of different sizes.
+
+https://github.com/Azure/karpenter-provider-azure
 
 #### Create wait time
 
