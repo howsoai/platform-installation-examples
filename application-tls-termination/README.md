@@ -126,7 +126,3 @@ Create the corresponding Kubernetes secret:
 ```bash
 kubectl -n howso create secret tls platform-api-v3-server-tls --key platform-api-v3-server-tls.key --cert platform-api-v3-server-tls.crt
 ```
-
-## Conclusion
-
-By following these steps, you've configured your Howso Platform to use TLS termination at the application level. This ensures that all traffic, even within the cluster, is encrypted. Remember to manage your certificates properly, including rotating them before they expire.
