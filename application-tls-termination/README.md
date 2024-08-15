@@ -16,6 +16,13 @@ podTLS:
   enabled: true 
 ```
 
+Additionally ingress is globally turned off.  For certain ingress controllers, such as the NGINX Ingress Controller and contour, this is not necessary, and configuring podTLS will also alter the created ingress resources such that they send encrypted traffic through to the application.  In this example, using the traefik ingress controller, we will turn off the ingress controller - and manually create ingress resources.
+
+```yaml
+ingress:
+  enabled: false
+```
+
 If you install the [helm basic example](../helm-basic/README.md), you can update to use the custom ingress certs with the following command - checkout the [manifests](./manifests/howso-platform.yaml) additions. 
 ```sh
 helm upgrade howso-platform oci://registry.how.so/howso-platform/stable/howso-platform --namespace howso --values helm-basic/manifests/howso-platform.yaml --values custom-ingress/manifests/howso-platform.yaml 
@@ -126,3 +133,9 @@ Create the corresponding Kubernetes secret:
 ```bash
 kubectl -n howso create secret tls platform-api-v3-server-tls --key platform-api-v3-server-tls.key --cert platform-api-v3-server-tls.crt
 ```
+
+
+## Create Ingress Resources
+
+The ingress object for the platform-pypi service needs to securely route external HTTPS traffic to the internal application. It should listen for incoming requests on the standard HTTPS port 443, targeting the hostname pypi.local.howso.com. Upon receiving a request, it must terminate the SSL connection, then re-encrypt the traffic and forward it to the backend service named platform-pypi on port 8443 using HTTPS. Any incoming HTTP traffic on port 80 should be automatically redirected to HTTPS. The ingress should use the TLS certificate stored in the Kubernetes secret named platform-ingress-tls for SSL termination. All paths under the root (/) should be directed to the backend service. This configuration ensures end-to-end encryption, with SSL termination and re-encryption occurring at the ingress level, maintaining secure communication throughout the entire request lifecycle.
+
