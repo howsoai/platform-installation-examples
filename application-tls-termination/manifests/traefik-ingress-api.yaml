@@ -33,23 +33,3 @@ spec:
           serversTransport: api-v3-backend-transport
   tls:
     secretName: platform-ingress-tls
-
----
-apiVersion: traefik.io/v1alpha1
-kind: Middleware
-metadata:
-  name: platform-api-v3-response-timeout
-  namespace: howso
-spec:
-  responseTimeout:
-    timeoutSeconds: 300
-
----
-apiVersion: traefik.io/v1alpha1
-kind: Middleware
-metadata:
-  name: platform-api-v3-no-body-size-limit
-  namespace: howso
-spec:
-  contentLimitSize:
-    maxSize: 0 # 0 means no limit
