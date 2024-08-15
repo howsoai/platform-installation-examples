@@ -1,0 +1,63 @@
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: ums-backend-transport
+  namespace: howso
+spec:
+  rootCAsSecrets:
+    - platform-app-tls-ca 
+  serverName: platform-ums.default.svc.cluster.local
+  insecureSkipVerify: false 
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: platform-ums-management
+  namespace: howso
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`management.local.howso.com`)
+      kind: Rule
+      services:
+        - name: platform-ums
+          port: 8443
+          serversTransport: ums-backend-transport
+      middlewares:
+        - name: platform-ums-redirect
+  tls:
+    secretName: platform-ingress-tls
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: platform-ums-api
+  namespace: howso
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`api.local.howso.com`) && PathPrefix(`/api/v2/manage/`)
+      kind: Rule
+      services:
+        - name: platform-ums
+          port: 8443
+          serversTransport: ums-backend-transport
+      middlewares:
+        - name: platform-ums-redirect
+  tls:
+    secretName: platform-ingress-tls
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: platform-ums-redirect
+  namespace: howso
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true

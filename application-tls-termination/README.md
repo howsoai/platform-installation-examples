@@ -5,6 +5,8 @@ Typically Ingress Controllers terminate TLS connections at the edge of the clust
 
 When enabled, with the `podTLS.enabled` value, the Howso Platform chart application uses side-car nginx containers in all the pods that accept traffic from the Ingress Controller. This guide will show a local example where Ingress traffic TLS terminates at the application.
 
+Ingress controllers can be marketly different in how they handle more complicated scenarios.  Many create their own CRD types to handle more complex routing rules.  In this example, we will use Traefik, which comes with the k3d cluster.  It is a common ingress controller in its own right, but it in using it, we're forced to turn off the built in ingress objects, and create our own.  This also helps document what the routes are doing, and how they are configured.
+
 ## Prerequisites
 Use the [basic helm install guide](../helm-basic/README.md) to install Howso Platform, and ensure it is running correctly. See the [TLDR](../common/README.md#basic-helm-install) for a quick start.
 
@@ -40,6 +42,14 @@ First, create the root CA:
 step certificate create root-ca root-ca.crt root-ca.key \
     --profile root-ca \
     --no-password --insecure
+```
+
+
+Create Root ca secret
+```bash
+kubectl create secret generic platform-app-tls-ca \
+  --from-file=ca.crt=root-ca.crt \
+  -n howso
 ```
 
 ### Platform PyPI Server
@@ -139,3 +149,54 @@ kubectl -n howso create secret tls platform-api-v3-server-tls --key platform-api
 
 The ingress object for the platform-pypi service needs to securely route external HTTPS traffic to the internal application. It should listen for incoming requests on the standard HTTPS port 443, targeting the hostname pypi.local.howso.com. Upon receiving a request, it must terminate the SSL connection, then re-encrypt the traffic and forward it to the backend service named platform-pypi on port 8443 using HTTPS. Any incoming HTTP traffic on port 80 should be automatically redirected to HTTPS. The ingress should use the TLS certificate stored in the Kubernetes secret named platform-ingress-tls for SSL termination. All paths under the root (/) should be directed to the backend service. This configuration ensures end-to-end encryption, with SSL termination and re-encryption occurring at the ingress level, maintaining secure communication throughout the entire request lifecycle.
 
+
+### Platform PyPI Ingress
+
+Create the ingress resource for the platform-pypi service:
+
+```yaml
+kubectl apply -f application-tls-termination/manifests/traefik-ingress-pypi.yaml
+```
+
+Take a look at the [manifests](./manifests/traefik-ingress-pypi.yaml) for the platform-pypi ingress.
+
+Hit the [PyPI](https://pypi.local.howso.com) endpoint in your browser, proceed past the certificate warning and you should see the PyPI server's landing page.
+
+#### Confirming the TLS Termination
+
+Check the Ready column shows 2/2 for the platform-pypi pods.
+```sh
+kubectl get po -l app.kubernetes.io/component=platform-pypi
+```
+This indicates that the pod is running two containers, the main application container and the TLS sidecar container.
+
+Check the logs of the TLS sidecar container to confirm that it is running correctly.  It is an nginx container that is configured to terminate the TLS connection and forward the traffic to the main application container.
+
+```sh
+kubectl -n howso logs -l app.kubernetes.io/component=platform-pypi -c tls-sidecar -f
+```
+
+```sh
+kubectl get cm  platform-pypi-tls-sidecar-nginx-config -ojson | jq -r '.data."nginx.conf"'
+```
+
+### Platform UI Ingress
+
+
+### Troubleshooting
+
+Add debug logs to traefik
+
+```sh
+kubectl edit deployment traefik -n kube-system
+```
+
+Under the `- args:` section, add the following line:
+```yaml
+- --log.level=DEBUG
+```
+
+Tail the logs of the traefik pod to see the debug logs
+```sh
+kubectl -n kube-system logs -l app.kubernetes.io/name=traefik
+```
