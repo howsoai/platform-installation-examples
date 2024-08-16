@@ -3,7 +3,7 @@
 ## Introduction 
 Typically Ingress Controllers terminate TLS connections at the edge of the cluster. If your security posture requires traffic from the ingress to the application also be encrypted, this guide will explain how, using a fully working local example. 
 
-There are two main aspects to the solution.  The Ingress Controller must be configured to send encrypted traffic to the relevent Howso Platform services, and the Howso Platform services must be configured to accept this encrypted traffic.
+There are two main aspects to the solution.  The Ingress Controller must be configured to send encrypted traffic to the relevant Howso Platform services, and the Howso Platform services must be configured to accept this encrypted traffic.
 
 > Note: Using a [service mesh](../linkerd/README.md) is another way to ensure all traffic (not just ingress to application) is encrypted.  Service mesh work as a cluster level framework that then require no (or minimal) application changes to encrypt all traffic.
 
@@ -13,7 +13,7 @@ To accept encrypted traffic, the Howso Platform Helm chart can be configured wit
 
 The sidecar containers will need to be supplied with a server certificate to use for the TLS handshake with the Ingress controller.  The ingress will need to be configured to trust these certificates, by placing either the certificates or a root signing certificate in its trust store.
 
-> Note: It may also be acceptible to disable the Ingress certificate verification check, lessening the security of the connection (potentially opening up a man-in-the-middle style attack), but still encrypting the traffic.
+> Note: It may also be acceptable to disable the Ingress certificate verification check, lessening the security of the connection (potentially opening up a man-in-the-middle style attack), but still encrypting the traffic.
 
 
 ## Ingress Controller Configuration
@@ -22,11 +22,11 @@ There are Ingress Controller objects created by the Howso Platform Helm chart, b
 
 ### Some extra background
 
-[Ingress Controllers](https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/) act as a reverse proxy to access services runing in a Kubernetes cluster.  Howso Platform relies on the Ingress controller to route incoming traffic to its service.  Ingress controllers are typically configured by Ingress objects, which layout the traffic routing rules.  The Howso Platform Helm chart will create these objects when it is installed.
+[Ingress Controllers](https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/) act as a reverse proxy to access services running in a Kubernetes cluster.  Howso Platform relies on the Ingress controller to route incoming traffic to its service.  Ingress controllers are typically configured by Ingress objects, which layout the traffic routing rules.  The Howso Platform Helm chart will create these objects when it is installed.
 
 > Note: The approach to configuring Ingress Controllers is changing in Kubernetes, with the Ingress object type being frozen, in favor of the [Gateway API](https://kubernetes.io/docs/concepts/services-networking/gateway/).  Support for the Gateway API is increasing, but it is still less common.  Howso Platform does not yet support the Gateway API.
 
-With many implementations of Ingress controller, with a varietey of different features, the Ingress object has not managed to provide a consistent approach outside of the basic routing features.  As a result, many Ingress controllers have their own CRD types, which are more flexible, and can handle more complex routing rules.  It is also common for Ingress Controllers to have a large number of bespoke annotations that can be used against the built in Ingress object.
+With many implementations of Ingress controller, with a variety of different features, the Ingress object has not managed to provide a consistent approach outside of the basic routing features.  As a result, many Ingress controllers have their own CRD types, which are more flexible, and can handle more complex routing rules.  It is also common for Ingress Controllers to have a large number of bespoke annotations that can be used against the built in Ingress object.
 
 As a result, the Howso Platform Helm chart is not able to switch on 'Ingress to application' TLS universally for all Ingress controllers.  There are a couple (contour & nginx) that will work just by using the `podTLS.enabled` value, but for most, the Ingress object will need to be disabled, and appropriate Ingress rules created manually.
 
