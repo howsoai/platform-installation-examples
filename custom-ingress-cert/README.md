@@ -4,7 +4,7 @@ Howso Platform uses Ingress resources to expose several services to users via HT
 
 The default TLS certificates used by the Howso Platform are created by the `platform-cert-generation-initial` job shortly after the installation and managed on an ongoing basis by the `platform-cert-generation` cronjob.  These certificates are signed by a Certificate Authority (CA) that is created and stored as a secret at `platform-ca`.  This CA can be [extracted and trusted by users](../common/README.md#trust-the-certs) so that a browser or Python client will trust and verify the Howso Platform's certificates. 
 
-Ingress certificates signed by this platform CA will be offered up by the ingress controller to incoming requests through the browser or Python client, to any of the domains of the platform.  Trusting the CA, rather than the ingress certificate directly, will remove the need to trust individual certificates, and certificates that have been rotated will be automatically trusted. 
+Ingress certificates signed by this platform CA will be offered up by the Ingress controller to incoming requests through the browser or Python client, to any of the domains of the platform.  Trusting the CA, rather than the ingress certificate directly, will remove the need to trust individual certificates, and certificates that have been rotated will be automatically trusted. 
 
 > Howso Platform must be accessed via HTTPS; HTTP only access is not supported and is expected to break elements of the application, including UI authentication.  HSTS headers will help enforce this, users may also wish to add additional annotations (via the [chart values](../common/README.md#howso-platform-helm-chart-values)) to the Ingress resources to force redirects.
 
