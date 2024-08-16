@@ -71,6 +71,14 @@ In the next steps we'll create certificates for a root CA and each required serv
 
 > Note: This example uses a root CA so that the Ingress controller just needs to trust a single certificate.  There is an existing platform root CA secret (platform-ca) that is created by the platform-cert-generation jobs, which also creates certificates for use by the UMS to provide an Oauth authorization server, and a default ingress cert.  It is possible to extract and reuse this root ca, but this example will focus solely of the TLS termination certificates.
 
+For each service the following will be needed for the certs.
+- A SAN name that matches the cluster service address that is the expected hostname in the TLS handshake.
+- A Reference to the root CA certificate and key.
+- A profile suitable for a server certificate.
+- No passphrase is used, this would require a further step in the sidecar to accept a passphrase and decrypt the key.
+
+
+> Note: Mechanisms for renewing the certificate are beyond the scope of this example. 
 
 #### Root CA
 
