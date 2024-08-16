@@ -8,7 +8,7 @@ This demonstrates a self-contained Single Sign-On (SSO) setup, where the Identit
 
 In this example Dex takes the place of your actual Identity Provider (IdP) such as Active Directory or Okta, but shows a working system without external dependencies.
 
-Use the [basic helm install guide](../helm-basic/README.md) to install Howso Platform, and ensure it is running correctly.  See the [TLDR](../common/README.md#basic-helm-install) for a quick start.
+Use the [basic helm install guide](../helm-basic/README.md) to install Howso Platform, and ensure it is running correctly.  See [here](../common/README.md#basic-helm-install) for a quick start.
 
 ## Install and Configure Dex 
 

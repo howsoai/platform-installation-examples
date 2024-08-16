@@ -1,4 +1,4 @@
-# TLS Termination at the Application (not Ingress)
+To fully confirm that the traffic is encrypted, you can use a [debug container](#verifying-tls-traffic-for-kubernetes-services) and capture the traffic between the ingress and the sidecar container. TLS Termination at the Application (not Ingress)
 
 ## Introduction 
 Typically Ingress Controllers terminate TLS connections at the edge of the cluster. If your security posture requires traffic from the ingress to the application also be encrypted, this guide will explain how, using a fully working local example. 
@@ -38,14 +38,14 @@ In this example, we will use Traefik, which comes with the k3d cluster.  It is a
 ## Setup Steps
 
 ### Prerequisites
-
-Use the [basic helm install guide](../helm-basic/README.md) to install Howso Platform, and ensure it is running correctly. See the [TLDR](../common/README.md#basic-helm-install) for a quick start.
+.
+Use the [basic helm install guide](../helm-basic/README.md) to install Howso Platform, and ensure it is running correctly. See [here](../common/README.md#basic-helm-install) for a quick start.
 
 Install the [step](https://smallstep.com/docs/step-cli/) certificate tool. 
 
 ### Configure Howso Platform TLS sidecars
 
-The values file for the howso-platform chart will need to turn on the podTLS feature ..
+The values file for the howso-platform chart will need to turn on the podTLS feature ...
 ```yaml
 podTLS:
   enabled: true 
@@ -191,7 +191,7 @@ Take a look at the [manifests](./manifests/) for the services.  In this section 
 
 Create the ingress resource for the platform-pypi service:
 
-```yaml
+```sh
 kubectl apply -f application-tls-termination/manifests/traefik-ingress-pypi.yaml
 ```
 
@@ -211,10 +211,12 @@ Check the logs of the TLS sidecar container to confirm that it is running correc
 kubectl -n howso logs -l app.kubernetes.io/component=platform-pypi -c tls-sidecar -f
 ```
 
+To fully confirm that the traffic is encrypted, you can use a [debug container](#verifying-tls-traffic-for-kubernetes-services) and capture the traffic between the ingress and the sidecar container.
+
 ### Platform UI Ingress
 
 
-```yaml
+```sh
 kubectl apply -f application-tls-termination/manifests/traefik-ingress-ui.yaml
 ```
 
@@ -224,7 +226,7 @@ Confirm that you can hit the parent domain [endpoint](https://local.howso.com), 
 
 Take a look at the [manifests](./manifests/traefik-ingress-api.yaml) for the platform-api ingress.  Apply the manifest to the cluster.
 
-```yaml
+```sh
 kubectl apply -f application-tls-termination/manifests/traefik-ingress-api.yaml
 ```
 
@@ -234,7 +236,7 @@ Confirm that you can hit the main API [endpoint](https://api.local.howso.com/api
 
 Take a look at the [manifests](./manifests/traefik-ingress-ums.yaml) for the platform-ums ingress.  Apply the manifest to the cluster.
 
-```yaml
+```sh
 kubectl apply -f application-tls-termination/manifests/traefik-ingress-ums.yaml
 ```
 
@@ -242,6 +244,8 @@ Confirm that you can hit the main UMS [endpoint](https://management.local.howso.
 
 
 ### Troubleshooting
+
+#### Traefik debug logs
 
 Add debug logs to traefik
 
@@ -257,4 +261,37 @@ Under the `- args:` section, add the following line:
 Tail the logs of the traefik pod to see the debug logs
 ```sh
 kubectl -n kube-system logs -l app.kubernetes.io/name=traefik
+```
+
+#### Verifying TLS Traffic for Kubernetes Services
+
+To fully confirm that the traffic encrypted requires capturing traffic from ingress to the tls sidecar.  A little involved, but you can do this using a debug container with network tools as follows.
+
+Get pypi (or other service) pod name:
+```sh
+POD_NAME=$(kubectl get pod -n howso -l app.kubernetes.io/component=platform-pypi -o jsonpath='{.items[0].metadata.name}')
+```
+
+Launch a debug container:
+```sh
+kubectl debug -it -n howso $POD_NAME --image=nicolaka/netshoot --target=tls-sidecar
+```
+
+Now you're in the same network namespace as the sidecar container, with tools from the [netshoot](https://github.com/nicolaka/netshoot) image.  You can use tshark to capture traffic.
+
+```sh
+tshark -i any -n -Y "ssl or tls"
+```
+
+In a separate terminal generate traffic to the service:
+```sh
+curl -k https://pypi.local.howso.com/
+```
+
+Confirm TLS traffic by looking for output similar to:
+
+```
+TLSv1 Client Hello
+TLSv1.2 Server Hello, Certificate, Server Key Exchange, Server Hello Done
+TLSv1.2 Application Data
 ```

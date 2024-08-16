@@ -3,7 +3,7 @@
 ## Introduction
 Linkerd is a popular service mesh for Kubernetes, and is a CNCF project.  If mTLS is required between all components of Howso Platform - though it is possible to configure this all manually - the recommendation is to use a well supported service mesh such as Linkerd.  This guide will show how to install Linkerd into a local Kubernetes cluster, and then how to configure the Howso Platform to use it. 
 
-Use the [basic helm install guide](../helm-basic/README.md) to install Howso Platform, and ensure it is running correctly.  See the [TLDR](../common/README.md#basic-helm-install) for a quick start.
+Use the [basic helm install guide](../helm-basic/README.md) to install Howso Platform, and ensure it is running correctly.  See [here](../common/README.md#basic-helm-install) for a quick start.
 
 
 ## Install Linkerd

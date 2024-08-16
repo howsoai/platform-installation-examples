@@ -117,7 +117,7 @@ WARNING:urllib3.connectionpool:Retrying (Retry(total=2, connect=None, read=None,
 If you are running air-gapped installation examples on Mac Silicon - the verification script will attempt to create worker pods, but the amd64 images (from the air-gap image bundle) will not run correctly on the arm64 architecture (even using Rosetta emulation).  Online installation examples should download the correct image for the architecture.
 
 
-## TLDR
+## Quick Start 
 
 ### Basic Helm Install
 

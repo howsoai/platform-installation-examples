@@ -5,7 +5,6 @@ howso.yml*
 howso_stacktrace.txt
 .envrc
 .direnv
-howso-platform.crt
 howso-platform-charts.tar.gz
 *.key
 *.crt
