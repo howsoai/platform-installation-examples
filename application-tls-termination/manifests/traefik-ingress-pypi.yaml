@@ -1,0 +1,35 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: platform-pypi
+  namespace: howso
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`pypi.local.howso.com`)
+      kind: Rule
+      services:
+        - name: platform-pypi
+          port: 8443
+          scheme: https
+          serversTransport: pypi-backend-transport
+  tls:
+    secretName: platform-ingress-tls
+
+---
+
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: pypi-backend-transport
+  namespace: howso
+spec:
+  # At ca.crt in this secret is the CA certificate that signed the application's certificate.
+  rootCAsSecrets:
+    - platform-app-tls-ca 
+  # This needs to match a SAN in the certificate presented by the application. 
+  serverName: platform-pypi.default.svc.cluster.local
+  # This is the default, but if the traefik trust store does not trust the application's certificate
+  # you can set it to true.
+  insecureSkipVerify: false 

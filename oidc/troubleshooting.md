@@ -60,7 +60,7 @@ The `authorizeEndpoint` needs to be accessible from the workstation of the user'
 
 To test the accessibility from the UMS, you can use `curl` from the Howso Platform UMS pod:
 
-```bash
+```sh
 kubectl exec -n howso -it \
              $(kubectl get pod -n howso -l app.kubernetes.io/component=user-management-service -o jsonpath='{.items[0].metadata.name}') \
              -- curl -v <jwks-endpoint-url>

@@ -1,0 +1,4 @@
+podTLS:
+  enabled: true
+ingress:
+  enabled: false
