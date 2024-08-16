@@ -1,4 +1,3 @@
-To fully confirm that the traffic is encrypted, you can use a [debug container](#verifying-tls-traffic-for-kubernetes-services) and capture the traffic between the ingress and the sidecar container. TLS Termination at the Application (not Ingress)
 
 ## Introduction 
 Typically Ingress controllers terminate TLS connections at the edge of the cluster. If your security posture requires traffic from the ingress to the application also be encrypted, this guide will explain how, using a fully working local example. 
@@ -38,10 +37,10 @@ In this example, we will use Traefik, which comes with the k3d cluster.  It is a
 ## Setup Steps
 
 ### Prerequisites
-.
-Use the [basic helm install guide](../helm-basic/README.md) to install Howso Platform, and ensure it is running correctly. See [here](../common/README.md#basic-helm-install) for a quick start.
 
-Install the [step](https://smallstep.com/docs/step-cli/) certificate tool. 
+Use the [basic helm install guide](../helm-basic/README.md) to install Howso Platform and ensure it is running correctly. See [here](../common/README.md#basic-helm-install) for a quick start.
+
+Install the [step](https://smallstep.com/docs/step-cli/) certificate tool.
 
 ### Configure Howso Platform TLS sidecars
 
