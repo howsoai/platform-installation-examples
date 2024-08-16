@@ -15,7 +15,7 @@ The sidecar containers will need to be supplied with a server certificate to use
 > Note: It may also be acceptable to disable the Ingress certificate verification check, lessening the security of the connection (potentially opening up a man-in-the-middle style attack), but still encrypting the traffic.
 
 
-## Ingress controller Configuration
+## Ingress Controller Configuration
 
 There are Ingress controller objects created by the Howso Platform Helm chart, but for extended configuration, such as TLS termination at the application, the Ingress controller objects will often need to be created manually, as Ingress controllers are often quite different in their configuration.  This K3d example using Traefik will show how to create Ingress rules (using Traefik CRDs) to send encrypted traffic, to the ports of the sidecar containers, for the API, UI, PyPI and UMS services. 
 
