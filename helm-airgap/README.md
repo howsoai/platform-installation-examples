@@ -34,7 +34,7 @@ This step shows how you can pull the charts on a machine with internet access, a
 
 > Note: The use of `--untar` is just so you don't need to know the version for the next step (the actual tarball will be named with the version).  
 
-```bash
+```sh
 tmp_dir=$(mktemp -d) # Create a temporary directory to store the charts
 cd $tmp_dir
 # Pull the charts from the Helm registry into the temporary directory

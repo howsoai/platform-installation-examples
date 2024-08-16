@@ -41,7 +41,7 @@ You can find your license ID in two ways: either from the address bar on the dow
 The charts are stored in an OCI (Open Container Initiative) type registry, and you'll log in using the email registered with the customer portal and your license ID. Use the following command to log in, replacing `your_email@example.com` with your registered email and `your_license_id` with your actual license ID:
 
 
-```bash
+```sh
 helm registry login registry.how.so --username your_email@example.com --password your_license_id
 ```
 

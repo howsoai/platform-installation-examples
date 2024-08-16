@@ -21,14 +21,14 @@ echo "127.0.0.1  dex.local.howso.com" | sudo tee -a /etc/hosts
 
 Add Dex Helm repository
 
-```bash
+```sh
 helm repo add dex https://charts.dexidp.io
 helm repo update
 ```
 
 Create a namespace for Dex.
 
-```bash
+```sh
 kubectl create namespace dex
 ```
 
@@ -39,7 +39,7 @@ In addition the [client](https://www.oauth.com/oauth2-servers/definitions/) is c
 
 Install Dex from Helm.
 
-```bash
+```sh
 helm install dex dex/dex --namespace dex -f oidc/manifests/dex.yaml --wait
 ```
 
@@ -47,7 +47,7 @@ Check Dex is running.
 
 This endpoint is the OpenID Connect discovery document, if it is accessible Dex is running.
 
-```bash
+```sh
 curl -k https://dex.local.howso.com/.well-known/openid-configuration
 ```
 
@@ -62,7 +62,7 @@ Take a look at the [config](./manifests/howso-platform.yaml) for Howso Platform.
 
 Update your Howso Platform configuration to configure OIDC with Dex as the identity provider.
 
-```bash
+```sh
 helm upgrade howso-platform oci://registry.how.so/howso-platform/stable/howso-platform --namespace howso --values oidc/manifests/howso-platform.yaml --wait
 ```
 
