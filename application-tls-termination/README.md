@@ -84,14 +84,14 @@ For each service the following will be needed for the certs.
 
 First, create the root CA:
 
-```bash
+```sh
 step certificate create root-ca root-ca.crt root-ca.key \
     --profile root-ca \
     --no-password --insecure
 ```
 
 Create Root ca secret:
-```bash
+```sh
 kubectl create secret generic platform-app-tls-ca \
   --from-file=ca.crt=root-ca.crt \
   -n howso
@@ -101,7 +101,7 @@ kubectl create secret generic platform-app-tls-ca \
 
 Create the certificate for the PyPI server:
 
-```bash
+```sh
 step certificate create platform-pypi.default.svc.cluster.local platform-pypi-server-tls.crt platform-pypi-server-tls.key \
     --profile leaf \
     --not-after 2160h \
@@ -116,7 +116,7 @@ step certificate create platform-pypi.default.svc.cluster.local platform-pypi-se
 
 Create the corresponding Kubernetes secret:
 
-```bash
+```sh
 kubectl -n howso create secret tls platform-pypi-server-tls --key platform-pypi-server-tls.key --cert platform-pypi-server-tls.crt
 ```
 
@@ -124,7 +124,7 @@ kubectl -n howso create secret tls platform-pypi-server-tls --key platform-pypi-
 
 Create the certificate for the UMS server:
 
-```bash
+```sh
 step certificate create platform-ums.default.svc.cluster.local platform-ums-server-tls.crt platform-ums-server-tls.key \
     --profile leaf \
     --not-after 2160h \
@@ -139,7 +139,7 @@ step certificate create platform-ums.default.svc.cluster.local platform-ums-serv
 
 Create the corresponding Kubernetes secret:
 
-```bash
+```sh
 kubectl -n howso create secret tls platform-ums-server-tls --key platform-ums-server-tls.key --cert platform-ums-server-tls.crt
 ```
 
@@ -147,7 +147,7 @@ kubectl -n howso create secret tls platform-ums-server-tls --key platform-ums-se
 
 Create the certificate for the UI:
 
-```bash
+```sh
 step certificate create platform-ui-v2.default.svc.cluster.local platform-ui-v2-server-tls.crt platform-ui-v2-server-tls.key \
     --profile leaf \
     --not-after 2160h \
@@ -162,7 +162,7 @@ step certificate create platform-ui-v2.default.svc.cluster.local platform-ui-v2-
 
 Create the corresponding Kubernetes secret:
 
-```bash
+```sh
 kubectl -n howso create secret tls platform-ui-v2-server-tls --key platform-ui-v2-server-tls.key --cert platform-ui-v2-server-tls.crt
 ```
 
@@ -170,7 +170,7 @@ kubectl -n howso create secret tls platform-ui-v2-server-tls --key platform-ui-v
 
 Create the certificate for the API v3 server:
 
-```bash
+```sh
 step certificate create platform-api-v3.default.svc.cluster.local platform-api-v3-server-tls.crt platform-api-v3-server-tls.key \
     --profile leaf \
     --not-after 2160h \
@@ -185,7 +185,7 @@ step certificate create platform-api-v3.default.svc.cluster.local platform-api-v
 
 Create the corresponding Kubernetes secret:
 
-```bash
+```sh
 kubectl -n howso create secret tls platform-api-v3-server-tls --key platform-api-v3-server-tls.key --cert platform-api-v3-server-tls.crt
 ```
 
