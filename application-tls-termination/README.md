@@ -1,9 +1,8 @@
-To fully confirm that the traffic is encrypted, you can use a [debug container](#verifying-tls-traffic-for-kubernetes-services) and capture the traffic between the ingress and the sidecar container. TLS Termination at the Application (not Ingress)
 
 ## Introduction 
-Typically Ingress Controllers terminate TLS connections at the edge of the cluster. If your security posture requires traffic from the ingress to the application also be encrypted, this guide will explain how, using a fully working local example. 
+Typically Ingress controllers terminate TLS connections at the edge of the cluster. If your security posture requires traffic from the ingress to the application also be encrypted, this guide will explain how, using a fully working local example. 
 
-There are two main aspects to the solution.  The Ingress Controller must be configured to send encrypted traffic to the relevant Howso Platform services, and the Howso Platform services must be configured to accept this encrypted traffic.
+There are two main aspects to the solution.  The Ingress controller must be configured to send encrypted traffic to the relevant Howso Platform services, and the Howso Platform services must be configured to accept this encrypted traffic.
 
 > Note: Using a [service mesh](../linkerd/README.md) is another way to ensure all traffic (not just ingress to application) is encrypted.  Service mesh work as a cluster level framework that then require no (or minimal) application changes to encrypt all traffic.
 
@@ -18,30 +17,30 @@ The sidecar containers will need to be supplied with a server certificate to use
 
 ## Ingress Controller Configuration
 
-There are Ingress Controller objects created by the Howso Platform Helm chart, but for extended configuration, such as TLS termination at the application, the Ingress Controller objects will often need to be created manually, as Ingress Controllers are often quite different in their configuration.  This K3d example using Traefik will show how to create Ingress rules (using Traefik CRDs) to send encrypted traffic, to the ports of the sidecar containers, for the API, UI, PyPI and UMS services. 
+There are Ingress controller objects created by the Howso Platform Helm chart, but for extended configuration, such as TLS termination at the application, the Ingress controller objects will often need to be created manually, as Ingress controllers are often quite different in their configuration.  This K3d example using Traefik will show how to create Ingress rules (using Traefik CRDs) to send encrypted traffic, to the ports of the sidecar containers, for the API, UI, PyPI and UMS services. 
 
 ### Some extra background
 
-[Ingress Controllers](https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/) act as a reverse proxy to access services running in a Kubernetes cluster.  Howso Platform relies on the Ingress controller to route incoming traffic to its service.  Ingress controllers are typically configured by Ingress objects, which layout the traffic routing rules.  The Howso Platform Helm chart will create these objects when it is installed.
+[Ingress controllers](https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/) act as a reverse proxy to access services running in a Kubernetes cluster.  Howso Platform relies on the Ingress controller to route incoming traffic to its service.  Ingress controllers are typically configured by Ingress objects which layout the traffic routing rules.  The Howso Platform Helm chart will create these objects when it is installed.
 
-> Note: The approach to configuring Ingress Controllers is changing in Kubernetes, with the Ingress object type being frozen, in favor of the [Gateway API](https://kubernetes.io/docs/concepts/services-networking/gateway/).  Support for the Gateway API is increasing, but it is still less common.  Howso Platform does not yet support the Gateway API.
+> Note: The approach to configuring Ingress controllers is changing in Kubernetes, with the Ingress object type being frozen, in favor of the [Gateway API](https://kubernetes.io/docs/concepts/services-networking/gateway/).  Support for the Gateway API is increasing, but it is still less common.  Howso Platform does not yet support the Gateway API.
 
-With many implementations of Ingress controller, with a variety of different features, the Ingress object has not managed to provide a consistent approach outside of the basic routing features.  As a result, many Ingress controllers have their own CRD types, which are more flexible, and can handle more complex routing rules.  It is also common for Ingress Controllers to have a large number of bespoke annotations that can be used against the built in Ingress object.
+With many implementations of Ingress controller, with a variety of different features, the Ingress object has not managed to provide a consistent approach outside of the basic routing features.  As a result, many Ingress controllers have their own CRD types, which are more flexible, and can handle more complex routing rules.  It is also common for Ingress controllers to have a large number of bespoke annotations that can be used against the built in Ingress object.
 
 As a result, the Howso Platform Helm chart is not able to switch on 'Ingress to application' TLS universally for all Ingress controllers.  There are a couple (contour & nginx) that will work just by using the `podTLS.enabled` value, but for most, the Ingress object will need to be disabled, and appropriate Ingress rules created manually.
 
-In this example, we will use Traefik, which comes with the k3d cluster.  It is a common ingress controller in its own right, and serves as a good extended example as configuring it to send TLS traffic to the back end application is not possible with the built in Ingress object.
+In this example, we will use Traefik, which comes with the k3d cluster.  It is a common Ingress controller in its own right, and serves as a good extended example as configuring it to send TLS traffic to the back end application is not possible with the built in Ingress object.
 
-> Note: Other Ingress controllers will be differ in their configuration, but the [manifests](./manifests) will give a good example of the specific information about paths, ports and service names.
+> Note: Other Ingress controllers will differ in their configuration, but the [manifests](./manifests) will give a good example of the specific information about paths, ports and service names.
 
 
 ## Setup Steps
 
 ### Prerequisites
-.
-Use the [basic helm install guide](../helm-basic/README.md) to install Howso Platform, and ensure it is running correctly. See [here](../common/README.md#basic-helm-install) for a quick start.
 
-Install the [step](https://smallstep.com/docs/step-cli/) certificate tool. 
+Use the [basic helm install guide](../helm-basic/README.md) to install Howso Platform and ensure it is running correctly. See [here](../common/README.md#basic-helm-install) for a quick start.
+
+Install the [step](https://smallstep.com/docs/step-cli/) certificate tool.
 
 ### Configure Howso Platform TLS sidecars
 
@@ -56,6 +55,8 @@ podTLS:
 ingress:
   enabled: false
 ```
+
+> Note: Howso Platform release 2024.8.0 is required to globally disable Ingress object creation.  If you are using an older version, you will need to manually delete the Ingress objects created by the Helm chart.
 
 From your installation of the [helm basic example](../helm-basic/README.md), update the chart with these [manifests](./manifests/howso-platform.yaml) additions. 
 
