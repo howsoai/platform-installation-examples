@@ -57,6 +57,8 @@ ingress:
   enabled: false
 ```
 
+> Note: Howso Platform release 2024.8.0 is required to globally disable Ingress object creation.  If you are using an older version, you will need to manually delete the Ingress objects created by the Helm chart.
+
 From your installation of the [helm basic example](../helm-basic/README.md), update the chart with these [manifests](./manifests/howso-platform.yaml) additions. 
 
 ```sh
