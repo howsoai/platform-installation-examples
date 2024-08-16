@@ -215,7 +215,7 @@ kubectl -n howso logs -l app.kubernetes.io/component=platform-pypi -c tls-sideca
 
 
 ```yaml
-kubectl apply -f application-tls-termination/manifests/traefik-ingress-pypi.yaml
+kubectl apply -f application-tls-termination/manifests/traefik-ingress-ui.yaml
 ```
 
 Confirm that you can hit the parent domain [endpoint](https://local.howso.com), after proceeding past the certificate warning you should be redirected to the initial [Howso UI page](https://www.local.howso.com) 
