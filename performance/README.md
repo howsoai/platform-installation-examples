@@ -85,8 +85,6 @@ The minimum number of nodes can be 0 for maximum efficiency, but it is worth con
 
 > Note: Most cluster autoscalers allow multiple Node Pools to be configured of different sizes.
 
-https://github.com/Azure/karpenter-provider-azure
-
 #### Create wait time
 
 By default, the Howso Platform client will wait 30 seconds for a trainee to be created, before erroring.  If the cluster is autoscaling (or slow), this is not enough time for a new node to come online and the trainee pod to start.

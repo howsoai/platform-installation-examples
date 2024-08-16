@@ -1,24 +1,24 @@
 # TLS Termination at the Application (not Ingress)
 
 ## Introduction 
-Typically Ingress Controllers terminate TLS connections at the edge of the cluster. If your security posture requires ingress traffic be encrypted, this guide will explain how, using a fully working local example. 
+Typically Ingress Controllers terminate TLS connections at the edge of the cluster. If your security posture requires traffic from the ingress to the application also be encrypted, this guide will explain how, using a fully working local example. 
 
-There are two main aspects to the solution.  The Ingress Controller must be configured to send encrypted traffic to the relevent Howso Platform services, and the Howso Platform services must be configured to accept encrypted traffic.
+There are two main aspects to the solution.  The Ingress Controller must be configured to send encrypted traffic to the relevent Howso Platform services, and the Howso Platform services must be configured to accept this encrypted traffic.
 
-> Note: Using a [service mesh](../linkerd/README.md) is another way to ensure all traffic (not just ingress to application) is encrypted.  Service mesh work as a cluster service, that often require no (or minimal) application changes.
+> Note: Using a [service mesh](../linkerd/README.md) is another way to ensure all traffic (not just ingress to application) is encrypted.  Service mesh work as a cluster level framework that then require no (or minimal) application changes to encrypt all traffic.
 
 ## TLS Sidecar
 
-To accept encrypted traffic, the Howso Platform services can be configured with the `podTLS.enabled` value to switch on TLS sidecar containers.  These are simply nginx containers that run in the same pod as an application configured to terminate a TLS connection from the Ingress controller and forward traffic to the main application container (which is now local traffic that doesn't leave the machine).
+To accept encrypted traffic, the Howso Platform Helm chart can be configured with the `podTLS.enabled` value to switch on TLS sidecar containers.  These are nginx containers that run in the same pod as an application configured to terminate a TLS connection from the Ingress controller and forward traffic to the main application container (which is now local traffic that doesn't leave the machine).
 
-The sidecar containers will need to be supplied with a certificate to use for the TLS handshake with the Ingress controller.  The ingress will need to be configured to trust it, by placing either the certificate or the signing certificate in its trust store.
+The sidecar containers will need to be supplied with a server certificate to use for the TLS handshake with the Ingress controller.  The ingress will need to be configured to trust these certificates, by placing either the certificates or a root signing certificate in its trust store.
 
 > Note: It may also be acceptible to disable the Ingress certificate verification check, lessening the security of the connection (potentially opening up a man-in-the-middle style attack), but still encrypting the traffic.
 
 
 ## Ingress Controller Configuration
 
-The Ingress Controller objects are created by the Howso Platform Helm chart, but for extended configuration, such as TLS termination at the application, the Ingress Controller objects will need to be created manually.  Ingress are all different, and this K3d example using Traefik will show how to create Ingress rules (using Traefik CRDs) to send encrypted traffic, to the ports of the sidecar containers, to the API, UI, PyPI and UMS services. 
+There are Ingress Controller objects created by the Howso Platform Helm chart, but for extended configuration, such as TLS termination at the application, the Ingress Controller objects will often need to be created manually, as Ingress Controllers are often quite different in their configuration.  This K3d example using Traefik will show how to create Ingress rules (using Traefik CRDs) to send encrypted traffic, to the ports of the sidecar containers, for the API, UI, PyPI and UMS services. 
 
 ### Some extra background
 
@@ -26,13 +26,13 @@ The Ingress Controller objects are created by the Howso Platform Helm chart, but
 
 > Note: The approach to configuring Ingress Controllers is changing in Kubernetes, with the Ingress object type being frozen, in favor of the [Gateway API](https://kubernetes.io/docs/concepts/services-networking/gateway/).  Support for the Gateway API is increasing, but it is still less common.  Howso Platform does not yet support the Gateway API.
 
-With many implementations of Ingress controller, with a varietey of different features, the Ingress object has not managed to provide a consistent approach when going outside of the basic features.  As a result, many Ingress controllers have their own CRD types, which are more flexible, and can handle more complex routing rules, as well as a large number of bespoke annotations that can be used against the built in Ingress object.
+With many implementations of Ingress controller, with a varietey of different features, the Ingress object has not managed to provide a consistent approach outside of the basic routing features.  As a result, many Ingress controllers have their own CRD types, which are more flexible, and can handle more complex routing rules.  It is also common for Ingress Controllers to have a large number of bespoke annotations that can be used against the built in Ingress object.
 
-As a result, the Howso Platform Helm chart is not able to turn on 'Ingress to application' TLS universally for all Ingress controllers.  There are a couple (contour & nginx) that will work just by using the `podTLS.enabled` value, but for most, the Ingress object will need to be turned off, and the Ingress rules created manually.
+As a result, the Howso Platform Helm chart is not able to switch on 'Ingress to application' TLS universally for all Ingress controllers.  There are a couple (contour & nginx) that will work just by using the `podTLS.enabled` value, but for most, the Ingress object will need to be disabled, and appropriate Ingress rules created manually.
 
-In this example, we will use Traefik, which comes with the k3d cluster.  It is a common ingress controller in its own right, and serves as a good extended example as configuring it to send TLS traffic to the back end application is not possible with the built in Ingress object. As such the Ingress object will be turned off, and the Ingress rules created manually.
+In this example, we will use Traefik, which comes with the k3d cluster.  It is a common ingress controller in its own right, and serves as a good extended example as configuring it to send TLS traffic to the back end application is not possible with the built in Ingress object.
 
-> Note: Other Ingress controllers will be differ in their api objects, but the [manifests](./manifests) will give a good example of the specific information about paths, ports and service names.
+> Note: Other Ingress controllers will be differ in their configuration, but the [manifests](./manifests) will give a good example of the specific information about paths, ports and service names.
 
 
 ## Setup Steps
@@ -41,7 +41,7 @@ In this example, we will use Traefik, which comes with the k3d cluster.  It is a
 
 Use the [basic helm install guide](../helm-basic/README.md) to install Howso Platform, and ensure it is running correctly. See the [TLDR](../common/README.md#basic-helm-install) for a quick start.
 
-Install the [step](https://smallstep.com/docs/step-cli/) tool to create the certificates.
+Install the [step](https://smallstep.com/docs/step-cli/) certificate tool. 
 
 ### Configure Howso Platform TLS sidecars
 
@@ -69,7 +69,7 @@ Without further intervention, some of the Howso Platform pods will no longer be 
 
 In the next steps we'll create certificates for a root CA and each required service using the `step` CLI tool, then create the corresponding Kubernetes secrets.
 
-> Note: This example uses a root CA so that the Ingress controller just needs to trust a single certificate.  There is a platform root CA that is created by the platform-cert-generation jobs, which also creates certificates for use by the UMS to provide an Oauth authorization server, and a default ingress cert.  It is possible to extract and reuse this root ca, but this example will focus solely of the TLS termination certificates. 
+> Note: This example uses a root CA so that the Ingress controller just needs to trust a single certificate.  There is an existing platform root CA secret (platform-ca) that is created by the platform-cert-generation jobs, which also creates certificates for use by the UMS to provide an Oauth authorization server, and a default ingress cert.  It is possible to extract and reuse this root ca, but this example will focus solely of the TLS termination certificates.
 
 
 #### Root CA
@@ -82,7 +82,7 @@ step certificate create root-ca root-ca.crt root-ca.key \
     --no-password --insecure
 ```
 
-Create Root ca secret
+Create Root ca secret:
 ```bash
 kubectl create secret generic platform-app-tls-ca \
   --from-file=ca.crt=root-ca.crt \
@@ -209,10 +209,6 @@ Check the logs of the TLS sidecar container to confirm that it is running correc
 
 ```sh
 kubectl -n howso logs -l app.kubernetes.io/component=platform-pypi -c tls-sidecar -f
-```
-
-```sh
-kubectl get cm  platform-pypi-tls-sidecar-nginx-config -ojson | jq -r '.data."nginx.conf"'
 ```
 
 ### Platform UI Ingress

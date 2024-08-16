@@ -120,6 +120,9 @@ If you are running air-gapped installation examples on Mac Silicon - the verific
 ## TLDR
 
 ### Basic Helm Install
+
+For examples that built off of a basic Helm install, the instructions for the [basic Helm install](../helm-basic/README.md) are combined below.
+
 ```sh
 # prerequisites TLDR
 # helm registry login registry.how.so --username your_email@example.com --password your_license_id 

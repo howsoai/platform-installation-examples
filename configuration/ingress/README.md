@@ -18,9 +18,13 @@ Specify this with the `ingress.ingressClassName` key in the Howso Platform value
 
 See the [documentation here](./domain-customization/README.md) for information about configuring the domains used by the Howso Platform.
 
-## TLS Certificates**:
+## TLS Certificates
 
 These [examples](../../custom-ingress-cert/README.md) show how to configure the Howso Platform to use custom TLS certificates.
+
+## TLS Termination at the application
+
+This [example](../../application-tls-termination/README.md) shows how to configure the Howso Platform to encrypt traffic between the ingress and the application. 
 
 ## Specific Ingress Types
 
