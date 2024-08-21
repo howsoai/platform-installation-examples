@@ -2,8 +2,6 @@ redirectParentDomain: false
 domain: howso-platform.example.com
 pypi:
   subdomain: howso-pypi
-restapi:
-  subdomain: howso-api
 api:
   subdomain: howso-api
 ums:

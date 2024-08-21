@@ -11,12 +11,6 @@ The following additional annotations are required, otherwise multiple ALBs will 
 
 Set them in the values files as shown [here](manifests/alb-ingress.yaml) under the ingress annotations sections.
 
-### platform-api-v2
-
-```yaml
-alb.ingress.kubernetes.io/group.name: api
-alb.ingress.kubernetes.io/group.order: "3"
-```
 
 ### platform-api-v3
 
