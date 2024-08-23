@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: vault-issuer
+  namespace: howso
+spec:
+  vault:
+    server: http://vault.vault:8200
+    path: pki/sign/example-dot-com
+    auth:
+      tokenSecretRef:
+        name: vault-token
+        key: token
