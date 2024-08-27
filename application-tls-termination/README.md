@@ -1,3 +1,4 @@
+# Terminate Ingress TLS at the Application
 
 ## Introduction 
 Typically Ingress controllers terminate TLS connections at the edge of the cluster. If your security posture requires traffic from the ingress to the application also be encrypted, this guide will explain how, using a fully working local example. 

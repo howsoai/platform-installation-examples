@@ -1,0 +1,45 @@
+config:
+  cluster:
+    enabled: true
+    tls:
+      enabled: true
+      secretName: nats-cluster-tls
+  jetstream:
+    enabled: true
+  merge:
+    authorization:
+      users:
+      - user: platform-api-v3
+      - user: platform-worker
+      - user: platform-sms
+      - user: platform-ums
+      - user: platform-notsvc
+      - user: platform-natsbox
+      - user: platform-operator
+  nats:
+    tls:
+      enabled: true
+      merge:
+        verify_and_map: true
+      secretName: nats-server-tls
+natsBox:
+  enabled: false
+podTemplate:
+  merge:
+    spec:
+      tolerations:
+      - effect: NoSchedule
+        key: howso.com/nodetype
+        operator: Equal
+        value: services
+      - effect: NoExecute
+        key: howso.com/nodetype
+        operator: Equal
+        value: services
+      - effect: PreferNoSchedule
+        key: howso.com/nodetype
+        operator: Equal
+        value: services
+tlsCA:
+  enabled: true
+  secretName: nats-server-tls

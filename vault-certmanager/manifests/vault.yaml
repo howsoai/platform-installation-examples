@@ -1,0 +1,6 @@
+server:
+  ingress:
+    enabled: true
+    hosts:
+    - host: vault.local.howso.com
+      paths: []
