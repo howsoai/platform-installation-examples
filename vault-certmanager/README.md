@@ -1,22 +1,32 @@
-# Manually setting up inter service TLS with Vault and cert-manager
+# Manually setting up platform-wide TLS with Vault and cert-manager
 
-It is simpler to use a [service mesh](../linkerd/README.md) to achieve this.  But this example should indicate for those who need to manually configure mTLS connection, what the configuration looks like.
+The following example will show how to _manually_ configure m(TLS) between services, datastores, ingress traffic and the NATS message queue.  Additionally certificates used as the root of the OIDC provider will be generated.
+
+It would be simpler, and more comprehensive to use a [service mesh](../linkerd/README.md) to achieve this.  But this example should indicate for those who need to manually configure any particular part of the platform, what this looks like. 
+
+If using an external postgres, or S3 compatible storage, many of the same steps will apply.
 
 ## Cert-manager
-Cert-manager is a kubernetes application that allows certificates objects to be created as Kubernetes resources, which can then be automatically turned into real certificates, by many different CA (let's encrypt, route53, etc).  It is very heavily used.  Earlier version of Howso Platform required cert-manager to be installed, and used its features to have a full internal PKI.  To simplify the helm install, that is no longer the case, but if you do wish to manually configure mTLS between services and datastores, cert-manager is the tool to use.
+Cert-manager is a Kubernetes application that allows certificates objects to be created as Kubernetes resources, which can then be automatically turned into real certificates, by many different Certificate Authorities (let's encrypt, route53, etc).
+
+> Note: [KOTS](../kots-existing-cluster/README.md) versions of Howso Platform bundle cert-manager and use its features to have a full internal PKI with TLS throughout.  As a recognition that for an existing cluster a service mesh was the better practice, and to simplify an initial install, this is not the case with a Helm install.
 
 
 ## Vault
-Vault is a full featured secrets management tool.  In this example, we're going to use it as a CA for cert-manager.
+[Vault](https://www.hashicorp.com/products/vault) is a popular, full featured secrets management tool.  In this example, we're going to use it as a CA for cert-manager.
+
+Though just a demostration of the integration, this still requires a number of steps (install, inititialization, unsealing), and configuration (PKI engine, Kubernetes auth, policies, roles).
+
+> Note: The point of integration is the [Vault Issuer](./manifests/vault-issuer.yaml) which is a custom resource definition that cert-manager uses to issue certificates from Vault.  Swap out the `vault-issuer.yaml` with a [self-signed issuer](./manifests/self-signed-issuer.yaml) and you can achieve a working setup without Vault.
 
 
 ## Steps
 
 ### Prerequisites 
 
-Ensure you have completed the [prerequisites](../prereqs/README.md) before proceeding, have a k3d cluster running, with a howso namespace, and are logged into the Helm registry, and have setup the local hosts file.
+Ensure you have completed the [prerequisites](../prereqs/README.md) before proceeding, have a k3d cluster running, with a howso namespace, and are logged into the Helm registry and setup the local hosts file.
 
-Apply the following to get up and running quickly. 
+Apply the following to get up and running quickly:
 ```sh
 # add local.howso.com pypi|api|www|management.local.howso.com to /etc/hosts 
 # helm registry login registry.how.so --username your_email@example.com --password your_license_id 
@@ -29,15 +39,20 @@ In addition add the following to your /etc/hosts file:
 127.0.0.1 vault.local.howso.com
 ```
 
+Make sure to have the following tools installed:
+- [helm](https://helm.sh/docs/intro/install/)
+- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
+- [jq](https://stedolan.github.io/jq/)
+
+
 ### Install Cert-manager
 
-From the cert-manager [documentation](https://cert-manager.io/docs/installation/kubectl/), installation is often done by directly applying a manifest file. 
-
+From the cert-manager [documentation](https://cert-manager.io/docs/installation/kubectl/) apply the following manifest to install cert-manager: 
 ```sh
 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.15.3/cert-manager.yaml
 ```
 
-Check that they start correctly:
+Check the cert-manager components start correctly:
 ```sh
 kubectl get pods --namespace cert-manager
 ```
@@ -56,7 +71,7 @@ Install vault via Helm.  Check the [values file](./manifests/vault.yaml) for the
 helm upgrade --install --namespace vault  --create-namespace --version 0.28.1 --values vault-certmanager/manifests/vault.yaml vault hashicorp/vault --wait 
 ``` 
 
-> Note: This is a demo to show the integration with Howso Platform and cert-manger securing Vault properly is deliberately not part of the example.
+> Note: This is a demo to show the integration with cert-manager and Howso Platform.  Securing Vault properly is deliberately not part of the example; for instance, using a single key share, and storing in a local file is for expediency.
 
 Initialize vault, and save the key and root token.
 ```sh
@@ -72,7 +87,7 @@ It should look something like this.  Later commands will use [jq](https://stedol
 ```json
 {
   "unseal_keys_b64": [
-    "someUnsealKeyB64Value"
+    "someUnsealKeyB64Value="
   ],
   "unseal_keys_hex": [
     "someUnsealKeyHexValue"
@@ -87,19 +102,20 @@ It should look something like this.  Later commands will use [jq](https://stedol
 }
 ```
 
-Unseal the vault:
+Unseal the vault (this can be repeated if a restart seals it):
 ```sh
 kubectl exec -n vault vault-0 -- vault operator unseal $(jq -r ".unseal_keys_b64[0]" vault-init.json)
 ```
 
-Check the status of the vault (sealed should be false):
+The status will be printed, but at any point you can check the status of the vault (sealed should be false):
 ```sh
 kubectl exec -n vault vault-0 -- vault status
 ```
 
-Check the [UI](https://vault.local.howso.com/) and use the root token to login.
+Check the [Vault UI](https://vault.local.howso.com/), accept the certificate warning and use the root token to login:
 
 ```sh
+# this will print the root token
 jq -r ".root_token" vault-init.json
 ```
 
@@ -109,22 +125,22 @@ jq -r ".root_token" vault-init.json
 
 Download the vault cli from the [Hashicorp website](https://releases.hashicorp.com/vault).  Extract the binary and move it to a location in your path.
 
-
-Set the following environment variables, so all calls to the cli don't have to.
+Set the following environment variables with connection parameters to the vault server:
 ```sh
 export VAULT_ADDR='https://vault.local.howso.com/'
 export VAULT_SKIP_VERIFY=true
 ```
 
+With the root token login to the vault:
 ```sh
 vault login
 ```
 
 ### Set up Vault PKI
 
-Different types of secrets, have different secret engines in vault.  The PKI engine is used for certificates.  The next steps will enable it, and configure a root CA.  Once done, it will be possible to use it to issue certificates that are signed by the root CA.
+Different types of secrets have different secret engine backends in vault.  The PKI engine is used for certificates.  The next steps will enable it and configure a root CA.  Once enabled, it will be possible to use it to issue certificates that are signed by this root CA.
 
-First, we need to set up Vault's [PKI secrets](https://developer.hashicorp.com/vault/docs/secrets/pki/setup) engine and create a root CA.
+First, enable Vault's [PKI secrets](https://developer.hashicorp.com/vault/docs/secrets/pki/setup) engine and create a root CA:
 
 ```sh
 # Enable the PKI secrets engine
@@ -134,43 +150,38 @@ vault secrets enable pki
 vault write -field=certificate pki/root/generate/internal \
      common_name="Example Root CA" \
      ttl=87600h > root_ca.crt
+```
 
-#Configure the CA and CRL URLs
+Configure the PKI secrets engine and create a role for issuing certificates:
+```sh
+# Configure the CA and CRL URLs
 vault write pki/config/urls \
      issuing_certificates="http://vault.local/v1/pki/ca" \
      crl_distribution_points="http://vault.local/v1/pki/crl"
 
 # Create a role for issuing certificates
-vault write pki/roles/example-dot-com \
-     allowed_domains="example.com" \
+vault write pki/roles/myorg-example-dot-com \
+     allowed_domains="myorg.example.com" \
      allow_subdomains=true \
      max_ttl="720h"
 ```
 
-Create a policy that allows cert-manager to issue certificates:
-TODO use manifest
+Create a [policy](./manifests/cert-manager-vault-policy.hcl) that allows cert-manager to issue certificates:
 ```sh
-cat <<EOF | vault policy write cert-manager-policy -
-path "pki*"                        { capabilities = ["read", "list"] }
-path "pki/sign/example-dot-com"    { capabilities = ["create", "update"] }
-path "pki/issue/example-dot-com"   { capabilities = ["create"] }
-EOF
+vault policy write cert-manager-policy vault-certmanager/manifests/cert-manager-vault-policy.hcl 
 ```
 
 ## 3. Create a Kubernetes Auth Role in Vault
 
-Enable Kubernetes authentication in Vault and create a role for cert-manager:
- It allows Kubernetes services (like cert-manager) to authenticate with Vault using Kubernetes service accounts. This is more secure than using static tokens.
-Authorization: It defines what actions the authenticated entity can perform in Vault, by associating the role with specific Vault policies.
-Trust relationship: It establishes a trust relationship between your Kubernetes cluster and Vault.
+Enabling Kubernetes authentication in Vault allows Kubernetes services (like cert-manager) to authenticate with Vault using Kubernetes service accounts. This is a more secure alternative to using static tokens.
 
+
+Enable Kubernetes authentication in Vault and create a role for cert-manager:
 ```bash
 # Enable Kubernetes auth
 vault auth enable kubernetes
 
-# Configure Kubernetes auth
-## TODO - What does this really achieve?
-KUBE_API_SERVER="https://kubernetes.default.svc"
+# Configure Kubernetes auth with the service mapped to the api server 
 vault write auth/kubernetes/config \
     kubernetes_host="https://kubernetes.default.svc"
 
