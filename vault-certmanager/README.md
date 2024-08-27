@@ -1,42 +1,42 @@
 # Manually setting up platform-wide TLS with Vault and cert-manager
 
-The following example will show how to _manually_ configure m(TLS) between services, datastores, ingress traffic and the NATS message queue.  Additionally certificates used as the root of the OIDC provider will be generated.
+The following example will show how to manually configure m(TLS) between services, datastores, ingress traffic and the NATS message queue.  Additionally certificates used as the root of the OIDC provider will be generated.
 
-It would be simpler, and more comprehensive to use a [service mesh](../linkerd/README.md) to achieve this.  But this example should indicate for those who need to manually configure any particular part of the platform, what this looks like. 
+Whilst it is likely simpler and more comprehensive to use a [service mesh](../linkerd/README.md) to achieve this, this example will cover much of what is needed for those who require find grained control over the PKI used for connecting all Platform components and also the values that can be used to connect to external postgres, redis or S3 compatible storage.
 
-If using an external postgres, or S3 compatible storage, many of the same steps will apply.
 
-## Cert-manager
-Cert-manager is a Kubernetes application that allows certificates objects to be created as Kubernetes resources, which can then be automatically turned into real certificates, by many different Certificate Authorities (let's encrypt, route53, etc).
+## cert-manager
 
-> Note: [KOTS](../kots-existing-cluster/README.md) versions of Howso Platform bundle cert-manager and use its features to have a full internal PKI with TLS throughout.  As a recognition that for an existing cluster a service mesh was the better practice, and to simplify an initial install, this is not the case with a Helm install.
+Cert-manager is a Kubernetes application that allows certificates objects to be created as Kubernetes resources which are automatically turned into secret objects with real certificates, by many different Certificate Authorities (let's encrypt, route53, etc).
 
+> Note: [KOTS](../kots-existing-cluster/README.md) versions of Howso Platform bundle cert-manager and use its features to for a full internal PKI with TLS throughout.  As a recognition that for existing clusters a service mesh is often a better practice, and to simplify initial installs, this is not the case with a Helm install.
 
 ## Vault
-[Vault](https://www.hashicorp.com/products/vault) is a popular, full featured secrets management tool.  In this example, we're going to use it as a CA for cert-manager.
+
+[Hashicorp Vault](https://www.hashicorp.com/products/vault) is a popular, full featured, secrets management tool.  In this example, we're going to use it as a CA for cert-manager.
 
 Though just a demostration of the integration, this still requires a number of steps (install, inititialization, unsealing), and configuration (PKI engine, Kubernetes auth, policies, roles).
 
-> Note: The point of integration is the [Vault Issuer](./manifests/vault-issuer.yaml) which is a custom resource definition that cert-manager uses to issue certificates from Vault.  Swap out the `vault-issuer.yaml` with a [self-signed issuer](./manifests/self-signed-issuer.yaml) and you can achieve a working setup without Vault.
+> Note: In this example, the fundamental point of integration with Hashicorp Vault is the [Vault Issuer](./manifests/vault-issuer.yaml) which is a custom resource that cert-manager uses to issue certificates from Vault.  Swap out the `vault-issuer.yaml` with a [self-signed issuer](./manifests/self-signed-issuer.yaml) and you can achieve a working setup without installing Vault.
 
 
 ## Steps
 
 ### Prerequisites 
 
-Ensure you have completed the [prerequisites](../prereqs/README.md) before proceeding, have a k3d cluster running, with a howso namespace, and are logged into the Helm registry and setup the local hosts file.
-
-Apply the following to get up and running quickly:
-```sh
-# add local.howso.com pypi|api|www|management.local.howso.com to /etc/hosts 
-# helm registry login registry.how.so --username your_email@example.com --password your_license_id 
-k3d cluster create --config prereqs/k3d-single-node.yaml
-kubectl create namespace howso
-```
+Ensure you have completed the [prerequisites](../prereqs/README.md) before proceeding - a k3d cluster, with a howso namespace, logged into the Helm registry and setup the local hosts file.
 
 In addition add the following to your /etc/hosts file:
 ```sh
 127.0.0.1 vault.local.howso.com
+```
+
+Apply the following to get up and running quickly:
+```sh
+# add local.howso.com vault|pypi|api|www|management.local.howso.com to /etc/hosts 
+# helm registry login registry.how.so --username your_email@example.com --password your_license_id 
+k3d cluster create --config prereqs/k3d-single-node.yaml
+kubectl create namespace howso
 ```
 
 Make sure to have the following tools installed:
@@ -45,7 +45,7 @@ Make sure to have the following tools installed:
 - [jq](https://stedolan.github.io/jq/)
 
 
-### Install Cert-manager
+### Install cert-manager
 
 From the cert-manager [documentation](https://cert-manager.io/docs/installation/kubectl/) apply the following manifest to install cert-manager: 
 ```sh
@@ -59,7 +59,7 @@ kubectl get pods --namespace cert-manager
 
 ### Install Vault
 
-Since we have some custom configuration, we'll use a helm chart to install Vault.
+Since we have some custom configuration we'll use a helm chart to install Vault.
 
 Add the Hashicorp helm repository:
 ```sh
@@ -71,7 +71,7 @@ Install vault via Helm.  Check the [values file](./manifests/vault.yaml) for the
 helm upgrade --install --namespace vault  --create-namespace --version 0.28.1 --values vault-certmanager/manifests/vault.yaml vault hashicorp/vault --wait 
 ``` 
 
-> Note: This is a demo to show the integration with cert-manager and Howso Platform.  Securing Vault properly is deliberately not part of the example; for instance, using a single key share, and storing in a local file is for expediency.
+> Note: This demo is to show the integration with Howso Platform via cert-manager.  Securing Vault properly is deliberately not included; for instance, here a single key share is stored in a local file for demonstration expediency, not secuirty.
 
 Initialize vault, and save the key and root token.
 ```sh
@@ -83,7 +83,7 @@ Take a look at the output:
 cat vault-init.json
 ```
 
-It should look something like this.  Later commands will use [jq](https://stedolan.github.io/jq/) to grab the unseal keys and root token.
+It should look something like this.  Later commands will use [jq](https://stedolan.github.io/jq/) to grab the unseal keys and root token from this file.
 ```json
 {
   "unseal_keys_b64": [
@@ -112,14 +112,13 @@ The status will be printed, but at any point you can check the status of the vau
 kubectl exec -n vault vault-0 -- vault status
 ```
 
-Check the [Vault UI](https://vault.local.howso.com/), accept the certificate warning and use the root token to login:
-
+Check access to the [Vault UI](https://vault.local.howso.com/), accept the certificate warning and use the root token to login:
 ```sh
 # this will print the root token
 jq -r ".root_token" vault-init.json
 ```
 
-> Note: If you can't see the UI - troubleshoot before proceeding.
+> Note: If you can't see the UI - troubleshoot before proceeding; a working ingress is needed for the vault cli to connect to the Vault server.
 
 ### Install vault cli
 
@@ -161,7 +160,7 @@ vault write pki/config/urls \
 
 # Create a role for issuing certificates
 vault write pki/roles/myorg-example-dot-com \
-     allowed_domains="myorg.example.com" \
+     allowed_domains="local.howso.com" \
      allow_subdomains=true \
      max_ttl="720h"
 ```
@@ -215,7 +214,7 @@ kubectl apply -f vault-certmanager/manifests/vault-issuer.yaml
 kubectl apply -f vault-certmanager/manifests/tests-cert.yaml
 ```
 
-## 7. Verify the Certificate
+## Verify the Certificate
 
 Check the status of the certificate:
 
