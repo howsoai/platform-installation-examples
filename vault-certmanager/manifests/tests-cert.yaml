@@ -1,13 +1,13 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: example-com
+  name: test-example-com
   namespace: howso 
 spec:
-  secretName: example-com-tls
+  secretName: test-example-com-tls
   issuerRef:
     name: vault-issuer
     kind: Issuer
-  commonName: something.local.howso.com
+  commonName: test.local.howso.com
   dnsNames:
-  - something.local.howso.com
+  - test.local.howso.com

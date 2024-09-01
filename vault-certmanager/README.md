@@ -5,7 +5,7 @@ The following example will show how to manually configure m(TLS) between service
 Whilst it is likely simpler and more comprehensive to use a [service mesh](../linkerd/README.md) to achieve this, this example will cover much of what is needed for those who require find grained control over the PKI used for connecting all Platform components and also the values that can be used to connect to external postgres, redis or S3 compatible storage.
 
 
-## cert-manager
+## Cert-manager
 
 Cert-manager is a Kubernetes application that allows certificates objects to be created as Kubernetes resources which are automatically turned into secret objects with real certificates, by many different Certificate Authorities (let's encrypt, route53, etc).
 
@@ -114,11 +114,12 @@ kubectl exec -n vault vault-0 -- vault status
 
 Check access to the [Vault UI](https://vault.local.howso.com/), accept the certificate warning and use the root token to login:
 ```sh
-# this will print the root token
+# Go to https://vault.local.howso.com/ select Token method and paste the root token
+# .. which you can get from the vault-init.json file 
 jq -r ".root_token" vault-init.json
 ```
 
-> Note: If you can't see the UI - troubleshoot before proceeding; a working ingress is needed for the vault cli to connect to the Vault server.
+> Note: If you can't see the UI - troubleshoot before proceeding; the UI isn't required, but a working ingress is needed for the vault cli to connect to the Vault server.
 
 ### Install vault cli
 
@@ -219,7 +220,7 @@ kubectl apply -f vault-certmanager/manifests/tests-cert.yaml
 Check the status of the certificate:
 
 ```bash
-kubectl get certificate example-com -n howso
+kubectl get certificate test-example-com -n howso
 ```
 
 You should see the certificate in a "Ready" state.

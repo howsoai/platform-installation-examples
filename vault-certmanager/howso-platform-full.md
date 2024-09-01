@@ -32,7 +32,7 @@ platform-sms-nats-client-tls        True    platform-sms-nats-client-tls        
 platform-ums-nats-client-tls        True    platform-ums-nats-client-tls        5h23m
 platform-ums-oauth-keys-cert        True    platform-ums-oauth-keys             5h23m
 platform-worker-nats-client-tls     True    platform-worker-nats-client-tls     5h23m
-example-com                         True    example-com-tls                     16m
+test-example-com                         True    test-example-com-tls                     16m
  
 kubectl create secret generic platform-ca \
     --from-file=ca.crt=root_ca.crt \
