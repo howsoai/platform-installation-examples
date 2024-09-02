@@ -159,10 +159,19 @@ vault write pki/config/urls \
      issuing_certificates="http://vault.local/v1/pki/ca" \
      crl_distribution_points="http://vault.local/v1/pki/crl"
 
-# Create a role for issuing certificates
-vault write pki/roles/myorg-example-dot-com \
+# Role for issuing ingress certificates
+vault write pki/roles/ingress-certs \
      allowed_domains="local.howso.com" \
      allow_subdomains=true \
+     max_ttl="720h"
+
+# Role for issuing internal kubernetes certificates
+vault write pki/roles/internal-k8s-certs \
+     allowed_domains="*,svc.cluster.local" \
+     allow_subdomains=true \
+     allow_glob_domains=true \
+     allow_any_name=true \
+     enforce_hostnames=false \
      max_ttl="720h"
 ```
 
@@ -202,25 +211,26 @@ kubectl create secret generic vault-token \
     --from-literal=token="$(jq -r .root_token vault-init.json)" -n howso
 ```
 
-## 5. Create the Vault Issuer
+## 5. Create the Vault Issuers
 
-Apply the [Issuer](./manifests/vault-issuer.yaml) manifest to create a Vault Issuer in the `cert-manager` namespace. The Vault Issuer is responsible for issuing certificates using the Vault PKI secrets engine.
+Apply the [Issuer](./manifests/vault-issuer.yaml) manifests to create Vault Issuers in the `cert-manager` namespace. One will deal with internal Kubernetes services, the other ingress with our orgs domain.  The Vault Issuers are for issuing certificates using the Vault PKI secrets engine.
 
 ```bash
-kubectl apply -f vault-certmanager/manifests/vault-issuer.yaml
+kubectl apply -f vault-certmanager/manifests/vault-issuers.yaml
 ```
 
 ### Test Certificate Issuance 
 ```bash
-kubectl apply -f vault-certmanager/manifests/tests-cert.yaml
+kubectl apply -f vault-certmanager/manifests/tests-certs.yaml
 ```
 
-## Verify the Certificate
+## Verify the Certificates
 
 Check the status of the certificate:
 
 ```bash
-kubectl get certificate test-example-com -n howso
+kubectl get certificate test-ingress-cert -n howso
+kubectl get certificate test-internal-k8s-cert -n howso
 ```
 
 You should see the certificate in a "Ready" state.

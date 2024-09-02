@@ -1,0 +1,27 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: vault-issuer-ingress
+  namespace: howso
+spec:
+  vault:
+    server: http://vault.vault:8200
+    path: pki/sign/ingress-certs
+    auth:
+      tokenSecretRef:
+        name: vault-token
+        key: token
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: vault-issuer-internal-k8s
+  namespace: howso
+spec:
+  vault:
+    server: http://vault.vault:8200
+    path: pki/sign/internal-k8s-certs
+    auth:
+      tokenSecretRef:
+        name: vault-token
+        key: token

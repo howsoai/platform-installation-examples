@@ -23,37 +23,7 @@ This is just a quick setup to test the installation.  The platform admin user wo
  - From Howso Admin drop-down > Credentials > New Credential > "test" > Create
  - Copy|Download as howso.yml to `~/.howso/howso.yml` or in your local working directory.
 
-Either [Trust the Certs](#trust-the-certs) or [Disable SSL Verification](#disable-ssl-verification) before proceeding.
-
-### Disable SSL Verification
-
-Edit the `howso.yml` file and set `verify_ssl: false.
-
-
-### Trust the Certs 
-
-The Howso Platform python client uses the _certifi_ package for the trusted root certs, not the operating system trust store.  Therefore, to trust the platform ca - we'll extract it from the platform and then set it explicitly as trusted in our `howso.yml`
-
-#### Extract the platform CA cert
-
-With kubectl access, you can retrieve the platform cert from the ca secret.
-
-```sh
-kubectl -n howso get secrets platform-ca -ojson | jq -r '.data."tls.crt"' | base64 -d > howso-platform.crt
-```
-
-Alternatively, download it from https://www.local.howso.com/ca-crt.txt (with wget, curl, a browser, etc) and save it as `howso-platform.crt`.
-
-#### Update the howso.yml to trust the platform CA
-
-- Update the howso.yml with a full path to the cert file, under key `security.ssl_ca_cert`.  i.e.
-```yaml
-security:
-    ssl_ca_cert: /full/path/howso-platform.crt
-    ...
-howso:
-  ...
-```
+> Note: If using a Howso Platform version prior to 2024.9.0 either [Trust the Certs](#trust-the-certs) or [Disable SSL Verification](#disable-ssl-verification) before proceeding.
 
 ### Create Python environment 
 
@@ -64,9 +34,9 @@ howso:
 - Copy the pip install command, and run in your new virtual environment. 
 i.e.
 ```sh
-pip install -U --trusted-host pypi.local.howso.com --extra-index-url https://mySecretPypiToken@pypi.local.howso.com/simple/ howso-platform-client[full]
+pip install -U --trusted-host pypi.local.howso.com --extra-index-url https://mySecretPypiToken@pypi.local.howso.com/simple/ howso-platform-client howso-synthesizer howso-synthesizer-data-services howso-validator-enterprise howso-validator howso-upgrader
 ```
-> Note: A productionized install would create a secret for the Platform PyPi server token - above is the default.
+> Note: A production install should create a secret for the Platform PyPi server token - above includes an embedded default token. 
 
 ### Test the install
 
@@ -124,7 +94,7 @@ If you are running air-gapped installation examples on Mac Silicon - the verific
 For examples that built off of a basic Helm install, the instructions for the [basic Helm install](../helm-basic/README.md) are combined below.
 
 ```sh
-# prerequisites TLDR
+# prerequisites
 # helm registry login registry.how.so --username your_email@example.com --password your_license_id 
 # add local.howso.com pypi|api|www|management.local.howso.com to /etc/hosts 
 # Install the [linkerd cli](https://linkerd.io/2/getting-started/) and the certificate tool [step](https://smallstep.com/docs/step-cli/).
@@ -142,4 +112,38 @@ helm install platform-nats oci://registry.how.so/howso-platform/stable/nats --na
 helm install platform-postgres oci://registry.how.so/howso-platform/stable/postgresql --namespace howso --values helm-basic/manifests/postgres.yaml --wait
 helm install platform-redis oci://registry.how.so/howso-platform/stable/redis --namespace howso --values helm-basic/manifests/redis.yaml --wait
 helm install howso-platform oci://registry.how.so/howso-platform/stable/howso-platform --namespace howso --values helm-basic/manifests/howso-platform.yaml --wait --timeout 20m
+```
+
+## Legacy Install Instructions
+### Disable SSL Verification
+
+> Note: From 2024.9.0 the credentials will include the Platform Certificate Authority cert embedded in the token, and these steps will not be necessary.
+
+Edit the `howso.yml` file and set `verify_ssl: false.
+
+### Trust the Certs
+
+> Note: From 2024.9.0 the credentials will include the Platform Certificate Authority cert embedded in the token, and these steps will not be necessary.
+
+The Howso Platform python client uses the _certifi_ package for the trusted root certs, not the operating system trust store.  Therefore, to trust the platform ca - we'll extract it from the platform and then set it explicitly as trusted in our `howso.yml`
+
+#### Extract the platform CA cert
+
+With kubectl access, you can retrieve the platform cert from the ca secret.
+
+```sh
+kubectl -n howso get secrets platform-ca -ojson | jq -r '.data."tls.crt"' | base64 -d > howso-platform.crt
+```
+
+Alternatively, download it from https://www.local.howso.com/ca-crt.txt (with wget, curl, a browser, etc) and save it as `howso-platform.crt`.
+
+#### Update the howso.yml to trust the platform CA
+
+- Update the howso.yml with a full path to the cert file, under key `security.ssl_ca_cert`.  i.e.
+```yaml
+security:
+    ssl_ca_cert: /full/path/howso-platform.crt
+    ...
+howso:
+  ...
 ```

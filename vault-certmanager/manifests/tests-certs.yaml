@@ -1,0 +1,28 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: test-ingress-cert
+  namespace: howso 
+spec:
+  secretName: test-ingress-tls
+  issuerRef:
+    name: vault-issuer-ingress
+    kind: Issuer
+  commonName: test.local.howso.com
+  dnsNames:
+  - test.local.howso.com
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate 
+metadata:
+  name: test-internal-k8s-cert 
+  namespace: howso
+spec:
+  secretName: test-internal-k8s-tls
+  issuerRef:
+    name: vault-issuer-internal-k8s
+    kind: Issuer
+  commonName: test-service
+  dnsNames:
+  - test-service
+  - test-service.howso.svc.cluster.local 
