@@ -4,6 +4,7 @@ metadata:
   name: platform-redis-client-tls
 spec:
   secretName: platform-redis-client-tls 
+  commonName: platform-redis-client
   duration: 2160h # 90d
   renewBefore: 360h # 15d
   subject:
@@ -19,5 +20,5 @@ spec:
   dnsNames:
   - platform-redis-clients
   issuerRef:
-    name: platform-ca
+    name: vault-issuer-internal-k8s
     kind: Issuer

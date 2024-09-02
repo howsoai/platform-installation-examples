@@ -1,55 +1,20 @@
 auth:
-  existingSecret: platform-redis-credentials
-  existingSecretPasswordKey: password
+  existingSecret: platform-redis
 commonConfiguration: '# Enable AOF https://redis.io/topics/persistence#append-only-file
-
   appendonly yes
-
   # Disable RDB persistence, AOF persistence already enabled.
-
   save ""
-
   # Enable keyspace events
-
   notify-keyspace-events Kgh'
-commonLabels:
-  app.kubernetes.io/part-of: howso-platform
 master:
   persistence:
     enabled: false
-  tolerations:
-  - effect: NoSchedule
-    key: howso.com/nodetype
-    operator: Equal
-    value: services
-  - effect: NoExecute
-    key: howso.com/nodetype
-    operator: Equal
-    value: services
-  - effect: PreferNoSchedule
-    key: howso.com/nodetype
-    operator: Equal
-    value: services
-networkPolicy:
-  enabled: false
 replica:
   replicaCount: 0
-  tolerations:
-  - effect: NoSchedule
-    key: howso.com/nodetype
-    operator: Equal
-    value: services
-  - effect: NoExecute
-    key: howso.com/nodetype
-    operator: Equal
-    value: services
-  - effect: PreferNoSchedule
-    key: howso.com/nodetype
-    operator: Equal
-    value: services
 tls:
   certCAFilename: ca.crt
   certFilename: tls.crt
   certKeyFilename: tls.key
   enabled: true
   existingSecret: platform-redis-server-tls
+  authClients: true # clients need to present certificates.  default, but explicitly set for clarity

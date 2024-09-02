@@ -1,15 +1,15 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: platform-redis-server-cert 
+  name: platform-redis-server-cert
 spec:
-  secretName: platform-redis-server-tls 
+  secretName: platform-redis-server-tls
   commonName: platform-redis
   duration: 2160h # 90d
   renewBefore: 360h # 15d
   subject:
     organizations:
-    - Howso Platform 
+    - Howso Platform
   isCA: false
   privateKey:
     algorithm: RSA
@@ -18,8 +18,8 @@ spec:
   usages:
     - server auth
   dnsNames:
-  - platform-redis 
-  - platform-redis-headless 
+  - platform-redis
+  - platform-redis-headless
   - platform-redis-master
   issuerRef:
     name: vault-issuer-internal-k8s

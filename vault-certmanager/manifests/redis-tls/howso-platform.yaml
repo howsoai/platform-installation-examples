@@ -1,0 +1,17 @@
+domain: local.howso.com
+images:
+  registry: proxy.replicated.com 
+  registryNamespace: proxy/howso-platform/dpbuild-docker-edge.jfrog.io/dp
+
+datastores:
+  redis:
+    host: platform-redis-master # Use sentinel for HA
+    port: 6379
+    existingSecret: true 
+    serverVerification: true
+    verifyMode: required
+    checkHostname: true
+    serverVerificationCustomCertChain: true
+    serverCertChainSecretName: platform-redis-server-tls 
+    clientVerification: true
+    clientCertSecretName: platform-redis-client-tls
