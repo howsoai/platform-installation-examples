@@ -2,6 +2,8 @@
 
 ## Install Howso Platform
 
+This example assumes that [Vault and cert-manager](./README.md) are already installed and configured.
+
 This example starts with a working, non-TLS Howso Platform. We'll then adjust the configuration needed for NATS, Howso Platform, and Cert-Manager to work together with TLS.
 
 See [here](../common/README.md#basic-helm-install) for a quick start (skipping the initial cluster creation, that was done during the Vault install) and confirm the Howso Platform is running [correctly](../common/README.md#create-client-environment).
@@ -55,6 +57,12 @@ helm upgrade --install platform-nats oci://registry.how.so/howso-platform/stable
 
 ### Check the installation
 
+
+Wait for the cluster to come up, and the original nats pod to be terminated:
+```sh
+kubectl get po -l app.kubernetes.io/component=nats -w
+```
+
 Check the logs of one of the NATS pods:
 
 ```sh
@@ -64,13 +72,27 @@ kubectl logs -f deployment/platform-nats -n howso
 The startup logs should show that NATS is ready and configured for TLS:
 
 ```
-[1] 2024/09/02 13:00:00.000000 [INF] Starting nats-server
-[1] 2024/09/02 13:00:00.000000 [INF] Version:  2.9.21
-[1] 2024/09/02 13:00:00.000000 [INF] Server Name:  NAABCDEFGHIJK
-[1] 2024/09/02 13:00:00.000000 [INF] Listening for client connections on 0.0.0.0:4222
-[1] 2024/09/02 13:00:00.000000 [INF] TLS required for client connections
-[1] 2024/09/02 13:00:00.000000 [INF] Server is ready
+[7] 2024/09/03 12:38:05.075872 [INF]     _ ___ _____ ___ _____ ___ ___   _   __  __
+[7] 2024/09/03 12:38:05.075890 [INF]  _ | | __|_   _/ __|_   _| _ \ __| /_\ |  \/  |
+[7] 2024/09/03 12:38:05.075892 [INF] | || | _|  | | \__ \ | | |   / _| / _ \| |\/| |
+[7] 2024/09/03 12:38:05.075893 [INF]  \__/|___| |_| |___/ |_| |_|_\___/_/ \_\_|  |_|
+[7] 2024/09/03 12:38:05.075894 [INF]
+[7] 2024/09/03 12:38:05.075895 [INF]          https://docs.nats.io/jetstream
+[7] 2024/09/03 12:38:05.075896 [INF]
+[7] 2024/09/03 12:38:05.075897 [INF] ---------------- JETSTREAM ----------------
+[7] 2024/09/03 12:38:05.075899 [INF]   Max Memory:      0 B
+[7] 2024/09/03 12:38:05.075901 [INF]   Max Storage:     10.00 GB
+[7] 2024/09/03 12:38:05.075903 [INF]   Store Directory: "/data/jetstream"
+[7] 2024/09/03 12:38:05.075904 [INF] -------------------------------------------
+[7] 2024/09/03 12:38:05.076671 [INF] Starting JetStream cluster
+[7] 2024/09/03 12:38:05.076691 [INF] Creating JetStream metadata controller
+[7] 2024/09/03 12:38:05.077499 [INF] JetStream cluster bootstrapping
+[7] 2024/09/03 12:38:05.078533 [INF] Listening for client connections on 0.0.0.0:4222
+[7] 2024/09/03 12:38:05.078549 [INF] TLS required for client connections
+[7] 2024/09/03 12:38:05.078947 [INF] Server is ready
 ```
+
+> Note: Since Howso Platform components are not yet configured for TLS, you will see connection errors in the logs.  This will be resolved in the next section.
 
 ## Howso Platform Setup
 

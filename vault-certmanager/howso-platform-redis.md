@@ -1,6 +1,8 @@
 # Configure Howso Platform with Redis and mTLS
 ## Install Howso Platform
 
+This example assumes that [Vault and cert-manager](./README.md) are already installed and configured.
+
 This example will start with a working, non-tls, Howso Platform, then adjust the configuration needed for Redis, Howso Platform and Cert-Manager to work together with mTLS.
 
 See [here](../common/README.md#basic-helm-install) for a quick start (skipping the initial cluster creation, that was done during the Vault install) and confirm the Howso Platform is running [correctly](../common/README.md#create-client-environment).

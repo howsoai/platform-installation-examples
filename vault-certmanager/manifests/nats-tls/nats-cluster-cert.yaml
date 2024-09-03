@@ -1,10 +1,10 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: nats-server-tls 
+  name: nats-cluster-tls 
 spec:
   # Secret names are always required.
-  secretName: nats-server-tls 
+  secretName: nats-cluster-tls 
   duration: 2160h # 90d
   renewBefore: 360h # 15d
   subject:
@@ -17,12 +17,16 @@ spec:
     encoding: PKCS1
     size: 4096
   usages:
-    - signing
-    - key encipherment
     - server auth
+    - client auth
   # At least one of a DNS Name, URI, or IP address is required.
   dnsNames:
-  - platform-nats.default.svc
+  - platform-nats-0.platform-nats-headless 
+  - platform-nats-1.platform-nats-headless 
+  - platform-nats-2.platform-nats-headless 
+  - platform-nats-0
+  - platform-nats-1
+  - platform-nats-2
   - platform-nats
   issuerRef:
     name: vault-issuer-internal-k8s 

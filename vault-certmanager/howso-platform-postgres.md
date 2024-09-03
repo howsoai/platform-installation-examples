@@ -2,6 +2,8 @@
 
 ## Install Howso Platform
 
+This example assumes that [Vault and cert-manager](./README.md) are already installed and configured.
+
 This example starts with a working, non-TLS Howso Platform. We'll then adjust the configuration needed for PostgreSQL, Howso Platform, and Cert-Manager to work together with TLS.
 
 See [here](../common/README.md#basic-helm-install) for a quick start (skipping the initial cluster creation, that was done during the Vault install) and confirm the Howso Platform is running [correctly](../common/README.md#create-client-environment).

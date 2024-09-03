@@ -1,4 +1,6 @@
 config:
+  cluster:
+    enabled: true
     tls:
       enabled: true
       secretName: nats-cluster-tls
@@ -20,6 +22,8 @@ config:
       merge:
         verify_and_map: true
       secretName: nats-server-tls
+natsBox:
+  enabled: true 
 tlsCA:
   enabled: true
-  secretName: platform-vault-ca 
+  secretName: nats-server-tls
