@@ -149,7 +149,15 @@ vault secrets enable pki
 # Generate the root certificate
 vault write -field=certificate pki/root/generate/internal \
      common_name="Example Root CA" \
-     ttl=87600h > root_ca.crt
+     ttl=87600h > root-ca.crt
+```
+
+Create a secret in Kubernetes with the root CA certificate:
+> Note: This is not usable as the trusted root CA for the cluster.
+```sh
+kubectl create secret generic platform-vault-ca \
+    --from-file=ca.crt=root_ca.crt \
+    -n howso
 ```
 
 Configure the PKI secrets engine and create a role for issuing certificates:

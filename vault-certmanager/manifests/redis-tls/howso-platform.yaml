@@ -12,6 +12,6 @@ datastores:
     verifyMode: required
     checkHostname: true
     serverVerificationCustomCertChain: true
-    serverCertChainSecretName: platform-redis-server-tls 
+    serverCertChainSecretName: platform-vault-ca
     clientVerification: true
     clientCertSecretName: platform-redis-client-tls

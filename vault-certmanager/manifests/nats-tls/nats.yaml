@@ -1,6 +1,4 @@
 config:
-  cluster:
-    enabled: true
     tls:
       enabled: true
       secretName: nats-cluster-tls
@@ -22,24 +20,6 @@ config:
       merge:
         verify_and_map: true
       secretName: nats-server-tls
-natsBox:
-  enabled: false
-podTemplate:
-  merge:
-    spec:
-      tolerations:
-      - effect: NoSchedule
-        key: howso.com/nodetype
-        operator: Equal
-        value: services
-      - effect: NoExecute
-        key: howso.com/nodetype
-        operator: Equal
-        value: services
-      - effect: PreferNoSchedule
-        key: howso.com/nodetype
-        operator: Equal
-        value: services
 tlsCA:
   enabled: true
-  secretName: nats-server-tls
+  secretName: platform-vault-ca 

@@ -1,0 +1,29 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: nats-server-tls 
+spec:
+  # Secret names are always required.
+  secretName: nats-server-tls 
+  duration: 2160h # 90d
+  renewBefore: 360h # 15d
+  subject:
+    organizations:
+    - Howso Platform 
+  commonName: platform-nats.default.svc.cluster.local
+  isCA: false
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS1
+    size: 4096
+  usages:
+    - signing
+    - key encipherment
+    - server auth
+  # At least one of a DNS Name, URI, or IP address is required.
+  dnsNames:
+  - platform-nats.default.svc
+  - platform-nats
+  issuerRef:
+    name: platform-ca
+    kind: Issuer

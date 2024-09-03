@@ -1,0 +1,27 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: platform-postgres-server-cert 
+spec:
+  # Secret names are always required.
+  secretName: platform-postgres-server-tls 
+  duration: 2160h # 90d
+  renewBefore: 360h # 15d
+  subject:
+    organizations:
+    - Howso Platform 
+  commonName: platform-admin 
+  isCA: false
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS1
+    size: 4096
+  usages:
+    - server auth
+  # At least one of a DNS Name, URI, or IP address is required.
+  dnsNames:
+  - platform-postgres-postgresql 
+  # Issuer references are always required.
+  issuerRef:
+    name: vault-issuer-internal-k8s
+    kind: Issuer

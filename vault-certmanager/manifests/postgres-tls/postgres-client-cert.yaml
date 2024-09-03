@@ -1,12 +1,14 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: platform-redis-client-tls
+  name: platform-postgres-client-tls
 spec:
-  secretName: platform-redis-client-tls 
-  commonName: platform-redis-client
+  secretName: platform-postgres-client-tls 
   duration: 2160h # 90d
   renewBefore: 360h # 15d
+  # This cn/username is verified against the supplied user to the postgres connection
+  # for the deployment set in the HOWSO_PLATFORM_POSTGRES_USER variable
+  commonName: postgres 
   subject:
     organizations:
     - Howso Platform
@@ -18,8 +20,8 @@ spec:
   usages:
     - client auth
   dnsNames:
-  - platform-api-v3
-  - platform-api-v3.default.svc.cluster.local
+  - platform-sms 
+  - platform-sms.default.svc.cluster.local
   - platform-ums 
   - platform-ums.default.svc.cluster.local
   issuerRef:

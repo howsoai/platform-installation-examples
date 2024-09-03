@@ -1,0 +1,9 @@
+domain: local.howso.com
+images:
+  registry: proxy.replicated.com 
+  registryNamespace: proxy/howso-platform/dpbuild-docker-edge.jfrog.io/dp
+
+nats:
+  serverList: "tls://platform-nats:4222"
+  tls:
+    enabled: true

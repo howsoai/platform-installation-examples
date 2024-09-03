@@ -1,0 +1,20 @@
+domain: local.howso.com
+images:
+  registry: proxy.replicated.com 
+  registryNamespace: proxy/howso-platform/dpbuild-docker-edge.jfrog.io/dp
+
+datastores:
+  postgres:
+    ums:
+      host: platform-postgres-postgresql 
+      port: 5432
+      name: postgres
+      user: postgres
+      existingSecret: true
+      credentialsSecretName: platform-postgres-postgresql
+      passwordDataKey: postgres-password
+      sslmode: verify-full
+      serverVerificationCustomCertChain: true
+      serverCertChainSecretName: platform-vault-ca
+      clientVerification: true
+      clientCertSecretName: platform-postgres-client-tls

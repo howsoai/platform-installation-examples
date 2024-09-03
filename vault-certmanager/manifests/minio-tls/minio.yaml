@@ -1,50 +1,11 @@
-additionalLabels:
-  app.kubernetes.io/component: object-store
-  app.kubernetes.io/part-of: howso-platform
-configPathmc: /tmp/minio/mc/
 consoleIngress:
   annotations:
     projectcontour.io/upstream-protocol.tls: '9000'
 existingSecret: platform-minio
 mode: standalone
-persistence:
-  size: 100Gi
-podLabels:
-  app.kubernetes.io/component: object-store
-  app.kubernetes.io/part-of: howso-platform
-postJob:
-  tolerations:
-  - effect: NoSchedule
-    key: howso.com/nodetype
-    operator: Equal
-    value: services
-  - effect: NoExecute
-    key: howso.com/nodetype
-    operator: Equal
-    value: services
-  - effect: PreferNoSchedule
-    key: howso.com/nodetype
-    operator: Equal
-    value: services
-resources:
-  requests:
-    memory: 2Gi
 tls:
   certSecret: platform-minio-server-tls
   enabled: true
   privateKey: tls.key
   publicCrt: tls.crt
-tolerations:
-- effect: NoSchedule
-  key: howso.com/nodetype
-  operator: Equal
-  value: services
-- effect: NoExecute
-  key: howso.com/nodetype
-  operator: Equal
-  value: services
-- effect: PreferNoSchedule
-  key: howso.com/nodetype
-  operator: Equal
-  value: services
-trustedCertsSecret: platform-ca
+trustedCertsSecret: platform-vault-ca

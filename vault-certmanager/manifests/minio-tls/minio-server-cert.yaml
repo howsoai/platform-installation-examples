@@ -1,0 +1,30 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: minio-server-cert 
+spec:
+  # Secret names are always required.
+  secretName: platform-minio-server-tls 
+  duration: 2160h # 90d
+  renewBefore: 360h # 15d
+  subject:
+    organizations:
+    - Howso Platform 
+  # The use of the common name field has been deprecated since 2000 and is
+  # discouraged from being used.
+  #commonName: {{ .Values.subdomain }} 
+  isCA: false
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS1
+    size: 4096
+  usages:
+    - server auth
+    - client auth
+  # At least one of a DNS Name, URI, or IP address is required.
+  dnsNames:
+  - platform-minio 
+  # Issuer references are always required.
+  issuerRef:
+    name: platform-ca 
+    kind: Issuer

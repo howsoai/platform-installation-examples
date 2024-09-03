@@ -17,7 +17,7 @@ minio-server-cert                   True    platform-minio-server-tls           
 platform-natsbox-nats-client-tls    True    platform-natsbox-nats-client-tls    5h25m
 nats-cluster-tls                    True    nats-cluster-tls                    5h25m
 nats-server-tls                     True    nats-server-tls                     5h25m
-postgres-server-cert                True    platform-postgres-server-tls        5h24m
+platform-redis-server-cert                True    platform-postgres-server-tls        5h24m
 platform-postgres-client-tls        True    platform-postgres-client-tls        5h24m
 platform-redis-server-cert          True    platform-redis-server-tls           5h23m
 platform-redis-client-tls           True    platform-redis-client-tls           5h23m

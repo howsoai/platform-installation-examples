@@ -1,0 +1,20 @@
+domain: local.howso.com
+images:
+  registry: proxy.replicated.com 
+  registryNamespace: proxy/howso-platform/dpbuild-docker-edge.jfrog.io/dp
+
+datastores:
+  objectStore:
+    type: s3
+    endpoint: platform-minio:9000
+    scheme: https
+    signatureVersion: s3v4 
+    bucketName: platform 
+    locations:
+      trainees: trainees
+      data: data-resources
+    region: null
+    existingSecret: true 
+    credentialsSecretName: platform-minio
+    serverVerification: true
+    serverVerificationCustomCertChain: true

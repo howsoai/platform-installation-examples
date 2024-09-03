@@ -2,32 +2,9 @@ global:
   postgresql:
     auth:
       existingSecret: platform-postgres-postgresql
-primary:
-  networkPolicy:
-    enabled: false
-  persistence:
-    size: 20Gi
-  resourcesPreset: medium
-  tolerations:
-  - effect: NoSchedule
-    key: howso.com/nodetype
-    operator: Equal
-    value: services
-  - effect: NoExecute
-    key: howso.com/nodetype
-    operator: Equal
-    value: services
-  - effect: PreferNoSchedule
-    key: howso.com/nodetype
-    operator: Equal
-    value: services
-readReplicas:
-  resourcesPreset: medium
 tls:
   certCAFilename: ca.crt
   certFilename: tls.crt
   certKeyFilename: tls.key
   certificatesSecret: platform-postgres-server-tls
-  enabled: true
-volumePermissions:
   enabled: true
