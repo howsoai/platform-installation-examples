@@ -15,21 +15,6 @@ ums:
       alb.ingress.kubernetes.io/healthcheck-path: /
       alb.ingress.kubernetes.io/success-codes: '400,404'
 
-restapi:
-  ingress:
-    annotations:
-      alb.ingress.kubernetes.io/group.name: api
-      alb.ingress.kubernetes.io/group.order: "3"
-      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
-      alb.ingress.kubernetes.io/scheme: internet-facing
-      alb.ingress.kubernetes.io/ssl-redirect: "443"
-      alb.ingress.kubernetes.io/target-type: ip
-      alb.ingress.kubernetes.io/load-balancer-name: howso-platform-api-alb
-      alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
-      alb.ingress.kubernetes.io/healthcheck-port: '8080'
-      alb.ingress.kubernetes.io/healthcheck-path: /
-      alb.ingress.kubernetes.io/success-codes: '400,404'
-
 api:
   ingress:
     annotations:

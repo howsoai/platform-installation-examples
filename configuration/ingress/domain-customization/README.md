@@ -30,7 +30,7 @@ i.e.
 ```yaml
 pypi:
   subdomain: howso-pypi
-restapi:
+api:
   subdomain: howso-api
 ```
 
