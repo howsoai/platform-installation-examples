@@ -14,13 +14,13 @@ See [here](../common/README.md#basic-helm-install) for a quick start (skipping t
 The Redis server will need a certificate to secure the connection.  Takes a look at the [manifest](./manifests/redis-tls/redis-server-certificate.yaml) for the certificate.  Note the use of the [vault-issuer](./manifests/vault-issuer.yaml) to issue the certificate.  The dnsNames are set to the redis service names, the usage is set to server auth.
 
 ```sh
-kubectl apply -f vault-certmanager/manifests/redis-tls/redis-server-cert.yaml
+kubectl -n howso apply -f vault-certmanager/manifests/redis-tls/redis-server-cert.yaml
 ```
 
 Check the certificate is issued and ready
 
 ```sh
-kubectl get certificate platform-redis-server-cert
+kubectl -n howso get certificate platform-redis-server-cert
 ```
 
 ### Redeploy the Redis Helm Install with TLS
@@ -31,7 +31,7 @@ The use of `authClients` mandates that clients also use a certificate.
 Optionally, use [Helm diff](https://github.com/databus23/helm-diff?tab=readme-ov-file#install) to see the changes that will be made.
 
 ```sh
-helm diff upgrade --install platform-redis oci://registry.how.so/howso-platform/stable/redis --namespace howso --values vault-certmanager/manifests/redis-tls/redis.yaml
+helm -n howso diff upgrade --install platform-redis oci://registry.how.so/howso-platform/stable/redis --namespace howso --values vault-certmanager/manifests/redis-tls/redis.yaml
 ```
 
 Since a volume is added to the statefulset, it is not a supported upgrade path.  In this case, we'll delete the existing Redis and reinstall.

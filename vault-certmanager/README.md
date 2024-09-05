@@ -249,9 +249,9 @@ With cert-manager and Vault set up, any Howso Platform component that requires a
 
 There is a [full](./howso-platform-full.md) TLS/mTLS throughout setup, but there is also broken down instructions for each components.
 
-- [Redis](./howso-platform-redis.md)
-- [Postgres](./howso-platform-postgres.md)
-- [NATS](./howso-platform-nats.md)
-- [Minio](./howso-platform-minio.md)
-- [Ingress](./howso-platform-ingress.md)
-- [OIDC](./howso-platform-oidc.md)
+- [Redis](./redis-tls.md)
+- [Postgres](./postgres-tls.md)
+- [NATS](./nats-tls.md)
+- [Minio](./minio-tls.md)
+- [Ingress](./ingress-tls.md)
+- [OIDC](./oidc-tls.md)
