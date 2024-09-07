@@ -71,7 +71,19 @@ Install vault via Helm.  Check the [values file](./manifests/vault.yaml) for the
 helm upgrade --install --namespace vault  --create-namespace --version 0.28.1 --values vault-certmanager/manifests/vault.yaml vault hashicorp/vault --wait 
 ``` 
 
-> Note: This demo is to show the integration with Howso Platform via cert-manager.  Securing Vault properly is deliberately not included; for instance, here a single key share is stored in a local file for demonstration expediency, not secuirty.
+Check the vault pod is running:
+```sh
+kubectl get po -n vault
+```
+
+The output should look something like this - note that it is running, but not yet ready (because it is sealed):
+```txt
+NAME                                    READY   STATUS    RESTARTS   AGE
+vault-agent-injector-5dc9fcd4bc-zzkz2   1/1     Running   0          76s
+vault-0                                 0/1     Running   0          76s
+```
+
+> Note: This demo is to show the integration with Howso Platform via cert-manager.  Securing Vault properly is deliberately not included; for instance, here a single key share is created and stored in a local file for demonstration expediency, not security.
 
 Initialize vault, and save the key and root token.
 ```sh
@@ -102,12 +114,12 @@ It should look something like this.  Later commands will use [jq](https://stedol
 }
 ```
 
-Unseal the vault (this can be repeated if a restart seals it):
+Unseal the vault (this can be repeated if a restart seals the vault again):
 ```sh
 kubectl exec -n vault vault-0 -- vault operator unseal $(jq -r ".unseal_keys_b64[0]" vault-init.json)
 ```
 
-The status will be printed, but at any point you can check the status of the vault (sealed should be false):
+At any point you can check the status of the vault again (sealed should be false):
 ```sh
 kubectl exec -n vault vault-0 -- vault status
 ```
@@ -125,20 +137,20 @@ jq -r ".root_token" vault-init.json
 
 Download the vault cli from the [Hashicorp website](https://releases.hashicorp.com/vault).  Extract the binary and move it to a location in your path.
 
-Set the following environment variables with connection parameters to the vault server:
+Set the following environment variables, to be used by the cli, with connection parameters to the vault server:
 ```sh
 export VAULT_ADDR='https://vault.local.howso.com/'
 export VAULT_SKIP_VERIFY=true
 ```
 
-With the root token login to the vault:
+Use the root token to login the cli to the vault:
 ```sh
 vault login
 ```
 
 ### Set up Vault PKI
 
-Different types of secrets have different secret engine backends in vault.  The PKI engine is used for certificates.  The next steps will enable it and configure a root CA.  Once enabled, it will be possible to use it to issue certificates that are signed by this root CA.
+Different types of secrets have different secret engine backends in vault.  The PKI engine is used for certificates.  The next steps will enable it and configure a root CA.  Once enabled, it will be possible to use vault to issue certificates that are signed by this root CA.
 
 First, enable Vault's [PKI secrets](https://developer.hashicorp.com/vault/docs/secrets/pki/setup) engine and create a root CA:
 
@@ -152,8 +164,9 @@ vault write -field=certificate pki/root/generate/internal \
      ttl=87600h > root-ca.crt
 ```
 
+This root-ca.crt file is the public key of the root CA.  It can be used to verify certificates issued by this CA.  So adding it as a secret in Kubernetes, will allow it to be mounted into the Howso Platform components that need to verify certificates issued by Vault.
+
 Create a secret in Kubernetes with the root CA certificate:
-> Note: This is not usable as the trusted root CA for the cluster.
 ```sh
 kubectl create secret generic platform-vault-ca \
     --from-file=ca.crt=root_ca.crt \
@@ -212,24 +225,25 @@ vault write auth/kubernetes/role/cert-manager \
 
 ## 4. Create a Kubernetes Secret for Vault Authentication
 
-Create a Secret in Kubernetes with the Vault root token (for demonstration purposes only, use a more secure method in production):
+Create a Secret in Kubernetes with the Vault root token (for demonstration purposes only, use a more secure method for a hardened setup):
 
 ```bash
 kubectl create secret generic vault-token \
     --from-literal=token="$(jq -r .root_token vault-init.json)" -n howso
 ```
 
-## 5. Create the Vault Issuers
+## 5. Create the cert-manager Vault Issuers
 
-Apply the [Issuer](./manifests/vault-issuer.yaml) manifests to create Vault Issuers in the `cert-manager` namespace. One will deal with internal Kubernetes services, the other ingress with our orgs domain.  The Vault Issuers are for issuing certificates using the Vault PKI secrets engine.
+Apply the cert-manager [Issuer](./manifests/vault-issuer.yaml) manifests to create Vault Issuers in the `howso` namespace. One will deal with internal Kubernetes services, the other ingress with our orgs domain.  The Vault Issuers are for issuing certificates using the Vault PKI secrets engine.
 
 ```bash
-kubectl apply -f vault-certmanager/manifests/vault-issuers.yaml
+kubectl -n howso apply -f vault-certmanager/manifests/vault-issuers.yaml
 ```
 
 ### Test Certificate Issuance 
+Secrets containing new certificates signed by the Vault CA will be created in the `howso` namespace when the Issuers are used.  To confirm that everything is working correctly, create some test certificates:
 ```bash
-kubectl apply -f vault-certmanager/manifests/tests-certs.yaml
+kubectl -n howso apply -f vault-certmanager/manifests/tests-certs.yaml
 ```
 
 ## Verify the Certificates
@@ -237,17 +251,17 @@ kubectl apply -f vault-certmanager/manifests/tests-certs.yaml
 Check the status of the certificate:
 
 ```bash
-kubectl get certificate test-ingress-cert -n howso
-kubectl get certificate test-internal-k8s-cert -n howso
+kubectl -n howso get certificate test-ingress-cert -n howso
+kubectl -n howso get certificate test-internal-k8s-cert -n howso
 ```
 
-You should see the certificate in a "Ready" state.
+You should see the certificates with True set in the Ready column.
 
 ## Setup Howso Platform
 
-With cert-manager and Vault set up, any Howso Platform component that requires a certificate, or communicates path that could use TLS or mTLS can use Certificate api objects to create the certificates.
+With cert-manager and Vault set up, any Howso Platform component that requires a certificate, or a communication path that could use TLS or mTLS can use cert-manager Certificate api objects to create the required certificates.
 
-There is a [full](./howso-platform-full.md) TLS/mTLS throughout setup, but there is also broken down instructions for each components.
+Follow [these docs for a full](./howso-platform-full.md) TLS/mTLS throughout setup, but to avoid too a lot of changes at once, the recommended approach is to follow instructions for individual components and sections to build up the setup incrementally.
 
 - [Redis](./redis-tls.md)
 - [Postgres](./postgres-tls.md)
