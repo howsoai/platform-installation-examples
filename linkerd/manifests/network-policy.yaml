@@ -11,23 +11,6 @@ spec:
           linkerd.io/control-plane-ns: linkerd
 
 ---
-kind: NetworkPolicy
-apiVersion: networking.k8s.io/v1
-metadata:
-  name: platform-api-v2-ingress-policy
-spec:
-  podSelector:
-    matchLabels:
-      app.kubernetes.io/component: rest-api-service 
-  policyTypes:
-  - Ingress 
-  ingress:
-  - ports:
-    - protocol: TCP
-      port: 8443
-    - protocol: TCP
-      port: 8080
----
 
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
