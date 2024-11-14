@@ -4,7 +4,7 @@
 
 ### Login to the Howso Platform
 
-Navigate to the User Management Service (UMS) first.  Proceed passed the certificate warning.  Login with the default admin credentials (platform-admin/platform).  You will be prompted to change the password.
+Navigate to the User Management Service (UMS) first.  Proceed past the certificate warning.  Login with the default admin credentials (platform-admin/platform).  You will be prompted to change the password.
 
 https://management.local.howso.com/
 
@@ -32,11 +32,11 @@ Edit the `howso.yml` file and set `verify_ssl: false.
 
 ### Trust the Certs
 
-The Howso Platform python client uses the _certifi_ package for the trusted root certs, not the operating system trust store.  Therefore, to trust the platform ca - we'll extract it from the platform and then set it explicitly as trusted in our `howso.yml`
+The Howso Platform Python client uses the _certifi_ package for the trusted root certs, not the operating system trust store.  Therefore, to trust the platform CA - we'll extract it from the platform and then set it explicitly as trusted in our `howso.yml`
 
 #### Extract the platform CA cert
 
-With kubectl access, you can retrieve the platform cert from the ca secret.
+With kubectl access, you can retrieve the platform cert from the CA secret.
 
 ```sh
 kubectl -n howso get secrets platform-ca -ojson | jq -r '.data."tls.crt"' | base64 -d > howso-platform.crt
