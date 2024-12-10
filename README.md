@@ -25,7 +25,7 @@ By providing self-contained local workstation setups the documentation aims to:-
 
 ### Argo Workflows Integration
 
-The Howso Platform can optionally integrate with Argo Workflows to enable certain workflow automation capabilities. Like the core platform components, this is available as a Helm chart and can be added to any platform installation.
+The Howso Platform can optionally integrate with Argo Workflows to enable certain workflow automation capabilities. Like the core platform components, this is available as a Helm chart and can be added to an existing platform installation.
 - [Argo Workflows Integration](./argo-workflows/README.md)
 
 > Note: Workflows integration is available in Howso Platform 2024.12.0 and later as an early access feature.
