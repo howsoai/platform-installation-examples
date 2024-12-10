@@ -13,6 +13,15 @@ This guide will add the Argo Workflows integration to an existing Howso Platform
 
 ## Steps
 
+
+### Argo Workflows host entry
+
+Add to your local hosts file
+
+```sh
+echo "127.0.0.1  argo-workflows.local.howso.com" | sudo tee -a /etc/hosts
+```
+
 ### Install Argo Workflows
 
 Add the Argo Helm repository:
@@ -21,7 +30,7 @@ helm repo add argo https://argoproj.github.io/argo-helm
 helm repo update
 ```
 
-Take a look at the [manifests](./manifests/argo-workflows.yaml) for the Argo Workflows configuration.  Most of the custom configuration is will be created by the Howso Platform chart - via a configmap (platform-configmap-workflows-controller), this values file references this configmap.
+Take a look at the [manifests](./manifests/argo-workflows.yaml) for the Argo Workflows configuration.  Most of the custom configuration will be created by the Howso Platform chart - via a configmap (platform-configmap-workflows-controller), this values file references this configmap.
 
 Ingress is enabled, so that the Argo Workflows UI will be available at https://argo-workflows.local.howso.com. 
 
@@ -57,6 +66,10 @@ kubectl delete pod -n howso -l app.kubernetes.io/instance=argo-workflows
 ```
 
 ### Verify Installation
+
+Argo Workflows is now installed and enabled in Howso Platform.  The next steps are to verify the installation and then run the UI Synthesizer feature.
+
+### Argo Workflows pods
 
 Check that the Argo Workflows pods are running:
 
