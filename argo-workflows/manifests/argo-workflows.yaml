@@ -1,0 +1,10 @@
+controller:
+  configMap:
+    create: false
+    name: platform-configmap-workflows-controller
+  rbac:
+    secretWhitelist:
+    - platform-registry
+server:
+  authModes:
+  - server
