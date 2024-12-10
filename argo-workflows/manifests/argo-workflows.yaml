@@ -8,3 +8,11 @@ controller:
 server:
   authModes:
   - server
+  ingress:
+    enabled: true
+    hosts:
+    - argo-workflows.local.howso.com
+    tls:
+    - hosts:
+      - argo-workflows.local.howso.com
+      secretName: platform-ingress-tls
