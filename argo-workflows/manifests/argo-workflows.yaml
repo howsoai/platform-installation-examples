@@ -1,0 +1,18 @@
+controller:
+  configMap:
+    create: false
+    name: platform-configmap-workflows-controller
+  rbac:
+    secretWhitelist:
+    - platform-registry
+server:
+  authModes:
+  - server
+  ingress:
+    enabled: true
+    hosts:
+    - argo-workflows.local.howso.com
+    tls:
+    - hosts:
+      - argo-workflows.local.howso.com
+      secretName: platform-ingress-tls
