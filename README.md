@@ -23,6 +23,13 @@ By providing self-contained local workstation setups the documentation aims to:-
 - [Helm Openshift](helm-openshift/README.md)
 - [Argo CD Basic](argocd-basic/README.md)
 
+### Argo Workflows Integration
+
+The Howso Platform can optionally integrate with Argo Workflows to enable certain workflow automation capabilities. Like the core platform components, this is available as a Helm chart and can be added to an existing platform installation.
+- [Argo Workflows Integration](./argo-workflows/README.md)
+
+> Note: Workflows integration is available in Howso Platform 2024.12.0 and later as an early access feature.
+
 ## Overview
 
 Howso Platform is a Kubernetes-based application that consists of many services, it is available as a Helm chart install, depending on data stores and a message queue that can also be deployed as charts.
@@ -80,6 +87,11 @@ When running commands, all paths are relative to the root of this repository.
 The Howso Platform supports configuration options to tailor your installation. These include ingress setup, authentication methods, domain customization, etc.
 
 For details on configuring your Howso Platform deployment, refer to the [Configuration Guide](configuration/README.md).
+
+
+## Trainee Scaling
+
+The Howso Platform can automatically set the resource requirements for a trainee, increasing them as the trainee's memory utilization increases.  This setup is discussed in the [trainee scaling](trainee-scaling/README.md) section.
 
 
 ## Licensing Note

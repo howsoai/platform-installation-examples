@@ -1,0 +1,27 @@
+scaling:
+  # By default all automatic resource setting is disabled; turn it on.
+  enabled: true
+
+  # Autoscaling needs to be separately enabled as well.
+  autoscaling:
+    enabled: true
+  
+  resources:
+    # Specific resource settings for trainees:
+    trainees:
+      # sizes: [...]  default catalog of sizes provided with Howso Platform
+      
+      # Use an even smaller initial trainee size.
+      defaultSize: xxx-small
+
+      # When should we scale?
+      scalingEvents:
+        # cpu:  not recommended
+
+        memory:
+          enabled: true
+          scaleUpThreshold: 80  # percent of requested memory
+          scaleDownThreshold: 0
+        
+        outOfMemory:
+          enabled: true  # when a Pod is OOMKilled
