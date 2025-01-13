@@ -1,0 +1,13 @@
+config:
+  exporters:
+    azuremonitor:
+      # Replace the following line with the actual Azure Application Insights connection string
+      connection_string: InstrumentationKey=...;IngestionEndpoint=...;LiveEndpoint=...;ApplicationId=...
+  service:
+    pipelines:
+      metrics:
+        receivers: [otlp]
+        exporters: [azuremonitor]
+      traces:
+        receivers: [otlp]
+        exporters: [azuremonitor]
