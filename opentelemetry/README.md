@@ -64,3 +64,5 @@ The Howso Platform publishes all data to a gRPC endpoint on port 4317 in the col
 ## Extended Example
 
 [OpenTelemetry End-to-End Setup](../opentelemetry-e2e/README.md) contains an extended setup, installing Prometheus, Grafana, Jaeger, and the OpenTelemetry collector in a new cluster.
+
+If you are running Howso Platform in Microsoft's Azure Kubernetes Service, you can use [OpenTelemetry on AKS](../opentelemetry-aks/README.md) to publish observability data to Azure Application Insights.

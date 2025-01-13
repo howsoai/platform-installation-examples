@@ -65,7 +65,7 @@ Though not exhaustive, the included [air-gap](./helm-airgap/README.md) and [Open
 
 ### Observability
 
-The Howso Platform can publish metrics and traces using the [OpenTelemetry](https://opentelemetry.io) system beginning with release 2024.6.1.  This depends on a collector being installed in the cluster.  There is a [basic OpenTelemetry sample setup](opentelemetry/README.md) that installs the collector and configures the Howso Platform to send it data.  An [extended end-to-end OpenTelemetry sample setup](opentelemetry-e2e/README.md) installs additional open-source observability tools to examine and monitor the system state.
+The Howso Platform can publish metrics and traces using the [OpenTelemetry](https://opentelemetry.io) system beginning with release 2024.6.1.  This depends on a collector being installed in the cluster.  There is a [basic OpenTelemetry sample setup](opentelemetry/README.md) that installs the collector and configures the Howso Platform to send it data.  An [extended end-to-end OpenTelemetry sample setup](opentelemetry-e2e/README.md) installs additional open-source observability tools to examine and monitor the system state.  Observability data can also be [published to Azure Monitoring](opentelemetry-aks/README.md) if you are running Howso Platform on Microsoft's Azure Kubernetes Service.
 
 
 ### Securing Howso Platform
