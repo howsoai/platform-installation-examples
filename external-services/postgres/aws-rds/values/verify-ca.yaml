@@ -1,0 +1,17 @@
+# AWS RDS PostgreSQL configuration with verify-ca SSL
+datastores:
+  postgres:
+    ums:
+      # Replace these values with your RDS endpoint details
+      host: ${PGHOST}
+      port: ${PGPORT}
+      name: ${PGDATABASE}
+      user: ${PGUSER}
+      password: ${PGPASSWORD}
+      
+      # Verify-ca SSL configuration
+      sslmode: verify-ca
+      serverVerificationCustomCertChain: true
+      serverCertChainSecretName: platform-postgres-certchain
+      clientVerification: false
+      clientCertSecretName: null 

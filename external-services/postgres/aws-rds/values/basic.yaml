@@ -3,11 +3,11 @@ datastores:
   postgres:
     ums:
       # Replace these values with your RDS endpoint details
-      host: ${DB_HOST}
-      port: ${DB_PORT}
-      name: ${DB_NAME}
-      user: ${DB_USER}
-      password: ${DB_PASSWORD}
+      host: ${PGHOST}
+      port: ${PGPORT}
+      name: ${PGDATABASE}
+      user: ${PGUSER}
+      password: ${PGPASSWORD}
       
       # Basic SSL configuration
       sslmode: require

@@ -1,6 +1,6 @@
 # External Services for Howso Platform
 
-This section contains guides for externalizing various services used by the Howso Platform.
+This section contains guides for externalizing various services used by the Howso Platform.  Whilst the guides show specific back-end providers, the general principles can be applied to other providers.
 
 ## Available Guides
 
