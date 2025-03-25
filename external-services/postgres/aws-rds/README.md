@@ -2,9 +2,9 @@
 
 ## Overview
 
-This guide provides instructions for migrating the Howso Platform's PostgreSQL database to Amazon RDS. This allows you to use AWS's managed PostgreSQL service instead of the in-cluster PostgreSQL deployment.
+This guide provides instructions for configuring the Howso Platform's PostgreSQL database to use an external Amazon RDS instance.  This allows the use of AWS's managed PostgreSQL service instead of the in-cluster PostgreSQL deployment.
 
-> Note: This guide is showing how the migration is done for an external PostgreSQL instance, and focses on a setup that is easy to replicate.  It is not intended to be a guide on how to setup a production-ready PostgreSQL instance for the Howso Platform, which will at the least require a larger instance type, and more locked down network configuration.
+> Note: This guide focuses on an external PostgreSQL setup that is easy to replicate, as it is small and accessible from the internet.  It is not intended to be a production-ready PostgreSQL setup for the Howso Platform, which will, at the least, require a larger instance type and more locked-down network configuration.
 
 > Note: This guide assumes a fresh installation of the Howso Platform. If you need to migrate an existing installation to RDS, see the [Migration](#migration) section at the end of this guide.
 
@@ -12,16 +12,20 @@ This guide provides instructions for migrating the Howso Platform's PostgreSQL d
 
 - [General prerequisites](../prereqs/README.md)
 - [Helm Online Installation for Howso Platform](../helm-basic/README.md)
-- AWS CLI installed and configured
+- [AWS CLI installed](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) and [configured](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html)
 - AWS account with appropriate permissions
-- VPC and subnet information for your cluster
+- VPC and subnet information for a region with internet access.
 
 ## Setup
 
 ### 1. Create RDS Instance
 
-Use the provided setup script to create the RDS instance:
+You can either use the provided setup script to create an RDS instance, or [set up the RDS instance manually](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_GettingStarted.CreatingConnecting.PostgreSQL.html) through the AWS Console or CLI.
 
+If using the setup script:
+
+```bash
+# Set required environment variables
 ```bash
 # Set required environment variables
 export VPC_ID="your-vpc-id"
@@ -29,6 +33,7 @@ export CLUSTER_CIDR="your-cluster-cidr"
 export SUBNET_IDS="subnet-id1,subnet-id2"
 
 # Run setup script
+cd external-services/postgres/aws-rds
 ./setup.sh
 ```
 
@@ -48,9 +53,11 @@ export PGPASSWORD="your-secure-password"
 psql -c "CREATE EXTENSION IF NOT EXISTS ltree;"
 ```
 
+> Note: This extension can also be enabled through the AWS RDS Console under the database's Configuration tab in the Parameter groups section.
+
 ### 3. Configure Howso Platform
 
-In order to explain different connection configurations, and also to introduce complexity incrementally initially we will setup a minimal TLS connection to the RDS instance, and then ratchet up the to include server certificate verification, and finally to include client certificate verification (mutual TLS).
+Initially we will setup a minimal TLS connection to the RDS instance, and then ratchet up the security to include server certificate verification, and finally to include client certificate verification (mutual TLS).
 
 #### Basic SSL Configuration
 
@@ -91,7 +98,7 @@ Since this is a fresh installation, you'll need to login and setup credentials f
 
 #### Verify-CA SSL Configuration (sslmode: verify-ca)
 
-The `verify-ca` SSL mode checks the RDS server's certificate against a trusted certificate authority (CA), protecting against man-in-the-middle attacks.
+The `verify-ca` SSL mode checks the RDS server's certificate against a trusted certificate authority (CA), protecting against man-in-the-middle attacks.  The Howso Platform will need access to the RDS CA certificate in order to verify the RDS server's certificate, this is done by creating a Kubernetes secret containing the RDS CA certificate.
 
 - Download the RDS certificate bundle:
 ```bash
@@ -143,7 +150,7 @@ The `verify-full` SSL mode requires both server and client certificate verificat
 
 The Kubernetes configuration for client certificates is shown below, but note that this will only work after the RDS instance has been properly configured to trust your client certificate CA:
 
-- Generate client certificate (using your trusted CA):
+- Generate client certificate (using the RDS trusted CA):
 ```bash
 # Create certificates directory if not exists
 mkdir -p certs/postgres
