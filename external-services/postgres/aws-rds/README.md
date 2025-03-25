@@ -112,8 +112,7 @@ curl -o certs/postgres/rds-ca-2019-root.pem https://truststore.pki.rds.amazonaws
 - Create the certificate chain secret:
 ```bash
 kubectl create secret generic platform-postgres-certchain \
-    --from-file=ca.crt=certs/postgres/rds-ca-2019-root.pem \
-    --dry-run=client -o yaml | kubectl apply -f -
+    --from-file=ca.crt=certs/postgres/rds-ca-2019-root.pem
 ```
 
 - The [verify-ca values file](./values/verify-ca.yaml) configures the platform to verify the RDS server certificate. The key changes from the basic configuration are:
@@ -176,8 +175,7 @@ openssl x509 -req -in certs/postgres/client.csr \
 ```bash
 kubectl create secret generic platform-postgres-client-cert \
     --from-file=tls.crt=certs/postgres/client.crt \
-    --from-file=tls.key=certs/postgres/client.key \
-    --dry-run=client -o yaml | kubectl apply -f -
+    --from-file=tls.key=certs/postgres/client.key
 ```
 
 - The [verify-full values file](./values/verify-full.yaml) configures the platform to use client certificates:
