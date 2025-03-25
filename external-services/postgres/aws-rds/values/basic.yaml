@@ -1,0 +1,15 @@
+# Basic AWS RDS PostgreSQL configuration with SSL required
+datastores:
+  postgres:
+    ums:
+      # Replace these values with your RDS endpoint details
+      host: ${PGHOST}
+      port: ${PGPORT}
+      name: ${PGDATABASE}
+      user: ${PGUSER}
+      password: ${PGPASSWORD}
+      
+      # Basic SSL configuration
+      sslmode: require
+      serverVerificationCustomCertChain: false
+      clientVerification: false 
