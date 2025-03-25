@@ -37,9 +37,9 @@ cd external-services/postgres/aws-rds
 ./setup.sh
 ```
 
-### 2. Enable Required Extensions
+### 2. Verify Required Extensions
 
-The Howso Platform relies on the [Postgres ltree extension](https://www.postgresql.org/docs/current/ltree.html) to operate. Connect to your RDS instance and run:
+The Howso Platform relies on the [Postgres ltree extension](https://www.postgresql.org/docs/current/ltree.html) to operate. This extension is typically pre-installed on AWS RDS PostgreSQL instances. You can verify it's available by connecting to your RDS instance and running:
 
 ```bash
 # Set PostgreSQL connection environment variables
@@ -49,11 +49,11 @@ export PGUSER="platform_admin"
 export PGDATABASE="platform"
 export PGPASSWORD="your-secure-password"
 
-# Create the required extension
+# Verify the extension
 psql -c "CREATE EXTENSION IF NOT EXISTS ltree;"
 ```
 
-> Note: This extension can also be enabled through the AWS RDS Console under the database's Configuration tab in the Parameter groups section.
+If you see "NOTICE: extension 'ltree' already exists, skipping", then you're all set. If the extension is not available, it can be enabled through the AWS RDS Console under the database's Configuration tab in the Parameter groups section.
 
 ### 3. Configure Howso Platform
 
@@ -213,7 +213,7 @@ kubectl get pods -n howso
 
 If you have an existing Howso Platform installation and need to migrate your data to RDS, follow these steps:
 
-- First, complete the RDS setup and configuration steps above (Create RDS Instance, Enable Required Extensions, and Configure Howso Platform)
+- First, complete the RDS setup and configuration steps above (Create RDS Instance, Verify Required Extensions, and Configure Howso Platform)
 - Once the RDS instance is ready and configured, proceed with the data migration:
 
 ```bash
