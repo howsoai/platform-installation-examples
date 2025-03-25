@@ -252,15 +252,3 @@ kubectl logs -n howso -l app=sms
 kubectl logs -n howso -l app=ums
 ```
 
-- Common issues to look for in the logs:
-  - SSL/TLS handshake failures
-  - Certificate verification errors
-  - Connection timeouts
-  - Authentication failures
-
-- Verify the RDS endpoint is accessible from your cluster:
-```bash
-# Test connection to RDS
-kubectl run -it --rm --restart=Never test-connection --image=postgres:15 -- \
-  psql -h your-rds-endpoint.region.rds.amazonaws.com -U platform_admin -d platform
-```
