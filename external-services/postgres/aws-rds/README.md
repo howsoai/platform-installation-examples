@@ -192,6 +192,8 @@ datastores:
       clientCertSecretName: platform-postgres-client-cert
 ```
 
+> Note: The verify-full configuration requires that the Howso Platform trust the RDS CA certificate, so make sure to [follow the steps above](#verify-ca-ssl-configuration-sslmode-verify-ca) to create the RDS CA certificate secret.
+
 Apply the configuration and verify the pods restart successfully:
 
 ```bash
