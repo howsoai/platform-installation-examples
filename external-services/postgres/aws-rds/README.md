@@ -244,10 +244,10 @@ If you encounter connection issues after applying the configuration:
 - Check the logs of the SMS and UMS pods, as they will show detailed connection information:
 ```bash
 # Check SMS logs
-kubectl logs -n howso -l app=sms
+kubectl logs -n howso -l app.kubernetes.io/component=scalability-management-service 
 
 # Check UMS logs
-kubectl logs -n howso -l app=ums
+kubectl logs -n howso -l app.kubernetes.io/component=user-management-service 
 ```
 
 ## Cleanup
