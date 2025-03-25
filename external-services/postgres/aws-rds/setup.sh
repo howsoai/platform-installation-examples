@@ -13,11 +13,6 @@ if [ -z "$VPC_ID" ]; then
     exit 1
 fi
 
-if [ -z "$CLUSTER_CIDR" ]; then
-    echo "Error: CLUSTER_CIDR environment variable is required"
-    exit 1
-fi
-
 if [ -z "$SUBNET_IDS" ]; then
     echo "Error: SUBNET_IDS environment variable is required"
     exit 1
@@ -31,6 +26,12 @@ if [ -z "$USER_IP" ]; then
     exit 1
 fi
 echo "Your public IP: $USER_IP"
+
+# Use default CIDR if not provided
+if [ -z "$CLUSTER_CIDR" ]; then
+    CLUSTER_CIDR="10.0.0.0/16"
+    echo "Using default CIDR: $CLUSTER_CIDR"
+fi
 
 # Create security group
 echo "Creating security group..."
