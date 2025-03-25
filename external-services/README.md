@@ -7,4 +7,4 @@ This section contains guides for externalizing various services used by the Hows
 ### PostgreSQL
 - [AWS RDS PostgreSQL](postgres/aws-rds/README.md) - Guide for migrating PostgreSQL to Amazon RDS
 
-### Redis (Coming Soon)
+### S3 Compatible Object Store (Coming Soon)
