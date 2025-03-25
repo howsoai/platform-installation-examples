@@ -252,3 +252,13 @@ kubectl logs -n howso -l app=sms
 kubectl logs -n howso -l app=ums
 ```
 
+## Cleanup
+
+To remove the AWS RDS resources created during testing, a cleanup script is provided:
+
+> Note: This script will delete AWS resources, please check the script before running it.
+
+```bash
+./cleanup.sh
+```
+
