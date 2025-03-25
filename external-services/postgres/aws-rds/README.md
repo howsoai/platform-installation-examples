@@ -245,7 +245,9 @@ If you encounter connection issues after applying the configuration:
 ```bash
 # Check SMS logs
 kubectl logs -n howso -l app.kubernetes.io/component=scalability-management-service 
+```
 
+```bash
 # Check UMS logs
 kubectl logs -n howso -l app.kubernetes.io/component=user-management-service 
 ```
