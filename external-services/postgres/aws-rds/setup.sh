@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Note: This script uses the AWS region configured in your AWS CLI configuration
+#       (via AWS_DEFAULT_REGION environment variable or ~/.aws/config)
+#       Make sure you have configured the correct region before running this script.
+
 # Exit on error
 set -e
 
@@ -19,6 +23,15 @@ if [ -z "$SUBNET_IDS" ]; then
     exit 1
 fi
 
+# Get the user's public IP
+echo "Getting your public IP address..."
+USER_IP=$(curl -s ifconfig.me)
+if [ -z "$USER_IP" ]; then
+    echo "Error: Could not determine your public IP address"
+    exit 1
+fi
+echo "Your public IP: $USER_IP"
+
 # Create security group
 echo "Creating security group..."
 SECURITY_GROUP_ID=$(aws ec2 create-security-group \
@@ -27,13 +40,22 @@ SECURITY_GROUP_ID=$(aws ec2 create-security-group \
   --vpc-id $VPC_ID \
   --output text --query 'GroupId')
 
-# Add inbound rule for PostgreSQL
-echo "Adding inbound rule for PostgreSQL..."
+# Add inbound rules for PostgreSQL
+echo "Adding inbound rules for PostgreSQL..."
+# Allow access from the cluster
 aws ec2 authorize-security-group-ingress \
   --group-name platform-postgres-sg \
   --protocol tcp \
   --port 5432 \
   --cidr $CLUSTER_CIDR
+
+# Allow access from the user's IP
+echo "Adding your IP ($USER_IP) to security group..."
+aws ec2 authorize-security-group-ingress \
+  --group-name platform-postgres-sg \
+  --protocol tcp \
+  --port 5432 \
+  --cidr "$USER_IP/32"
 
 # Create subnet group
 echo "Creating subnet group..."
@@ -42,8 +64,9 @@ aws rds create-db-subnet-group \
   --db-subnet-group-description "Subnet group for platform PostgreSQL" \
   --subnet-ids $SUBNET_IDS
 
-# Generate random password
-DB_PASSWORD=$(openssl rand -base64 16)
+# Generate random password (using only allowed characters)
+echo "Generating database password..."
+DB_PASSWORD=$(openssl rand -base64 16 | tr -dc 'A-Za-z0-9' | head -c 16)
 
 # Create RDS instance
 echo "Creating RDS instance..."
@@ -74,10 +97,11 @@ ENDPOINT=$(aws rds describe-db-instances \
   --output text)
 
 echo "RDS instance created successfully!"
-echo "Endpoint: $ENDPOINT"
-echo "Username: platform_admin"
-echo "Password: $DB_PASSWORD"
 echo
-echo "Next steps:"
-echo "1. Update the values/basic.yaml file with these credentials"
-echo "2. Follow the migration steps in README.md" 
+echo "Environment variables for values files:"
+echo "export PGHOST=\"$ENDPOINT\""
+echo "export PGPORT=\"5432\""
+echo "export PGDATABASE=\"platform\""
+echo "export PGUSER=\"platform_admin\""
+echo "export PGPASSWORD=\"$DB_PASSWORD\""
+echo
