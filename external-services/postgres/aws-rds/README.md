@@ -211,30 +211,40 @@ kubectl get pods -n howso
 
 If you have an existing Howso Platform installation and need to migrate your data to RDS, follow these steps:
 
-- First, complete the RDS setup and configuration steps above (Create RDS Instance, Verify Required Extensions, and Configure Howso Platform)
-- Once the RDS instance is ready and configured, proceed with the data migration:
+1. First, complete the RDS setup and configuration steps above (Create RDS Instance, Verify Required Extensions, and Configure Howso Platform)
+2. Once the RDS instance is ready and configured, proceed with the data migration:
 
 ```bash
 # Get existing database credentials
-kubectl get secret platform-postgres-postgresql -o jsonpath='{.data.postgres-password}' | base64 -d
+kubectl get secret platform-postgres-postgresql -n howso -o jsonpath='{.data.postgres-password}' | base64 -d
 ```
 
 ```bash
-# Backup database
-kubectl exec -it $(kubectl get pod -l app=postgresql -o jsonpath='{.items[0].metadata.name}') -- \
-  pg_dump -U postgres platform > platform_backup.sql
+# Identify the database name (typically 'platform' or 'postgres')
+kubectl exec -it platform-postgres-postgresql-0 -n howso -- psql -U postgres -c "\l"
+```
+
+```bash
+# Create a compressed dump file on the pod
+kubectl exec -it platform-postgres-postgresql-0 -n howso -- \
+  pg_dump -U postgres -d postgres -F c -f /tmp/platform_backup.dump
+```
+
+```bash
+# Copy the dump file to your local machine
+kubectl cp -n howso platform-postgres-postgresql-0:/tmp/platform_backup.dump ./platform_backup.dump
 ```
 
 ```bash
 # Restore to RDS (replace with your RDS endpoint)
-psql -h your-rds-endpoint.region.rds.amazonaws.com -U platform_admin -d platform < platform_backup.sql
+pg_restore -h your-rds-endpoint.region.rds.amazonaws.com -U platform_admin -d platform -v ./platform_backup.dump
 ```
 
 ```bash
-# Apply new values
+# Apply new values to use the RDS instance
 helm upgrade howso-platform oci://registry.how.so/howso-platform/stable/howso-platform \
   --namespace howso \
-  --values values.yaml
+  --values values/basic.yaml  # Or your preferred SSL configuration
 ```
 
 ## Troubleshooting
