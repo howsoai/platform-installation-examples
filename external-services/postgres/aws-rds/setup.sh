@@ -53,7 +53,7 @@ if [ -z "$existing_cluster_rule_postgres" ]; then
     --port 5432 \
     --cidr "0.0.0.0/0"
 else
-  echo "Cluster ingress rule for CIDR $CLUSTER_CIDR already exists."
+  echo "Ingress rule for CIDR 0.0.0.0/0 already exists."
 fi
 
 # Create subnet group
