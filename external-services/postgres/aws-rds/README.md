@@ -28,7 +28,6 @@ If using the setup script:
 ```bash
 # Set required environment variables
 export VPC_ID="your-vpc-id"
-export CLUSTER_CIDR="your-cluster-cidr"
 export SUBNET_IDS="subnet-id1 subnet-id2 subnet-id3"
 
 # Run setup script
