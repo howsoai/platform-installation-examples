@@ -8,3 +8,5 @@ howso_stacktrace.txt
 howso-platform-charts.tar.gz
 *.key
 *.crt
+.python-version
+.DS_Store

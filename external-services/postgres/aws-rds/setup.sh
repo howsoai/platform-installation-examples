@@ -33,30 +33,69 @@ if [ -z "$CLUSTER_CIDR" ]; then
     echo "Using default CIDR: $CLUSTER_CIDR"
 fi
 
-# Create security group
-echo "Creating security group..."
-SECURITY_GROUP_ID=$(aws ec2 create-security-group \
-  --group-name platform-postgres-sg \
-  --description "Security group for platform PostgreSQL RDS" \
-  --vpc-id $VPC_ID \
-  --output text --query 'GroupId')
+# Look up the security group in the given VPC
+SECURITY_GROUP_ID=$(aws ec2 describe-security-groups \
+  --filters Name=group-name,Values=platform-postgres-sg Name=vpc-id,Values="$VPC_ID" \
+  --query 'SecurityGroups[0].GroupId' \
+  --output text)
 
-# Add inbound rules for PostgreSQL
-echo "Adding inbound rules for PostgreSQL..."
-# Allow access from the cluster
-aws ec2 authorize-security-group-ingress \
-  --group-name platform-postgres-sg \
-  --protocol tcp \
-  --port 5432 \
-  --cidr $CLUSTER_CIDR
+# If it doesn't exist (describe returns "None" or empty), create it
+if [ "$SECURITY_GROUP_ID" = "None" ] || [ -z "$SECURITY_GROUP_ID" ]; then
+  echo "Creating security group..."
+  SECURITY_GROUP_ID=$(aws ec2 create-security-group \
+    --group-name platform-postgres-sg \
+    --description "Security group for platform PostgreSQL RDS" \
+    --vpc-id "$VPC_ID" \
+    --output text --query 'GroupId')
+else
+  echo "Security group already exists: $SECURITY_GROUP_ID"
+fi
 
-# Allow access from the user's IP
-echo "Adding your IP ($USER_IP) to security group..."
-aws ec2 authorize-security-group-ingress \
-  --group-name platform-postgres-sg \
-  --protocol tcp \
-  --port 5432 \
-  --cidr "$USER_IP/32"
+# Check for inbound rules for PostgreSQL
+existing_cluster_rule_postgres=$(aws ec2 describe-security-groups \
+  --group-names platform-postgres-sg \
+  --query 'SecurityGroups[0].IpPermissions[?FromPort==`5432` && ToPort==`5432` && IpProtocol==`tcp`].IpRanges[?CidrIp=="'"$CLUSTER_CIDR"'"]' \
+  --output text)
+
+# Add inbound rules for PostgreSQL if not present
+if [ -z "$existing_cluster_rule_postgres" ]; then
+  echo "Adding cluster ingress rule for CIDR $CLUSTER_CIDR..."
+  aws ec2 authorize-security-group-ingress \
+    --group-name platform-postgres-sg \
+    --protocol tcp \
+    --port 5432 \
+    --cidr "$CLUSTER_CIDR"
+else
+  echo "Cluster ingress rule for CIDR $CLUSTER_CIDR already exists."
+fi
+
+existing_cluster_rule_user_ip=$(aws ec2 describe-security-groups \
+  --group-names platform-postgres-sg \
+  --query 'SecurityGroups[0].IpPermissions[?FromPort==`5432` && ToPort==`5432` && IpProtocol==`tcp`].Ipv6Ranges[?CidrIpv6=="'"$USER_IP"'"]' \
+  --output text)
+
+if [ -z "$existing_cluster_rule_user_ip" ]; then
+  # Check if it's an IPv4 address (simple regex)
+  if [[ "$USER_IP" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]]; then
+    echo "Detected IPv4 address: $USER_IP"
+    aws ec2 authorize-security-group-ingress \
+      --group-name platform-postgres-sg \
+      --protocol tcp \
+      --port 5432 \
+      --cidr "${USER_IP}/32"
+  elif [[ "$USER_IP" =~ : ]]; then
+    # A basic check for IPv6 by looking for a colon
+    echo "Detected IPv6 address: $USER_IP"
+    aws ec2 authorize-security-group-ingress \
+      --group-name platform-postgres-sg \
+      --ip-permissions IpProtocol=tcp,FromPort=5432,ToPort=5432,Ipv6Ranges=[{CidrIpv6=$USER_IP/128}]
+  else
+    echo "Error: Invalid IP address format."
+    exit 1
+  fi
+else
+  echo "Ingress rule for $USER_IP already exists."
+fi
 
 # Create subnet group
 echo "Creating subnet group..."

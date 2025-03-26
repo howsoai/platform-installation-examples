@@ -15,6 +15,7 @@ This guide provides instructions for configuring the Howso Platform's PostgreSQL
 - [AWS CLI installed](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) and [configured](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html)
 - AWS account with appropriate permissions
 - VPC and subnet information for a region with internet access.
+- [PostgreSQL](https://www.postgresql.org/download/) client utilities `psql`, `pg_dump`, and `pg_restore`
 
 ## Setup
 
@@ -26,14 +27,13 @@ If using the setup script:
 
 ```bash
 # Set required environment variables
-```bash
-# Set required environment variables
 export VPC_ID="your-vpc-id"
 export CLUSTER_CIDR="your-cluster-cidr"
-export SUBNET_IDS="subnet-id1,subnet-id2"
+export SUBNET_IDS="subnet-id1 subnet-id2 subnet-id3"
 
 # Run setup script
 cd external-services/postgres/aws-rds
+chmod u+x setup.sh
 ./setup.sh
 ```
 
@@ -73,6 +73,7 @@ datastores:
       port: 5432
       name: platform
       user: platform_admin
+      existingSecret: false
       password: your-secure-password
       sslmode: require
       serverVerificationCustomCertChain: false
@@ -111,7 +112,7 @@ curl -o certs/postgres/rds-ca-2019-root.pem https://truststore.pki.rds.amazonaws
 
 - Create the certificate chain secret:
 ```bash
-kubectl create secret generic platform-postgres-certchain \
+kubectl create secret -n howso generic platform-postgres-certchain \
     --from-file=ca.crt=certs/postgres/rds-ca-2019-root.pem
 ```
 
