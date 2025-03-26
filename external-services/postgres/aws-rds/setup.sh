@@ -7,6 +7,8 @@
 # Exit on error
 set -e
 
+SG_NAME='platform-postgres-sg'
+
 # Check required environment variables
 if [ -z "$VPC_ID" ]; then
     echo "Error: VPC_ID environment variable is required"
@@ -18,45 +20,41 @@ if [ -z "$SUBNET_IDS" ]; then
     exit 1
 fi
 
-# Get the user's public IP
-echo "Getting your public IP address..."
-USER_IP=$(curl -s ifconfig.me)
-if [ -z "$USER_IP" ]; then
-    echo "Error: Could not determine your public IP address"
-    exit 1
+# Look up the security group in the given VPC
+SECURITY_GROUP_ID=$(aws ec2 describe-security-groups \
+  --filters Name=group-name,Values="$SG_NAME" Name=vpc-id,Values="$VPC_ID" \
+  --query 'SecurityGroups[0].GroupId' \
+  --output text)
+
+# If it doesn't exist (describe returns "None" or empty), create it
+if [ "$SECURITY_GROUP_ID" = "None" ] || [ -z "$SECURITY_GROUP_ID" ]; then
+  echo "Creating security group..."
+  SECURITY_GROUP_ID=$(aws ec2 create-security-group \
+    --group-name "$SG_NAME" \
+    --description "Security group for platform PostgreSQL RDS" \
+    --vpc-id "$VPC_ID" \
+    --output text --query 'GroupId')
+else
+  echo "Security group already exists: $SECURITY_GROUP_ID"
 fi
-echo "Your public IP: $USER_IP"
 
-# Use default CIDR if not provided
-if [ -z "$CLUSTER_CIDR" ]; then
-    CLUSTER_CIDR="10.0.0.0/16"
-    echo "Using default CIDR: $CLUSTER_CIDR"
+# Check for inbound rules for PostgreSQL
+existing_cluster_rule_postgres=$(aws ec2 describe-security-groups \
+  --group-names "$SG_NAME" \
+  --query 'SecurityGroups[0].IpPermissions[?FromPort==`5432` && ToPort==`5432` && IpProtocol==`tcp`].IpRanges' \
+  --output text | grep 0.0.0.0/0)
+
+# Add inbound rules for PostgreSQL if not present
+if [ -z "$existing_cluster_rule_postgres" ]; then
+  echo "Adding cluster ingress rule for 0.0.0.0/0"
+  aws ec2 authorize-security-group-ingress \
+    --group-name "$SG_NAME" \
+    --protocol tcp \
+    --port 5432 \
+    --cidr "0.0.0.0/0"
+else
+  echo "Ingress rule for CIDR 0.0.0.0/0 already exists."
 fi
-
-# Create security group
-echo "Creating security group..."
-SECURITY_GROUP_ID=$(aws ec2 create-security-group \
-  --group-name platform-postgres-sg \
-  --description "Security group for platform PostgreSQL RDS" \
-  --vpc-id $VPC_ID \
-  --output text --query 'GroupId')
-
-# Add inbound rules for PostgreSQL
-echo "Adding inbound rules for PostgreSQL..."
-# Allow access from the cluster
-aws ec2 authorize-security-group-ingress \
-  --group-name platform-postgres-sg \
-  --protocol tcp \
-  --port 5432 \
-  --cidr $CLUSTER_CIDR
-
-# Allow access from the user's IP
-echo "Adding your IP ($USER_IP) to security group..."
-aws ec2 authorize-security-group-ingress \
-  --group-name platform-postgres-sg \
-  --protocol tcp \
-  --port 5432 \
-  --cidr "$USER_IP/32"
 
 # Create subnet group
 echo "Creating subnet group..."
