@@ -17,7 +17,9 @@ Key aspects of Valkey:
 
 ## Using Valkey with Howso Platform
 
-If you choose to use Valkey, you can typically update your Helm chart configuration.
+Since the Redis license change, the Howso Platform KOTS installation method uses Valkey by default.  For Helm chart installations, you can update your Helm chart configuration to use Valkey by simply updating the `image` configuration in your `values.yaml`.
+
+> Note: Bitnami also have a [Valkey Helm chart](https://github.com/bitnami/charts/tree/main/bitnami/valkey) which can be used to install Valkey.  Since some of the default values assume the names of the Redis chart, you will need to update these values to use the Valkey chart.
 
 ### Example: Updating Helm Chart to Use Valkey
 
