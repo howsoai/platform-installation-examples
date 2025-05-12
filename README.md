@@ -44,7 +44,7 @@ The Howso Platform is distributed as a [Replicated](https://www.replicated.com/)
 
 [Helm](https://helm.sh/) modularizes Kubernetes manifests into charts, which can be installed, upgraded, and uninstalled as a single entity. It includes a straightforward method for templating out certain values, to make it simple to configure the application.
 
-The Howso Platform relies on data stores, such as Postgres, Redis, an S3-compatible object store (Minio), and a message queue (NATS).  These requirements can themselves be deployed as Helm charts.  The documentation will use commonly available charts for these dependencies.  These public charts are configurable and mature enough to provide a range from simple tests to scaled production configurations.
+The Howso Platform relies on data stores, such as Postgres, [Redis](./redis-license-update.md), an S3-compatible object store (Minio), and a message queue (NATS).  These requirements can themselves be deployed as Helm charts.  The documentation will use commonly available charts for these dependencies.  These public charts are configurable and mature enough to provide a range from simple tests to scaled production configurations.
 
 
 ## Quick Start vs Production Readiness
