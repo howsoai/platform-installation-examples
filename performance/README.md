@@ -115,3 +115,16 @@ Use a dedicated client machine, with at least a core for every simultaneous trai
 
 A stable network connection to the cluster is required.  A key reason that using even a powerful developer workstation can lead to issues is they frequently move, use WiFi and/or VPNs.  A large workload may expect to run for hours or days, network interuptions can lead to the client application losing connection to the cluster, and the run failing. 
 
+## Persistence Settings
+
+Howso Platform depends on being able to store its state in MinIO for sharing between read replicas and for being able to recover if a worker pod fails.  For some workloads, this can be a significant performance cost.
+
+Beginning in release 2025.5, there is an incremental-update system that can significantly improve performance.  It will have the most benefit for workloads with many small changes (for example, training single new cases) or where the combined trainee state is large.  Read replicas will read the incremental updates if possible.  This reduces I/O volumes and reduces the time cost of writing out the full trainee state, but it also means there are more individual I/O operations and there will be more individual objects in the MinIO store.
+
+The default settings should work well for most workloads.  There are three main settings that can be changed, all under `worker: { incrementalState: }` in the Helm chart settings:
+
+1. There is a maximum size of an individual action's changed state.  If an individual update is above `singleUpdateSizeLimit` bytes (default 10 MB) or above `singleUpdatePercentageLimit` of the last complete state dump (default 100%) then a complete state dump will be written instead of an incremental update.
+2. There is a maximum combined size of incremental updates since the last complete state dump.  If that combined size is above `combinedUpdateSizeLimit` bytes (default 10 MB) or above `combinedUpdatePercentageLimit` of the last complete state dump (default 100%) then a new complete state dump will be written, along with the incremental update for this specific action.
+3. The incremental-update system can be switched off with `enabled: false`, and behavior and performance will be similar to previous releases.
+
+The worker will keep the last 4 complete state dumps plus any incremental updates beyond these; older content will be automatically deleted.
