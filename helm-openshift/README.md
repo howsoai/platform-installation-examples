@@ -89,6 +89,7 @@ Redis
 ```
 helm install platform-redis oci://registry.how.so/howso-platform/stable/redis --namespace howso --values helm-openshift/manifests/redis.yaml --wait
 ```
+See [Redis licensing update](../../redis-license-update.md) for important version information.
 
 Howso Platform (install last - when all other components are ready).  Time to install will vary depending on network and resources.  
 ```

@@ -35,7 +35,7 @@ NATS is used for inter-service communication.  This [NATS manifest](./manifests/
 
 #### Redis
 
-Redis is used for storing data messages and message responses.  Currently Howso Platform components need to both read and write to Redis, so there is no advantage in Read Replicas (without addionally adding sentinel).  The [Redis manifest](./manifests/redis.yaml) provides a configuration that runs a single Redis server - with increased resources that should perform well for larger workloads.
+Redis is used for storing data messages and message responses.  Currently Howso Platform components need to both read and write to Redis, so there is no advantage in Read Replicas (without addionally adding sentinel).  The [Redis manifest](./manifests/redis.yaml) provides a configuration that runs a single Redis server - with increased resources that should perform well for larger workloads. See [Redis licensing update](../../redis-license-update.md) for important version information.
 
 #### Postgres
 

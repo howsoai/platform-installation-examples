@@ -16,4 +16,4 @@ For Redis, externalization is unnecessary for system recovery purposes, and main
 
 NATS similarly should remain internal - its persistence is only required for in-flight trainees, and the platform relies on NATS' speed and reliability for message delivery.
 
-Both Redis and NATS can be fully configured through the Howso Helm chart if specific customization is needed.
+Both Redis and NATS can be fully configured through the Howso Helm chart if specific customization is needed. See [Redis licensing update](../../redis-license-update.md) for important information about Redis versions and alternatives.

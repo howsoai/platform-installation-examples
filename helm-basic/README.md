@@ -74,7 +74,7 @@ helm install platform-postgres oci://registry.how.so/howso-platform/stable/postg
 
 #### Redis
 
-[Read replicas](./manifests/redis.yaml) are scaled down for a smaller/basic installation. 
+[Read replicas](./manifests/redis.yaml) are scaled down for a smaller/basic installation. See [Redis licensing update](../../redis-license-update.md) for important version information.
 ```
 helm install platform-redis oci://registry.how.so/howso-platform/stable/redis --namespace howso --values helm-basic/manifests/redis.yaml --wait
 ```
