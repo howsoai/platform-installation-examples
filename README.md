@@ -18,7 +18,8 @@ By providing self-contained local workstation setups the documentation aims to:-
 ## Examples
 - [Prerequisites](prereqs/README.md)
 ---
-- [Helm](helm-basic/README.md)
+- [Helm (Built-in Services)](helm-basic/README.md) - **Recommended for getting started**
+- [Helm (External Charts)](helm-external-charts/README.md) - Advanced: Use external Bitnami/MinIO charts
 - [Helm Air-gap](helm-airgap/README.md)
 - [Helm Openshift](helm-openshift/README.md)
 - [Argo CD Basic](argocd-basic/README.md)
@@ -32,7 +33,7 @@ The Howso Platform can optionally integrate with Argo Workflows to enable certai
 
 ## Overview
 
-Howso Platform is a Kubernetes-based application that consists of many services, it is available as a Helm chart install, depending on data stores and a message queue that can also be deployed as charts.
+Howso Platform is a Kubernetes-based application that consists of many services, available as a single Helm chart. The platform chart includes **built-in infrastructure services** (Postgres, Valkey, NATS, VersityGW object storage) for simplified deployment, or can be configured to use **external charts** (Bitnami Postgres/Redis, MinIO, NATS) for advanced use cases.
 
 
 ### Replicated
@@ -51,11 +52,25 @@ The Howso Platform relies on data stores, such as Postgres, [Redis](./redis-lice
 
 ## Quick Start vs Production Readiness
 
-### Out-of-the-Box Interoperability
+### Built-in Services (Default Mode)
 
-The Howso Platform chart is designed to work together well with the dependent Helm charts for Redis, PostgreSQL, MinIO, and NATS, in an (almost) default configuration.  Except for some small changes (i.e. enabling JetStream in NATS), these charts require minimal setup for a quick start. This interoperability facilitates an easy and efficient initial deployment of the Howso Platform.
+The Howso Platform chart includes production-ready built-in infrastructure services by default:
+- **Postgres** - Primary datastore with TLS
+- **Valkey** - Redis-compatible cache and pub/sub with TLS
+- **NATS** - Message queue with JetStream and mTLS
+- **VersityGW** - S3-compatible object storage with HTTPS
+- **Certificate Generator** - Automatic certificate creation and renewal
 
-In the _basic_ examples, this type of configuration will be demonstrated.  It is recommended to start with this configuration before more complex arrangements.
+This **all-in-one** approach provides a simple single-chart installation with no external dependencies. The [helm-basic](helm-basic/README.md) guide demonstrates this configuration and is **recommended for getting started**.
+
+### External Charts (Advanced Mode)
+
+For advanced use cases, the platform can be configured to use external Bitnami/MinIO charts instead of built-in services. This provides maximum flexibility and control, and is useful for:
+- Integration with existing infrastructure
+- Gradual migration from previous installations
+- Organization-specific chart requirements
+
+The [helm-external-charts](helm-external-charts/README.md) guide demonstrates this configuration.
 
 
 ### Considerations for Production Environments

@@ -1,0 +1,212 @@
+# Legacy Values File for External Infrastructure Services
+#
+# This file provides backward compatibility for users who want to continue
+# using external Bitnami Postgres, Bitnami Redis, MinIO, and NATS charts
+# instead of the integrated built-in services.
+#
+# Usage:
+#   helm install my-release . -f values-external-all.yaml
+#   helm upgrade my-release . -f values-external-all.yaml
+#
+# This will override the default integrated service configurations
+# and restore the original external chart behavior.
+#
+################################################################################
+
+################################################################################
+# Disable Built-in Services & Configure External Services
+################################################################################
+
+# These configurations:
+# 1. Disable the integrated services (builtin.enabled: false)
+# 2. Point to external charts with their default naming conventions
+
+# Disable the integrated ObjectStore (VersityGW) service
+objectstore:
+  enabled: false
+
+datastores:
+  #
+  # External PostgreSQL Configuration (Bitnami Chart)
+  #
+  postgres:
+    # Disable built-in PostgreSQL
+    builtin:
+      enabled: false
+    ums:
+      # Bitnami PostgreSQL chart creates service: <release-name>-postgresql
+      # Default release name: platform-postgres
+      host: platform-postgres-postgresql
+      port: 5432
+      name: postgres
+      user: postgres
+      # Bitnami chart creates secret: <release-name>-postgresql
+      existingSecret: true
+      credentialsSecretName: platform-postgres-postgresql
+      passwordDataKey: postgres-password
+      # OOTB mode: no TLS
+      sslmode: disable
+      serverVerificationCustomCertChain: false
+      clientVerification: false
+
+  #
+  # External Redis Configuration (Bitnami Chart)
+  #
+  redis:
+    # Disable built-in Redis
+    builtin:
+      enabled: false
+    # Bitnami Redis chart creates service: <release-name>-master
+    # Default release name: platform-redis
+    host: platform-redis-master
+    port: 6379
+    # Bitnami Redis chart creates secret: <release-name>
+    existingSecret: true
+    credentialsSecretName: platform-redis
+    passwordDataKey: redis-password
+    # OOTB mode: no TLS
+    serverVerification: false
+    verifyMode: none
+    checkHostname: false
+    serverVerificationCustomCertChain: false
+    clientVerification: false
+
+  #
+  # External ObjectStore Configuration (MinIO Chart)
+  #
+  objectStore:
+    type: s3
+    # MinIO chart creates service: <release-name>
+    # Default release name: platform-minio
+    endpoint: platform-minio:9000
+    # OOTB mode: http (no TLS)
+    scheme: http
+    encryptionEnabled: false
+    signatureVersion: s3v4
+    bucketName: platform
+    locations:
+      trainees: trainees
+      data: data-resources
+      jobs: jobs
+    region: null
+    # MinIO chart creates secret: <release-name>
+    existingSecret: true
+    credentialsSecretName: platform-minio
+    accesskeyDataKey: rootUser
+    secretkeyDataKey: rootPassword
+    # OOTB mode: no TLS verification
+    serverVerification: false
+    serverVerificationCustomCertChain: false
+    clientVerification: false
+
+#
+# External NATS Configuration (NATS Chart)
+#
+nats:
+  # Disable built-in NATS
+  builtin:
+    enabled: false
+  # NATS chart creates service: <release-name>
+  # Default release name: platform-nats
+  # OOTB mode: nats:// (no TLS)
+  serverList: "nats://platform-nats:4222"
+  tls:
+    enabled: false
+
+################################################################################
+# Additional Notes for External Services Users:
+################################################################################
+#
+# When using this values file, you will need to ensure that external services
+# are deployed and accessible. Below are example deployment commands using
+# the default chart versions and configurations.
+#
+# 1. External PostgreSQL (Bitnami Chart)
+#    =======================================
+#    Chart: oci://registry-1.docker.io/bitnamicharts/postgresql
+#    Version: ~17.x (Postgres 17)
+#
+#    Example deployment:
+#      helm install platform-postgres oci://registry-1.docker.io/bitnamicharts/postgresql \
+#        --version 17.0.0 \
+#        --set auth.postgresPassword=changeme \
+#        --namespace howso
+#
+#    Creates:
+#      - Service: platform-postgres-postgresql
+#      - Secret: platform-postgres-postgresql (with key: postgres-password)
+#
+# 2. External Redis (Bitnami Chart)
+#    =======================================
+#    Chart: oci://registry-1.docker.io/bitnamicharts/redis
+#    Version: ~20.x (Redis 7.x)
+#
+#    Example deployment:
+#      helm install platform-redis oci://registry-1.docker.io/bitnamicharts/redis \
+#        --version 20.0.0 \
+#        --set auth.password=changeme \
+#        --set master.persistence.size=2Gi \
+#        --namespace howso
+#
+#    Creates:
+#      - Service: platform-redis-master
+#      - Secret: platform-redis (with key: redis-password)
+#
+# 3. External MinIO (MinIO Chart)
+#    =======================================
+#    Chart: https://charts.min.io/
+#    Version: ~5.x (MinIO latest)
+#
+#    Example deployment:
+#      helm repo add minio https://charts.min.io/
+#      helm install platform-minio minio/minio \
+#        --version 5.0.0 \
+#        --set rootUser=minioadmin \
+#        --set rootPassword=minioadmin123 \
+#        --set persistence.size=4Gi \
+#        --set defaultBuckets="platform" \
+#        --namespace howso
+#
+#    Creates:
+#      - Service: platform-minio
+#      - Secret: platform-minio (with keys: rootUser, rootPassword)
+#
+# 4. External NATS (NATS Chart)
+#    =======================================
+#    Chart: https://nats-io.github.io/k8s/helm/charts/
+#    Version: ~1.x (NATS 2.10.x)
+#
+#    Example deployment:
+#      helm repo add nats https://nats-io.github.io/k8s/helm/charts/
+#      helm install platform-nats nats/nats \
+#        --version 1.0.0 \
+#        --set nats.jetstream.enabled=true \
+#        --set nats.jetstream.memStorage.size=2Gi \
+#        --namespace howso
+#
+#    Creates:
+#      - Service: platform-nats (port 4222)
+#
+################################################################################
+# Upgrade Path:
+################################################################################
+#
+# If you are upgrading from a previous Howso Platform installation that used
+# external charts, you can continue using those external services by:
+#
+# 1. Keep your existing external chart deployments (don't uninstall them)
+# 2. Upgrade the Howso Platform chart with this values file:
+#      helm upgrade my-release howso-platform/howso-platform -f values-external-all.yaml
+# 3. Verify connections to external services are working
+# 4. Optionally migrate to built-in services later at your own pace
+#
+################################################################################
+# Hardened Mode:
+################################################################################
+#
+# This file provides OOTB (out-of-the-box) configuration without TLS/hardening.
+# For a hardened configuration with TLS, mTLS, and network policies, see:
+#   - values-external-hardened.yaml (future)
+#   - config/values/kots.yaml (reference example)
+#
+################################################################################
