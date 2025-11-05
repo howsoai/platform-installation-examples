@@ -1,0 +1,22 @@
+# Howso Platform Helm Values - Air-gap with Built-in Services
+#
+# This configuration is for air-gapped deployments using built-in infrastructure services
+# (Postgres, Valkey, NATS, VersityGW) with a local container registry.
+#
+# Built-in services are enabled by default. To use external charts instead,
+# see helm-airgap/manifests/howso-platform.yaml and the external charts guide.
+
+domain: local.howso.com
+
+# Configure all images to pull from the local air-gap registry
+images:
+  registry: registry-localhost:5000
+  registryNamespace: ""
+
+# Configure the pause image for the image loader
+imageLoader:
+  pauseImage: registry-localhost:5000/pause:3.9
+
+# Built-in services configuration (using local registry)
+# Note: Built-in services are enabled by default, no additional configuration needed
+# The certificate generator will automatically create TLS certificates for services

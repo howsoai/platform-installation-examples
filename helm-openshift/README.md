@@ -1,9 +1,13 @@
 # Helm Installation for Howso Platform on OpenShift
 
 ## Introduction
-This guide covers how the Howso Platform installation may be configured for deploying into an OpenShift environment.  It demonstrates the additional configuration within the datastore components to accommodate the security policies of OpenShift.  It also separates the CRD installation from the main chart installation, which can be helpful in environments where the installation is done with only namespace-level (OpenShift Project) permissions. 
+This guide covers how the Howso Platform installation may be configured for deploying into an OpenShift environment.  It demonstrates the additional configuration to accommodate the security policies of OpenShift.  It also separates the CRD installation from the main chart installation, which can be helpful in environments where the installation is done with only namespace-level (OpenShift Project) permissions.
 
-Ensure you have completed the [prerequisites](../prereqs/README.md) before proceeding, have a OpenShift cluster running, with a howso project, and are logged into the Helm registry.
+The Howso Platform chart includes **built-in infrastructure services** (Postgres, Valkey, NATS, VersityGW) configured to work with OpenShift's Security Context Constraints (SCCs). This is the **recommended approach** for OpenShift deployments.
+
+**For advanced deployments** requiring external Bitnami/MinIO charts, this guide also covers the legacy 5-chart installation approach. See [Option 2: External Charts Mode](#option-2-external-charts-mode-advanced) below.
+
+Ensure you have completed the [prerequisites](../prereqs/README.md) before proceeding, have an OpenShift cluster running, with a howso project, and are logged into the Helm registry.
 
 
 ### Prerequisites TLDR
@@ -41,23 +45,56 @@ OpenShift will add the readOnlyRootFilesystem to all pod securityContexts.  This
 Though best avoided, there are enough layers to Kubernetes/container's security, that it is not uncommon for containers to run as the 0/root user.  OpenShift will reject these configurations, and in the case of NATS, that means turning off the NATS-Box utility.
 
 
-## Steps
+## Common Steps (Both Modes)
 
 ### Apply the CRD
 
-The Howso Platform application uses Custom Resource Definitions (CRDs) to run workloads.  Aside from the namespace itself, these CRDs are the only cluster-level components that are required to install the platform.  Installing them separately, allows the rest of the installation to take place with only namespace-level permissions.
+The Howso Platform application uses Custom Resource Definitions (CRDs) to run workloads.  Aside from the namespace itself, these CRDs are the only cluster-level components that are required to install the platform.  Installing them separately allows the rest of the installation to take place with only namespace-level permissions.
 
 To extract and apply the CRD directly, use the following command:
 ```sh
 helm template oci://registry.how.so/howso-platform/stable/howso-platform --show-only 'templates/crds/*.yaml' | kubectl apply -f -
 ```
 
-This command uses Helm's template functionality to generate the necessary CRD manifest from the Howso Platform Helm chart and pipes it directly to kubectl to apply. 
+This command uses Helm's template functionality to generate the necessary CRD manifest from the Howso Platform Helm chart and pipes it directly to kubectl to apply.
 
+---
+
+## Option 1: All-in-One Mode (Recommended)
+
+This approach uses the Howso Platform chart with built-in infrastructure services configured for OpenShift SCCs.
+
+### Install Howso Platform Chart
+
+The Howso Platform chart includes all infrastructure services with OpenShift-compatible security contexts. The [OpenShift-specific configuration](./manifests/howso-platform-openshift.yaml) ensures compatibility with the `restricted` SCC:
+
+```sh
+helm install howso-platform oci://registry.how.so/howso-platform/stable/howso-platform \
+  --namespace howso \
+  --values helm-openshift/manifests/howso-platform-openshift.yaml
+```
+
+**What gets deployed:**
+- Howso Platform services (API, UMS, SMS, Worker, Operator, UI, PyPI)
+- Built-in Postgres (with TLS, OpenShift-compatible security contexts)
+- Built-in Valkey (with TLS, OpenShift-compatible security contexts)
+- Built-in NATS (with mTLS, OpenShift-compatible security contexts)
+- Built-in VersityGW object storage (with HTTPS, OpenShift-compatible security contexts)
+- Certificate generator (automatic cert creation and renewal)
+
+**Note:** The built-in services are configured to work with OpenShift's `MustRunAsRange` and other SCCs. The chart automatically handles user ID constraints and read-only root filesystem requirements.
+
+---
+
+## Option 2: External Charts Mode (Advanced)
+
+This approach uses separate Helm charts for infrastructure services (Bitnami Postgres, Redis, MinIO, NATS) with OpenShift-specific configurations.
+
+**For detailed guidance on external charts**, see the [helm-external-charts](../helm-external-charts/README.md) guide.
 
 ### Create datastore secrets
 
-See the explanation in [basic installation](../helm-basic/README.md#create-datastore-secrets) for more details.
+External charts require pre-created secrets. See the [helm-external-charts guide](../helm-external-charts/README.md#create-datastore-secrets) for detailed explanation.
 
 ```sh
 # Minio
@@ -98,9 +135,21 @@ helm install howso-platform oci://registry.how.so/howso-platform/stable/howso-pl
 
 > **Note** the howso-platform chart is installed with _skip: true_ under _CustomResourceDefinitions_. Since it was installed in a previous [step](#apply-the-crd).
 
+---
+
+## Verification (Both Modes)
+
 Check the status of the pods in the howso namespace, as they come online (CTRL-C to exit).
 ```
-watch kubectl -n howso get po 
+watch kubectl -n howso get po
 ```
+
+Verify pods are running with appropriate OpenShift SCCs:
+```sh
+# Check which SCC each pod is using
+kubectl -n howso get po -o jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.metadata.annotations.openshift\.io/scc}{"\n"}{end}'
+```
+
+All pods should show the `restricted` SCC, confirming they comply with OpenShift security policies.
 
 Setup a test user and environment using the [instructions here](../common/README.md#create-test-environment)

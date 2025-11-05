@@ -2,7 +2,9 @@
 
 ## Overview
 
-This guide demonstrates deploying the Howso Platform using Argo CD, a GitOps tool for Kubernetes. It emphasizes the use of Argo CD's Helm chart capabilities to deploy the Howso Platform along with its dependent charts.
+This guide demonstrates deploying the Howso Platform using Argo CD, a GitOps tool for Kubernetes. It emphasizes the use of Argo CD's Helm chart capabilities to deploy the Howso Platform with **built-in infrastructure services** (Postgres, Valkey, NATS, VersityGW). This is the **recommended approach** for GitOps deployments.
+
+**For advanced deployments** requiring external Bitnami/MinIO charts, this guide also covers the legacy 5-chart installation approach. See [Option 2: External Charts Mode](#option-2-external-charts-mode-advanced) below.
 
 This documentation covers basic Argo CD usage for deploying the Howso Platform. It is not a comprehensive guide to Argo CD features.
 
@@ -19,7 +21,7 @@ k3d cluster create --config prereqs/k3d-single-node.yaml
 kubectl create namespace howso
 ```
 
-## Steps
+## Common Steps (Both Modes)
 
 ### Install Argo CD
 
@@ -72,9 +74,41 @@ See the [prerequisites](../prereqs/README.md#accessing-the-howso-platform-helm-r
 argocd repo add registry.how.so --type helm --name replicated --username youremail@example.com --password <your-license-id> --enable-oci
 ```
 
+---
+
+## Option 1: All-in-One Mode (Recommended)
+
+This approach uses a single Argo CD Application for the Howso Platform chart with built-in infrastructure services.
+
+### Install ArgoCD Project and Application
+
+The [project manifest](manifests/argocd-project.yaml) is configured to use the `howso` namespace.  Since the CRD was installed separately, and the Howso Platform [application manifest](manifests/argocd-howso-platform-allinone-app.yaml) is configured to skip CRD installation, the project does not need any cluster-scoped permissions.
+
+```sh
+kubectl apply -f argocd-basic/manifests/argocd-project.yaml
+kubectl apply -f argocd-basic/manifests/argocd-howso-platform-allinone-app.yaml
+```
+
+**What gets deployed:**
+- Single Argo CD Application
+- Howso Platform services (API, UMS, SMS, Worker, Operator, UI, PyPI)
+- Built-in Postgres (with TLS)
+- Built-in Valkey (with TLS)
+- Built-in NATS (with mTLS)
+- Built-in VersityGW object storage (with HTTPS)
+- Certificate generator (automatic cert creation and renewal)
+
+---
+
+## Option 2: External Charts Mode (Advanced)
+
+This approach uses separate Argo CD Applications for each infrastructure service (Bitnami Postgres, Redis, MinIO, NATS) plus the Howso Platform. This is for organizations with existing external chart deployments.
+
+**For detailed guidance on external charts**, see the [helm-external-charts](../helm-external-charts/README.md) guide.
+
 ### Create datastore secrets
 
-See the explanation in [basic installation](../helm-basic/README.md#create-datastore-secrets) for more details.
+External charts require pre-created secrets. See the [helm-external-charts guide](../helm-external-charts/README.md#create-datastore-secrets) for detailed explanation.
 
 ```sh
 # Minio
@@ -85,12 +119,11 @@ kubectl create secret generic platform-postgres-postgresql --from-literal=postgr
 kubectl create secret generic platform-redis --from-literal=redis-password="$(openssl rand -base64 20)" --dry-run=client -o yaml | kubectl -n howso apply -f -
 ```
 
+### Install ArgoCD Project and Applications
 
-### Install Argocd Project and Application
+The [project manifest](manifests/argocd-project.yaml) is configured to use the `howso` namespace.  Since the CRD was installed separately, and the Howso Platform [application manifest](manifests/argocd-howso-platform-app.yaml) is configured to skip CRD installation, the project does not need any cluster-scoped permissions.
 
-If you open up the [project manifest](manifests/argocd-project.yaml), you will see that it is configured to use the `howso` namespace.  Since the CRD was installed separately, and the Howso Platform [application manifest](manifests/argocd-howso-platform-app.yaml) is configured to skip CRD installation, the project does not need to give any cluster-scoped permissions.
-
-> Note: In the [Argo CD Application manifests](manifests/argocd-required-apps.yaml) configuration provided in values files during a direct Helm Install is embedded into the Application manifests.  
+> Note: In the [Argo CD Application manifests](manifests/argocd-required-apps.yaml) configuration provided in values files during a direct Helm Install is embedded into the Application manifests.
 
 ```sh
 kubectl apply -f argocd-basic/manifests/argocd-project.yaml
@@ -98,7 +131,11 @@ kubectl apply -f argocd-basic/manifests/argocd-required-apps.yaml
 kubectl apply -f argocd-basic/manifests/argocd-howso-platform-app.yaml
 ```
 
-Check via the [UI](https://argocd.local.howso.com) - or the CLI, that the Argo CD project and application are created and healthy.
+---
+
+## Verification (Both Modes)
+
+Check via the [UI](https://argocd.local.howso.com) - or the CLI, that the Argo CD project and application(s) are created and healthy.
 
 ```sh
 argocd app list # Check the Argo CD app status
@@ -107,4 +144,4 @@ kubectl get po -n howso # Check the pod status
 
 <img src="../assets/argocd-success.png" width="300">
 
-Set up a test user and Python client client environment using the [instructions here](../common/README.md#login-to-the-howso-platform).
+Set up a test user and Python client environment using the [instructions here](../common/README.md#login-to-the-howso-platform).
