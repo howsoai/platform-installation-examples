@@ -47,7 +47,84 @@ Within the Howso Platform [values file](../common/README.md#howso-platform-helm-
 
 If configuring TLS to the data stores and message queue charts, then corresponding configuration will be required in the NATS, minio, Redis, and Postgres chart installations.
 
-> Though possible, setting up TLS manually between Howso Platform and all backend charts is considered an advanced use-case.  To do this efficiently will involve setting up Kubernetes Public Key Infrastructure (PKI) tools i.e. cert-manager; alongside significant configuration of the Howso Platform and backend charts.  It is recommended instead to use a service mesh for providing mTLS.  Reach out to Howso Support for further guidance. 
+> Though possible, setting up TLS manually between Howso Platform and all backend charts is considered an advanced use-case.  To do this efficiently will involve setting up Kubernetes Public Key Infrastructure (PKI) tools i.e. cert-manager; alongside significant configuration of the Howso Platform and backend charts.  It is recommended instead to use a service mesh for providing mTLS.  Reach out to Howso Support for further guidance.
+
+### Automatic Certificate Rotation
+
+When using the built-in cert-generator (which creates certificates for internal platform components), certificates are renewed automatically via a CronJob. However, **pods do not automatically reload certificates** when secrets are updated, which can lead to certificate expiry failures.
+
+**Solution: Install Stakater Reloader**
+
+[Stakater Reloader](https://github.com/stakater/Reloader) is a Kubernetes controller that watches for changes in ConfigMaps and Secrets, automatically triggering rolling restarts of pods that reference them.
+
+**Installation:**
+
+```bash
+# Add Stakater Helm repository
+helm repo add stakater https://stakater.github.io/stakater-charts
+helm repo update
+
+# Install Reloader (namespace-scoped recommended)
+helm install reloader stakater/reloader -n <platform-namespace> \
+  --set reloader.watchGlobally=false
+```
+
+**Configuration:**
+
+After installing Reloader, annotate your Deployments and StatefulSets to watch specific certificate secrets:
+
+```bash
+# Example: API service watches its NATS client certificate
+kubectl annotate deployment platform-api-v3 -n <namespace> \
+  secret.reloader.stakater.com/reload="platform-api-v3-nats-client-tls"
+
+# Example: PostgreSQL watches both server and client certificates
+kubectl annotate statefulset platform-postgres -n <namespace> \
+  secret.reloader.stakater.com/reload="platform-postgres-server-tls,platform-postgres-client-tls"
+```
+
+**How it works:**
+
+1. cert-generator CronJob renews certificates (based on configured schedule and expiry threshold)
+2. Certificate secrets are updated with new certificate data
+3. Reloader detects the secret data change within seconds
+4. Affected pods are automatically restarted via rolling update (zero downtime)
+5. Pods load fresh certificates on startup
+
+**Verification:**
+
+```bash
+# Check Reloader is running
+kubectl get pods -n <namespace> | grep reloader
+
+# Watch Reloader logs during certificate rotation
+kubectl logs -n <namespace> deployment/reloader-reloader --tail=50 -f
+
+# Expected output during rotation:
+# Changes detected in 'platform-postgres-server-tls' of type 'SECRET' in namespace 'howso';
+# updated 'platform-postgres' of type 'StatefulSet' in namespace 'howso'
+```
+
+**Certificate Configuration:**
+
+Certificate duration and rotation frequency are configured in the Helm values:
+
+```yaml
+jobs:
+  certGenerator:
+    # How long certificates are valid
+    newCertDuration: "2160h"    # 90 days (production default)
+
+    # Renew when this much time remains
+    expiryThreshold: "720h"     # 30 days (production default)
+
+    # How often to check for renewal
+    schedule: "0 3 * * 0"       # Weekly on Sundays at 3am (production)
+```
+
+For development/testing with shorter certificate lifetimes, adjust these values and increase the CronJob frequency accordingly.
+
+> **Note:** Reloader is particularly important when using short-lived certificates for testing or when running in environments where certificate rotation happens frequently (e.g., dev clusters with 1-hour certificates).
 
 
 ## Encrypted Storage
