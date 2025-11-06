@@ -131,25 +131,28 @@ unset DOCKER_CONFIG
 
 ### Scan with Trivy
 
-[Trivy](https://github.com/aquasecurity/trivy) is a useful open-source tool for scanning container images for vulnerabilities.  To complete the example, let's use it to scan the images. 
+[Trivy](https://github.com/aquasecurity/trivy) is a useful open-source tool for scanning container images for vulnerabilities.  To complete the example, let's use it to scan the images.
+
+**Default all-in-one mode** - the howso-platform chart now includes built-in infrastructure services (PostgreSQL, Valkey, NATS JetStream, VersityGW object storage) by default:
 
 ```sh
 helm template oci://registry.how.so/howso-platform/stable/howso-platform --values helm-basic/manifests/howso-platform.yaml  2> /dev/null | grep -E '^\s*image:' | sed -e 's/^[ \t]*image: \+//; s/^"//; s/"$//' | xargs -n 1 trivy i --severity=HIGH,CRITICAL --ignore-unfixed
 ```
 
-And the same for the additional charts.
+**External services mode** - if you've disabled built-in infrastructure (`*.builtin.enabled: false`) and are using external charts, scan those separately:
+
 ```sh
-# Nats
+# Nats (only if nats.builtin.enabled: false)
 helm template oci://registry.how.so/howso-platform/stable/nats --values helm-basic/manifests/nats.yaml  2> /dev/null | grep -E '^\s*image:' | sed -e 's/^[ \t]*image: \+//; s/^"//; s/"$//' | xargs -n 1 trivy i --severity=HIGH,CRITICAL --ignore-unfixed
-# Minio
+# Minio (only if using external object storage)
 helm template oci://registry.how.so/howso-platform/stable/minio --values helm-basic/manifests/minio.yaml  2> /dev/null | grep -E '^\s*image:' | sed -e 's/^[ \t]*image: \+//; s/^"//; s/"$//' | xargs -n 1 trivy i --severity=HIGH,CRITICAL --ignore-unfixed
-# Redis
+# Redis (only if datastores.redis.builtin.enabled: false)
 helm template oci://registry.how.so/howso-platform/stable/redis --values helm-basic/manifests/redis.yaml  2> /dev/null | grep -E '^\s*image:' | sed -e 's/^[ \t]*image: \+//; s/^"//; s/"$//' | xargs -n 1 trivy i --severity=HIGH,CRITICAL --ignore-unfixed
-# Postgres
+# Postgres (only if datastores.postgres.builtin.enabled: false)
 helm template oci://registry.how.so/howso-platform/stable/postgresql --values helm-basic/manifests/postgres.yaml  2> /dev/null | grep -E '^\s*image:' | sed -e 's/^[ \t]*image: \+//; s/^"//; s/"$//' | xargs -n 1 trivy i --severity=HIGH,CRITICAL --ignore-unfixed
 ```
 
-> Note - the additional [charts](../common/README.md#addional-documentation) are hosted via the replicated helm repository, but are public charts.  They will be updated in the hosted repository as part of the Howso Release proces, at the tested version.  If desired, between Howso Platform releases, it is straightforward to adjust the referenced images with the usual helm process.
+> Note - the built-in infrastructure services use standard public images (postgres:16, valkey/valkey:7.2.7, nats:2.10.22-alpine, versity/versitygw:1.0.7). The separate infrastructure [charts](../common/README.md#addional-documentation) are only needed if using external services mode. These charts are hosted via the replicated helm repository and will be updated as part of the Howso Release process at the tested version.
 
 ## Howso's Approach to vulnerabilities
 
