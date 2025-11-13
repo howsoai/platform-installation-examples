@@ -4,7 +4,7 @@
 
 This guide demonstrates deploying the Howso Platform using Argo CD, a GitOps tool for Kubernetes. It emphasizes the use of Argo CD's Helm chart capabilities to deploy the Howso Platform with **built-in infrastructure services** (Postgres, Valkey, NATS, VersityGW). This is the **recommended approach** for GitOps deployments.
 
-**For advanced deployments** requiring external Bitnami/MinIO charts, this guide also covers the legacy 5-chart installation approach. See [Option 2: External Charts Mode](#option-2-external-charts-mode-advanced) below.
+**For deployments** requiring external Bitnami/MinIO charts, this guide also covers the legacy 5-chart installation approach. See [Option 2: External Charts Mode](#option-2-external-charts-mode) below.
 
 This documentation covers basic Argo CD usage for deploying the Howso Platform. It is not a comprehensive guide to Argo CD features.
 
@@ -100,7 +100,7 @@ kubectl apply -f argocd-basic/manifests/argocd-howso-platform-allinone-app.yaml
 
 ---
 
-## Option 2: External Charts Mode (Advanced)
+## Option 2: External Charts Mode
 
 This approach uses separate Argo CD Applications for each infrastructure service (Bitnami Postgres, Redis, MinIO, NATS) plus the Howso Platform. This is for organizations with existing external chart deployments.
 

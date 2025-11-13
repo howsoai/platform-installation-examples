@@ -12,6 +12,8 @@ This guide details the process of deploying the Howso Platform using **external 
 
 **For simpler deployments**, see the [helm-basic](../helm-basic/README.md) guide which uses built-in services included in the Howso Platform chart.
 
+> **Note for Existing Installations:** If you're currently using external datastores, including Helm charts, there's no urgent need to migrate. Using external datastores continues to be fully supported. The all-in-one approach is primarily recommended for new installations to simplify initial setup.
+
 This guide deploys Howso Platform in a non-air-gapped Kubernetes environment with direct internet access.
 
 Ensure you have completed the [prerequisites](../prereqs/README.md) before proceeding, and have a Kubernetes cluster running, with a howso namespace, and are logged into the Helm registry.

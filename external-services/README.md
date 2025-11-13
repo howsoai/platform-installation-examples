@@ -1,6 +1,8 @@
 # External Datastores for Howso Platform
 
-This section contains guides for externalizing various services used by the Howso Platform.  Whilst the guides show specific back-end providers, the general principles can be applied to other providers.
+This section contains guides for externalizing various services used by the Howso Platform to cloud-managed services (AWS RDS, S3, etc.). Whilst the guides show specific back-end providers, the general principles can be applied to other providers.
+
+> **Note:** This is different from [helm-external-charts](../helm-external-charts/), which covers deploying separate Helm charts within Kubernetes. This section focuses on using cloud-managed services outside Kubernetes entirely.
 
 ## Available Guides
 

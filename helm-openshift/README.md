@@ -5,7 +5,7 @@ This guide covers how the Howso Platform installation may be configured for depl
 
 The Howso Platform chart includes **built-in infrastructure services** (Postgres, Valkey, NATS, VersityGW) configured to work with OpenShift's Security Context Constraints (SCCs). This is the **recommended approach** for OpenShift deployments.
 
-**For advanced deployments** requiring external Bitnami/MinIO charts, this guide also covers the legacy 5-chart installation approach. See [Option 2: External Charts Mode](#option-2-external-charts-mode-advanced) below.
+**For deployments** requiring external Bitnami/MinIO charts, this guide also covers the legacy 5-chart installation approach. See [Option 2: External Charts Mode](#option-2-external-charts-mode) below.
 
 Ensure you have completed the [prerequisites](../prereqs/README.md) before proceeding, have an OpenShift cluster running, with a howso project, and are logged into the Helm registry.
 
@@ -86,7 +86,7 @@ helm install howso-platform oci://registry.how.so/howso-platform/stable/howso-pl
 
 ---
 
-## Option 2: External Charts Mode (Advanced)
+## Option 2: External Charts Mode
 
 This approach uses separate Helm charts for infrastructure services (Bitnami Postgres, Redis, MinIO, NATS) with OpenShift-specific configurations.
 

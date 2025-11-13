@@ -205,8 +205,7 @@ nats:
 ################################################################################
 #
 # This file provides OOTB (out-of-the-box) configuration without TLS/hardening.
-# For a hardened configuration with TLS, mTLS, and network policies, see:
-#   - values-external-hardened.yaml (future)
-#   - config/values/kots.yaml (reference example)
+# For a hardened configuration reference example, see:
+#   - config/values/kots.yaml
 #
 ################################################################################

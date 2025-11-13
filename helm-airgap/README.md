@@ -6,7 +6,7 @@ This guide details the process of deploying the Howso Platform using Helm in an 
 
 The Howso Platform chart includes **built-in infrastructure services** (Postgres, Valkey, NATS, VersityGW), providing a simple single-chart air-gap installation. This is the **recommended approach** for most air-gapped deployments.
 
-**For advanced deployments** requiring external Bitnami/MinIO charts, this guide also covers the legacy 5-chart installation approach. See [Option 2: External Charts Mode](#option-2-external-charts-mode-advanced) below.
+**For deployments** requiring external Bitnami/MinIO charts, this guide also covers the legacy 5-chart installation approach. See [Option 2: External Charts Mode](#option-2-external-charts-mode) below.
 
 Production air-gapped Kubernetes environments will likely have pipelines for [scanning images](../container-scanning/README.md) and secured container registries.  This illustrative example will use the unsecured local registry setup by k3d.
 
@@ -107,7 +107,7 @@ helm install howso-platform $tmp_dir/howso-platform \
 
 ---
 
-## Option 2: External Charts Mode (Advanced)
+## Option 2: External Charts Mode
 
 This approach uses separate Helm charts for infrastructure services (Bitnami Postgres, Redis, MinIO, NATS). This is for organizations with existing external chart deployments or specific requirements.
 

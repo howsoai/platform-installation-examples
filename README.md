@@ -109,9 +109,3 @@ For details on configuring your Howso Platform deployment, refer to the [Configu
 ## Trainee Scaling
 
 The Howso Platform can automatically set the resource requirements for a trainee, increasing them as the trainee's memory utilization increases.  This setup is discussed in the [trainee scaling](trainee-scaling/README.md) section.
-
-
-## Licensing Note
-
-MinIO is used as the default S3 object store with the Howso Platform.  For production deployments ensure you have a valid license for MinIO.
-MinIO, under the AGPL license, is included with Howso Inc.'s OEM license for commercial Howso Platform deployments, covering usage up to 1 terabyte.
