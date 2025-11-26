@@ -6,7 +6,7 @@
 ---
 - [Linkerd and Network Policies](../linkerd/README.md)
 - [Container Scanning](../container-images/README.md)
-- [Custom Ingress](../custom-ingress/README.md)
+- [Custom Ingress](../custom-ingress-cert/README.md)
 
 
 ## Introduction
@@ -18,8 +18,7 @@ Kubernetes is a highly customizable platform, and many aspects that are part of 
 
 ## Encrypted Communication
 
-Howso Platform consists of several services, data stores, and a message queue (NATS). The basic installation examples in this documentation do not encrypt this traffic.  In the case where communication between these components is considered to be within a trusted network, this may be acceptable. 
-However, in many cases, it is necessary to establish encrypted communication between these components. 
+Howso Platform consists of several services, data stores, and a message queue (NATS). When using the default **built-in services**, TLS/mTLS is enabled automatically between all internal components. When using **external charts** without additional configuration, traffic between components may be unencrypted—in which case communication should be considered within a trusted network, or additional TLS configuration applied. 
 
 These docs will cover two approaches:
 
@@ -129,7 +128,7 @@ For development/testing with shorter certificate lifetimes, adjust these values 
 
 ## Encrypted Storage
 
-Howso Platform itself does not directly use Persistent Volumes, though the minio, Postgres, Redis (optionally), and NATS chart configurations will create Persistent Volume Claims (PVCs).  In the documented examples, these PVCs will use the default storage class of the Kubernetes cluster, though they can be configured to use a specific storage class. 
+Howso Platform itself does not directly use Persistent Volumes, though the infrastructure services (whether built-in or deployed as external charts) will create Persistent Volume Claims (PVCs) for Postgres, Redis/Valkey, object storage, and NATS.  In the documented examples, these PVCs will use the default storage class of the Kubernetes cluster, though they can be configured to use a specific storage class. 
 
 Using a Storage Class that meets your security requirements is considered to be on the Kubernetes operator's side of the shared security model. 
 
@@ -142,4 +141,4 @@ See the [Container Scanning](../container-images/README.md#howsos-approach) sect
 
 ## Ingress Certs
 
-See the [Custom Ingress](../custom-ingress-certs/README.md) section for information on using custom ingress certificates with the Howso Platform.
+See the [Custom Ingress](../custom-ingress-cert/README.md) section for information on using custom ingress certificates with the Howso Platform.

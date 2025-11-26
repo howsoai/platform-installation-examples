@@ -143,13 +143,13 @@ helm template oci://registry.how.so/howso-platform/stable/howso-platform --value
 
 ```sh
 # Nats (only if nats.builtin.enabled: false)
-helm template oci://registry.how.so/howso-platform/stable/nats --values helm-basic/manifests/nats.yaml  2> /dev/null | grep -E '^\s*image:' | sed -e 's/^[ \t]*image: \+//; s/^"//; s/"$//' | xargs -n 1 trivy i --severity=HIGH,CRITICAL --ignore-unfixed
+helm template oci://registry.how.so/howso-platform/stable/nats --values helm-external-charts/manifests/nats.yaml  2> /dev/null | grep -E '^\s*image:' | sed -e 's/^[ \t]*image: \+//; s/^"//; s/"$//' | xargs -n 1 trivy i --severity=HIGH,CRITICAL --ignore-unfixed
 # Minio (only if using external object storage)
-helm template oci://registry.how.so/howso-platform/stable/minio --values helm-basic/manifests/minio.yaml  2> /dev/null | grep -E '^\s*image:' | sed -e 's/^[ \t]*image: \+//; s/^"//; s/"$//' | xargs -n 1 trivy i --severity=HIGH,CRITICAL --ignore-unfixed
+helm template oci://registry.how.so/howso-platform/stable/minio --values helm-external-charts/manifests/minio.yaml  2> /dev/null | grep -E '^\s*image:' | sed -e 's/^[ \t]*image: \+//; s/^"//; s/"$//' | xargs -n 1 trivy i --severity=HIGH,CRITICAL --ignore-unfixed
 # Redis (only if datastores.redis.builtin.enabled: false)
-helm template oci://registry.how.so/howso-platform/stable/redis --values helm-basic/manifests/redis.yaml  2> /dev/null | grep -E '^\s*image:' | sed -e 's/^[ \t]*image: \+//; s/^"//; s/"$//' | xargs -n 1 trivy i --severity=HIGH,CRITICAL --ignore-unfixed
+helm template oci://registry.how.so/howso-platform/stable/redis --values helm-external-charts/manifests/redis.yaml  2> /dev/null | grep -E '^\s*image:' | sed -e 's/^[ \t]*image: \+//; s/^"//; s/"$//' | xargs -n 1 trivy i --severity=HIGH,CRITICAL --ignore-unfixed
 # Postgres (only if datastores.postgres.builtin.enabled: false)
-helm template oci://registry.how.so/howso-platform/stable/postgresql --values helm-basic/manifests/postgres.yaml  2> /dev/null | grep -E '^\s*image:' | sed -e 's/^[ \t]*image: \+//; s/^"//; s/"$//' | xargs -n 1 trivy i --severity=HIGH,CRITICAL --ignore-unfixed
+helm template oci://registry.how.so/howso-platform/stable/postgresql --values helm-external-charts/manifests/postgres.yaml  2> /dev/null | grep -E '^\s*image:' | sed -e 's/^[ \t]*image: \+//; s/^"//; s/"$//' | xargs -n 1 trivy i --severity=HIGH,CRITICAL --ignore-unfixed
 ```
 
 > Note - the built-in infrastructure services use standard public images (postgres:16, valkey/valkey:7.2.7, nats:2.10.22-alpine, versity/versitygw:1.0.7). The separate infrastructure [charts](../common/README.md#addional-documentation) are only needed if using external services mode. These charts are hosted via the replicated helm repository and will be updated as part of the Howso Release process at the tested version.

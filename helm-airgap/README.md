@@ -8,7 +8,7 @@ The Howso Platform chart includes **built-in infrastructure services** (Postgres
 
 **For deployments** requiring external Bitnami/MinIO charts, this guide also covers the legacy 5-chart installation approach. See [Option 2: External Charts Mode](#option-2-external-charts-mode) below.
 
-Production air-gapped Kubernetes environments will likely have pipelines for [scanning images](../container-scanning/README.md) and secured container registries.  This illustrative example will use the unsecured local registry setup by k3d.
+Production air-gapped Kubernetes environments will likely have pipelines for [scanning images](../container-images/README.md) and secured container registries.  This illustrative example will use the unsecured local registry setup by k3d.
 
 Ensure you have completed the [prerequisites](../prereqs/README.md) before proceeding.
 
@@ -181,7 +181,7 @@ helm install platform-redis $tmp_dir/redis --namespace howso --values helm-airga
 
 Howso Platform
 ```sh
-helm install howso-platform $tmp_dir/howso-platform --namespace howso --values helm-airgap/manifests/howso-platform.yaml
+helm install howso-platform $tmp_dir/howso-platform --namespace howso --values helm-external-charts/manifests/values-external-all.yaml --values helm-airgap/manifests/howso-platform.yaml
 ```
 
 > **Note** You can remove installed charts with `helm uninstall` i.e. `helm uninstall platform-redis --namespace howso`.  Check each chart seems to be running correctly before installing the next.

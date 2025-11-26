@@ -140,7 +140,7 @@ For examples that build off of a basic Helm install, the simplified instructions
 # Prerequisites TLDR
 # helm registry login registry.how.so --username your_email@example.com --password your_license_id
 # add local.howso.com pypi|api|www|management.local.howso.com to /etc/hosts
-# Install the [linkerd cli](https://linkerd.io/2/getting-started/) and the certificate tool [step](https://smallstep.com/docs/step-cli/).
+# (Optional, for Linkerd setup only) Install the [linkerd cli](https://linkerd.io/2/getting-started/) and [step](https://smallstep.com/docs/step-cli/).
 
 # Setup the Kubernetes cluster
 k3d cluster create --config prereqs/k3d-single-node.yaml

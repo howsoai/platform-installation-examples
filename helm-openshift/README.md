@@ -128,9 +128,9 @@ helm install platform-redis oci://registry.how.so/howso-platform/stable/redis --
 ```
 See [Redis licensing update](../../redis-license-update.md) for important version information.
 
-Howso Platform (install last - when all other components are ready).  Time to install will vary depending on network and resources.  
+Howso Platform (install last - when all other components are ready).  Time to install will vary depending on network and resources.
 ```
-helm install howso-platform oci://registry.how.so/howso-platform/stable/howso-platform --namespace howso --values helm-openshift/manifests/howso-platform.yaml
+helm install howso-platform oci://registry.how.so/howso-platform/stable/howso-platform --namespace howso --values helm-external-charts/manifests/values-external-all.yaml --values helm-openshift/manifests/howso-platform.yaml
 ```
 
 > **Note** the howso-platform chart is installed with _skip: true_ under _CustomResourceDefinitions_. Since it was installed in a previous [step](#apply-the-crd).
@@ -152,4 +152,4 @@ kubectl -n howso get po -o jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.me
 
 All pods should show the `restricted` SCC, confirming they comply with OpenShift security policies.
 
-Setup a test user and environment using the [instructions here](../common/README.md#create-test-environment)
+Set up a test user and Python client environment using the [instructions here](../common/README.md#login-to-the-howso-platform).
