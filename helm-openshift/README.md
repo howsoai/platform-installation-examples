@@ -97,26 +97,36 @@ kubectl create secret generic platform-postgres-postgresql --from-literal=postgr
 kubectl create secret generic platform-redis --from-literal=redis-password="$(openssl rand -base64 20)" --dry-run=client -o yaml | kubectl -n howso apply -f -
 ```
 
-### Install component charts 
+### Add Helm Repositories
+
+MinIO and NATS charts require adding their official Helm repositories:
+
+```sh
+helm repo add minio https://helm.min.io/
+helm repo add nats https://nats-io.github.io/k8s/helm/charts/
+helm repo update
+```
+
+### Install component charts
 
 Minio
 ```
-helm install platform-minio oci://registry.how.so/howso-platform/stable/minio --namespace howso --values helm-openshift/manifests/minio.yaml --wait
+helm install platform-minio minio/minio --namespace howso --values helm-openshift/manifests/minio.yaml --wait
 ```
 
 NATS
 ```
-helm install platform-nats oci://registry.how.so/howso-platform/stable/nats --namespace howso --values helm-openshift/manifests/nats.yaml --wait
+helm install platform-nats nats/nats --namespace howso --values helm-openshift/manifests/nats.yaml --wait
 ```
 
 Postgres
 ```
-helm install platform-postgres oci://registry.how.so/howso-platform/stable/postgresql --namespace howso --values helm-openshift/manifests/postgres.yaml --wait
+helm install platform-postgres oci://registry-1.docker.io/bitnamicharts/postgresql --namespace howso --values helm-openshift/manifests/postgres.yaml --wait
 ```
 
 Redis
 ```
-helm install platform-redis oci://registry.how.so/howso-platform/stable/redis --namespace howso --values helm-openshift/manifests/redis.yaml --wait
+helm install platform-redis oci://registry-1.docker.io/bitnamicharts/redis --namespace howso --values helm-openshift/manifests/redis.yaml --wait
 ```
 See [Redis licensing update](../redis-license-update.md) for important version information.
 

@@ -137,17 +137,25 @@ unset DOCKER_CONFIG
 helm template oci://registry.how.so/howso-platform/stable/howso-platform --values helm-basic/manifests/howso-platform.yaml  2> /dev/null | grep -E '^\s*image:' | sed -e 's/^[ \t]*image: \+//; s/^"//; s/"$//' | xargs -n 1 trivy i --severity=HIGH,CRITICAL --ignore-unfixed
 ```
 
-And the same for the additional charts.
+And the same for the additional charts (if using external services mode).
 
+First, add the required Helm repositories:
+```sh
+helm repo add minio https://helm.min.io/
+helm repo add nats https://nats-io.github.io/k8s/helm/charts/
+helm repo update
+```
+
+Then scan the external chart images:
 ```sh
 # Nats (only if nats.builtin.enabled: false)
-helm template oci://registry.how.so/howso-platform/stable/nats --values helm-external-charts/manifests/nats.yaml  2> /dev/null | grep -E '^\s*image:' | sed -e 's/^[ \t]*image: \+//; s/^"//; s/"$//' | xargs -n 1 trivy i --severity=HIGH,CRITICAL --ignore-unfixed
+helm template nats/nats --values helm-external-charts/manifests/nats.yaml  2> /dev/null | grep -E '^\s*image:' | sed -e 's/^[ \t]*image: \+//; s/^"//; s/"$//' | xargs -n 1 trivy i --severity=HIGH,CRITICAL --ignore-unfixed
 # Minio (only if using external object storage)
-helm template oci://registry.how.so/howso-platform/stable/minio --values helm-external-charts/manifests/minio.yaml  2> /dev/null | grep -E '^\s*image:' | sed -e 's/^[ \t]*image: \+//; s/^"//; s/"$//' | xargs -n 1 trivy i --severity=HIGH,CRITICAL --ignore-unfixed
+helm template minio/minio --values helm-external-charts/manifests/minio.yaml  2> /dev/null | grep -E '^\s*image:' | sed -e 's/^[ \t]*image: \+//; s/^"//; s/"$//' | xargs -n 1 trivy i --severity=HIGH,CRITICAL --ignore-unfixed
 # Redis (only if datastores.redis.builtin.enabled: false)
-helm template oci://registry.how.so/howso-platform/stable/redis --values helm-external-charts/manifests/redis.yaml  2> /dev/null | grep -E '^\s*image:' | sed -e 's/^[ \t]*image: \+//; s/^"//; s/"$//' | xargs -n 1 trivy i --severity=HIGH,CRITICAL --ignore-unfixed
+helm template oci://registry-1.docker.io/bitnamicharts/redis --values helm-external-charts/manifests/redis.yaml  2> /dev/null | grep -E '^\s*image:' | sed -e 's/^[ \t]*image: \+//; s/^"//; s/"$//' | xargs -n 1 trivy i --severity=HIGH,CRITICAL --ignore-unfixed
 # Postgres (only if datastores.postgres.builtin.enabled: false)
-helm template oci://registry.how.so/howso-platform/stable/postgresql --values helm-external-charts/manifests/postgres.yaml  2> /dev/null | grep -E '^\s*image:' | sed -e 's/^[ \t]*image: \+//; s/^"//; s/"$//' | xargs -n 1 trivy i --severity=HIGH,CRITICAL --ignore-unfixed
+helm template oci://registry-1.docker.io/bitnamicharts/postgresql --values helm-external-charts/manifests/postgres.yaml  2> /dev/null | grep -E '^\s*image:' | sed -e 's/^[ \t]*image: \+//; s/^"//; s/"$//' | xargs -n 1 trivy i --severity=HIGH,CRITICAL --ignore-unfixed
 ```
 
 > Note - the built-in infrastructure services use standard public images (postgres:16, valkey/valkey:7.2.7, nats:2.10.22-alpine, versity/versitygw:1.0.7). The separate infrastructure [charts](../common/README.md#additional-documentation) are only needed if using external services mode. These charts are hosted via the replicated helm repository and will be updated as part of the Howso Release process at the tested version.

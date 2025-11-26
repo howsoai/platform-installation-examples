@@ -1,15 +1,16 @@
-# Legacy Values File for External Infrastructure Services
+# External Services Configuration
 #
-# This file provides backward compatibility for users who want to continue
-# using external Bitnami Postgres, Bitnami Redis, MinIO, and NATS charts
-# instead of the integrated built-in services.
+# Use this file when deploying Howso Platform with external Helm charts
+# (Bitnami Postgres, Bitnami Redis, MinIO, NATS) instead of the built-in services.
+#
+# When to use this approach:
+# - Integration with existing infrastructure deployments
+# - Organization-specific chart requirements
+# - Gradual migration from previous installations
 #
 # Usage:
 #   helm install my-release . -f values-external-all.yaml
 #   helm upgrade my-release . -f values-external-all.yaml
-#
-# This will override the default integrated service configurations
-# and restore the original external chart behavior.
 #
 ################################################################################
 

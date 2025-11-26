@@ -61,12 +61,14 @@ kubectl annotate namespaces howso linkerd.io/inject=enabled
 ### NATS
 NATS Message queue is heavilly used within the Howso Platform.  The NATS traffic is not automatically recognized by Linkerd (as it uses a server-speaks-first protocol).  To enable Linkerd to recognize NATS traffic, the NATS service and server(s) need to be annotated as being an opaque port.
 
-> Note this does not skip NATS traffic from the proxy - it just informs Linkerd that it should be proxied even though it doesn't automatically recognize it. 
+> Note this does not skip NATS traffic from the proxy - it just informs Linkerd that it should be proxied even though it doesn't automatically recognize it.
 
-Since we've installed via Helm - we'll update the installed NATS chart to include the `config.linkerd.io/opaque-ports="4222"` annotation.  The [values file](./manifests/nats.yaml) includes the annotations for the service and statefulset. 
+Since we've installed via Helm - we'll update the installed NATS chart to include the `config.linkerd.io/opaque-ports="4222"` annotation.  The [values file](./manifests/nats.yaml) includes the annotations for the service and statefulset.
+
+> Note: If you haven't already added the NATS Helm repository, run: `helm repo add nats https://nats-io.github.io/k8s/helm/charts/`
 
 ```sh
-helm upgrade platform-nats oci://registry.how.so/howso-platform/stable/nats --namespace howso --values linkerd/manifests/nats.yaml --wait
+helm upgrade platform-nats nats/nats --namespace howso --values linkerd/manifests/nats.yaml --wait
 ```
 
 > Note - Kubernetes Jobs are complicated by side-car based service meshes, as the (long lived) proxy side-car, can interfere with the job completion being registered if it doesn't also terminate.  All jobs in the Howso Platform include extra shutdown commands that explicitly terminate any proxy sidecar as the job completes.  Nothing extra is required to enable this functionality, and you should not exclude Jobs from the service mesh. 

@@ -4,7 +4,7 @@
 # (Postgres, Valkey, NATS, VersityGW) with a local container registry.
 #
 # Built-in services are enabled by default. To use external charts instead,
-# see helm-airgap/manifests/howso-platform.yaml and the external charts guide.
+# see the helm-external-charts guide and Option 2 in helm-airgap/README.md.
 
 domain: local.howso.com
 
