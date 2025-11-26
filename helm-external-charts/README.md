@@ -2,17 +2,17 @@
 
 ## Introduction
 
-This guide details the process of deploying the Howso Platform using **external charts** for infrastructure services (Postgres, Redis, NATS, MinIO). This is an advanced configuration that provides maximum flexibility and control over your datastore deployments.
+This guide details the process of deploying the Howso Platform using external charts for infrastructure services (Postgres, Redis, NATS, MinIO).
 
-**When to use this approach:**
+When to use this approach:
 - You have existing Bitnami/MinIO chart deployments you want to integrate with
 - You require specific versions or configurations not available in built-in services
 - You need to gradually migrate from a previous Howso Platform installation
 - Your organization has standardized on specific Helm charts for infrastructure
 
-**For simpler deployments**, see the [helm-basic](../helm-basic/README.md) guide which uses built-in services included in the Howso Platform chart.
+For simpler deployments, see the [helm-basic](../helm-basic/README.md) guide which uses built-in services included in the Howso Platform chart.
 
-> **Note for Existing Installations:** If you're currently using external datastores, including Helm charts, there's no urgent need to migrate. Using external datastores continues to be fully supported. The all-in-one approach is primarily recommended for new installations to simplify initial setup.
+> Note for Existing Installations: If you're currently using external datastores, including Helm charts, there's no urgent need to migrate. Using external datastores continues to be fully supported.
 
 This guide deploys Howso Platform in a non-air-gapped Kubernetes environment with direct internet access.
 
@@ -86,7 +86,7 @@ helm install platform-postgres oci://registry.how.so/howso-platform/stable/postg
 
 #### Redis
 
-[Read replicas](./manifests/redis.yaml) are scaled down for a smaller/basic installation. See [Redis licensing update](../../redis-license-update.md) for important version information.
+[Read replicas](./manifests/redis.yaml) are scaled down for a smaller/basic installation. See [Redis licensing update](../redis-license-update.md) for important version information.
 ```
 helm install platform-redis oci://registry.how.so/howso-platform/stable/redis --namespace howso --values helm-external-charts/manifests/redis.yaml --wait
 ```
@@ -102,7 +102,7 @@ helm install howso-platform oci://registry.how.so/howso-platform/stable/howso-pl
   --values helm-external-charts/manifests/howso-platform.yaml
 ```
 
-**Note:** The `values-external-all.yaml` file disables all built-in services and points to the external chart service names (e.g., `platform-postgres-postgresql`, `platform-redis-master`, `platform-minio`, `platform-nats`). See the [values file](./manifests/values-external-all.yaml) for detailed configuration and upgrade path documentation.
+The `values-external-all.yaml` file disables all built-in services and points to the external chart service names (e.g., `platform-postgres-postgresql`, `platform-redis-master`, `platform-minio`, `platform-nats`). See the [values file](./manifests/values-external-all.yaml) for detailed configuration and upgrade path documentation.
 
 Time to install may vary significantly depending on network speed and resources -so the above install command avoids waiting.  Instead check the status of the pods in the howso namespace, as they come online (CTRL-C to exit).
 

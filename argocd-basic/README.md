@@ -2,9 +2,9 @@
 
 ## Overview
 
-This guide demonstrates deploying the Howso Platform using Argo CD, a GitOps tool for Kubernetes. It emphasizes the use of Argo CD's Helm chart capabilities to deploy the Howso Platform with **built-in infrastructure services** (Postgres, Valkey, NATS, VersityGW). This is the **recommended approach** for GitOps deployments.
+This guide demonstrates deploying the Howso Platform using Argo CD, a GitOps tool for Kubernetes. It emphasizes the use of Argo CD's Helm chart capabilities to deploy the Howso Platform with built-in infrastructure services (Postgres, Valkey, NATS, VersityGW).
 
-**For deployments** requiring external Bitnami/MinIO charts, this guide also covers the legacy 5-chart installation approach. See [Option 2: External Charts Mode](#option-2-external-charts-mode) below.
+For deployments requiring external Bitnami/MinIO charts, this guide also covers the legacy 5-chart installation approach. See [Option 2: External Charts Mode](#option-2-external-charts-mode) below.
 
 This documentation covers basic Argo CD usage for deploying the Howso Platform. It is not a comprehensive guide to Argo CD features.
 
@@ -89,22 +89,15 @@ kubectl apply -f argocd-basic/manifests/argocd-project.yaml
 kubectl apply -f argocd-basic/manifests/argocd-howso-platform-allinone-app.yaml
 ```
 
-**What gets deployed:**
-- Single Argo CD Application
-- Howso Platform services (API, UMS, SMS, Worker, Operator, UI, PyPI)
-- Built-in Postgres (with TLS)
-- Built-in Valkey (with TLS)
-- Built-in NATS (with mTLS)
-- Built-in VersityGW object storage (with HTTPS)
-- Certificate generator (automatic cert creation and renewal)
+This deploys a single Argo CD Application containing the Howso Platform with built-in infrastructure services.
 
 ---
 
 ## Option 2: External Charts Mode
 
-This approach uses separate Argo CD Applications for each infrastructure service (Bitnami Postgres, Redis, MinIO, NATS) plus the Howso Platform. This is for organizations with existing external chart deployments.
+This approach uses separate Argo CD Applications for each infrastructure service (Bitnami Postgres, Redis, MinIO, NATS) plus the Howso Platform. This is useful when integrating with existing external chart deployments.
 
-**For detailed guidance on external charts**, see the [helm-external-charts](../helm-external-charts/README.md) guide.
+For detailed guidance on external charts, see the [helm-external-charts](../helm-external-charts/README.md) guide.
 
 ### Create datastore secrets
 

@@ -2,7 +2,7 @@
 
 This section contains guides for externalizing various services used by the Howso Platform to cloud-managed services (AWS RDS, S3, etc.). Whilst the guides show specific back-end providers, the general principles can be applied to other providers.
 
-> **Note:** This is different from [helm-external-charts](../helm-external-charts/), which covers deploying separate Helm charts within Kubernetes. This section focuses on using cloud-managed services outside Kubernetes entirely.
+> Note: This is different from [helm-external-charts](../helm-external-charts/), which covers deploying separate Helm charts within Kubernetes. This section focuses on using cloud-managed services outside Kubernetes entirely.
 
 ## Available Guides
 
@@ -18,4 +18,4 @@ For Redis, externalization is unnecessary for system recovery purposes, and main
 
 NATS similarly should remain internal - its persistence is only required for in-flight trainees, and the platform relies on NATS' speed and reliability for message delivery.
 
-Both Redis and NATS can be fully configured through the Howso Helm chart if specific customization is needed. See [Redis licensing update](../../redis-license-update.md) for important information about Redis versions and alternatives.
+Both Redis and NATS can be fully configured through the Howso Helm chart if specific customization is needed. See [Redis licensing update](../redis-license-update.md) for important information about Redis versions and alternatives.

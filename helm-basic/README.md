@@ -1,18 +1,11 @@
-# Helm Installation for Howso Platform
+# Helm Online Installation for Howso Platform
 
 ## Introduction
 
-This guide details the process of deploying the Howso Platform using Helm in a non-air-gapped Kubernetes environment with **built-in services**. This is the recommended approach for getting started with the Howso Platform.
+This guide details the process of deploying the Howso Platform using Helm in a non-air-gapped Kubernetes environment.
+This example emphasizes a straightforward installation process for environments with direct internet access, using the built-in infrastructure services included in the Howso Platform chart. It is recommended to confirm that you can setup a basic environment before making any customizations.
 
-The Howso Platform chart includes built-in infrastructure services, providing a simple single-chart installation:
-- **Postgres** - Primary datastore
-- **Valkey** (Redis alternative) - Caching and pub/sub
-- **NATS** - Message queue with JetStream
-- **VersityGW** - S3-compatible object storage
-
-These built-in services are production-ready with TLS enabled by default and require no external dependencies.
-
-**For advanced deployments** using external Bitnami/MinIO charts, see the [helm-external-charts](../helm-external-charts/README.md) guide.
+For deployments using external Bitnami/MinIO charts, see the [helm-external-charts](../helm-external-charts/README.md) guide.
 
 Ensure you have completed the [prerequisites](../prereqs/README.md) before proceeding, and have a Kubernetes cluster running, with a howso namespace, and are logged into the Helm registry.
 
@@ -39,15 +32,7 @@ helm install howso-platform oci://registry.how.so/howso-platform/stable/howso-pl
   --wait --timeout 20m
 ```
 
-**What gets deployed:**
-- Howso Platform services (API, UMS, SMS, Worker, Operator, UI, PyPI)
-- Built-in Postgres (with TLS)
-- Built-in Valkey (with TLS)
-- Built-in NATS (with mTLS)
-- Built-in VersityGW object storage (with HTTPS)
-- Certificate generator (automatic cert creation and renewal)
-
-**Note:** The `--wait --timeout 20m` flags ensure Helm waits for all pods to be ready. Built-in services may take 10-15 minutes to fully initialize on first deployment.
+Time to install may vary significantly depending on network speed and resources. The `--wait --timeout 20m` flags ensure Helm waits for all pods to be ready; built-in services may take 10-15 minutes to fully initialize on first deployment.
 
 ### Monitor Deployment
 

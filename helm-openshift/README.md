@@ -3,9 +3,9 @@
 ## Introduction
 This guide covers how the Howso Platform installation may be configured for deploying into an OpenShift environment.  It demonstrates the additional configuration to accommodate the security policies of OpenShift.  It also separates the CRD installation from the main chart installation, which can be helpful in environments where the installation is done with only namespace-level (OpenShift Project) permissions.
 
-The Howso Platform chart includes **built-in infrastructure services** (Postgres, Valkey, NATS, VersityGW) configured to work with OpenShift's Security Context Constraints (SCCs). This is the **recommended approach** for OpenShift deployments.
+The Howso Platform chart includes built-in infrastructure services (Postgres, Valkey, NATS, VersityGW) configured to work with OpenShift's Security Context Constraints (SCCs).
 
-**For deployments** requiring external Bitnami/MinIO charts, this guide also covers the legacy 5-chart installation approach. See [Option 2: External Charts Mode](#option-2-external-charts-mode) below.
+For deployments requiring external Bitnami/MinIO charts, this guide also covers the legacy 5-chart installation approach. See [Option 2: External Charts Mode](#option-2-external-charts-mode) below.
 
 Ensure you have completed the [prerequisites](../prereqs/README.md) before proceeding, have an OpenShift cluster running, with a howso project, and are logged into the Helm registry.
 
@@ -74,15 +74,7 @@ helm install howso-platform oci://registry.how.so/howso-platform/stable/howso-pl
   --values helm-openshift/manifests/howso-platform-openshift.yaml
 ```
 
-**What gets deployed:**
-- Howso Platform services (API, UMS, SMS, Worker, Operator, UI, PyPI)
-- Built-in Postgres (with TLS, OpenShift-compatible security contexts)
-- Built-in Valkey (with TLS, OpenShift-compatible security contexts)
-- Built-in NATS (with mTLS, OpenShift-compatible security contexts)
-- Built-in VersityGW object storage (with HTTPS, OpenShift-compatible security contexts)
-- Certificate generator (automatic cert creation and renewal)
-
-**Note:** The built-in services are configured to work with OpenShift's `MustRunAsRange` and other SCCs. The chart automatically handles user ID constraints and read-only root filesystem requirements.
+The built-in services are configured to work with OpenShift's `MustRunAsRange` and other SCCs. The chart automatically handles user ID constraints and read-only root filesystem requirements.
 
 ---
 
@@ -90,7 +82,7 @@ helm install howso-platform oci://registry.how.so/howso-platform/stable/howso-pl
 
 This approach uses separate Helm charts for infrastructure services (Bitnami Postgres, Redis, MinIO, NATS) with OpenShift-specific configurations.
 
-**For detailed guidance on external charts**, see the [helm-external-charts](../helm-external-charts/README.md) guide.
+For detailed guidance on external charts, see the [helm-external-charts](../helm-external-charts/README.md) guide.
 
 ### Create datastore secrets
 
@@ -126,7 +118,7 @@ Redis
 ```
 helm install platform-redis oci://registry.how.so/howso-platform/stable/redis --namespace howso --values helm-openshift/manifests/redis.yaml --wait
 ```
-See [Redis licensing update](../../redis-license-update.md) for important version information.
+See [Redis licensing update](../redis-license-update.md) for important version information.
 
 Howso Platform (install last - when all other components are ready).  Time to install will vary depending on network and resources.
 ```

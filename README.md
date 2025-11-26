@@ -18,8 +18,8 @@ By providing self-contained local workstation setups the documentation aims to:-
 ## Examples
 - [Prerequisites](prereqs/README.md)
 ---
-- [Helm (Built-in Services)](helm-basic/README.md) - **Recommended for getting started**
-- [Helm (External Charts)](helm-external-charts/README.md) - Advanced: Use external Bitnami/MinIO charts
+- [Helm (Built-in Services)](helm-basic/README.md)
+- [Helm (External Charts)](helm-external-charts/README.md) - Use external Bitnami/MinIO charts
 - [Helm Air-gap](helm-airgap/README.md)
 - [Helm Openshift](helm-openshift/README.md)
 - [Argo CD Basic](argocd-basic/README.md)
@@ -33,7 +33,7 @@ The Howso Platform can optionally integrate with Argo Workflows to enable certai
 
 ## Overview
 
-Howso Platform is a Kubernetes-based application that consists of many services, available as a single Helm chart. The platform chart includes **built-in infrastructure services** (Postgres, Valkey, NATS, VersityGW object storage) for simplified deployment, or can be configured to use **external charts** (Bitnami Postgres/Redis, MinIO, NATS) for advanced use cases.
+Howso Platform is a Kubernetes-based application that consists of many services, available as a single Helm chart. The platform chart includes built-in infrastructure services (Postgres, Valkey, NATS, VersityGW object storage) for simplified deployment, or can be configured to use external charts (Bitnami Postgres/Redis, MinIO, NATS) for other use cases.
 
 
 ### Replicated
@@ -47,25 +47,20 @@ The Howso Platform is distributed as a [Replicated](https://www.replicated.com/)
 
 [Helm](https://helm.sh/) modularizes Kubernetes manifests into charts, which can be installed, upgraded, and uninstalled as a single entity. It includes a straightforward method for templating out certain values, to make it simple to configure the application.
 
-The Howso Platform relies on data stores (Postgres, Redis/Valkey), an S3-compatible object store, and a message queue (NATS). By default, these are included as **built-in services** within the platform chart. Alternatively, they can be deployed as separate Helm charts for advanced use cases—see [External Charts](helm-external-charts/README.md) for details.
+The Howso Platform relies on data stores (Postgres, Redis/Valkey), an S3-compatible object store, and a message queue (NATS). By default, these are included as built-in services within the platform chart. Alternatively, they can be deployed as separate Helm charts—see [External Charts](helm-external-charts/README.md) for details.
 
 
 ## Quick Start vs Production Readiness
 
-### Built-in Services (Default Mode)
+### Built-in Services (Default)
 
-The Howso Platform chart includes production-ready built-in infrastructure services by default:
-- **Postgres** - Primary datastore with TLS
-- **Valkey** - Redis-compatible cache and pub/sub with TLS
-- **NATS** - Message queue with JetStream and mTLS
-- **VersityGW** - S3-compatible object storage with HTTPS
-- **Certificate Generator** - Automatic certificate creation and renewal
+The Howso Platform chart includes built-in infrastructure services (Postgres, Valkey, NATS, VersityGW) that work together in an almost default configuration. Except for some small changes (i.e. configuring the domain), these services require minimal setup for a quick start. This interoperability facilitates an easy and efficient initial deployment of the Howso Platform.
 
-This **all-in-one** approach provides a simple single-chart installation with no external dependencies. The [helm-basic](helm-basic/README.md) guide demonstrates this configuration and is **recommended for getting started**.
+In the [helm-basic](helm-basic/README.md) examples, this type of configuration will be demonstrated. It is recommended to start with this configuration before more complex arrangements.
 
-### External Charts (Advanced Mode)
+### External Charts
 
-For advanced use cases, the platform can be configured to use external Bitnami/MinIO charts instead of built-in services. This provides maximum flexibility and control, and is useful for:
+Alternatively, the platform can be configured to use external Bitnami/MinIO charts instead of built-in services. This approach is useful for:
 - Integration with existing infrastructure
 - Gradual migration from previous installations
 - Organization-specific chart requirements

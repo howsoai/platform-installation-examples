@@ -4,9 +4,9 @@
 
 This guide details the process of deploying the Howso Platform using Helm in an air-gapped Kubernetes environment.  The main goal is to avoid public internet registries for both container images and Helm charts; allowing the Kubernetes environment to have restricted network access.  As such additional steps are required to download/upload these components and the chart values are modified to use the local registry.
 
-The Howso Platform chart includes **built-in infrastructure services** (Postgres, Valkey, NATS, VersityGW), providing a simple single-chart air-gap installation. This is the **recommended approach** for most air-gapped deployments.
+The Howso Platform chart includes built-in infrastructure services (Postgres, Valkey, NATS, VersityGW), providing a simple single-chart air-gap installation.
 
-**For deployments** requiring external Bitnami/MinIO charts, this guide also covers the legacy 5-chart installation approach. See [Option 2: External Charts Mode](#option-2-external-charts-mode) below.
+For deployments requiring external Bitnami/MinIO charts, this guide also covers the legacy 5-chart installation approach. See [Option 2: External Charts Mode](#option-2-external-charts-mode) below.
 
 Production air-gapped Kubernetes environments will likely have pipelines for [scanning images](../container-images/README.md) and secured container registries.  This illustrative example will use the unsecured local registry setup by k3d.
 
@@ -95,23 +95,15 @@ helm install howso-platform $tmp_dir/howso-platform \
   --wait --timeout 20m
 ```
 
-**What gets deployed:**
-- Howso Platform services (API, UMS, SMS, Worker, Operator, UI, PyPI)
-- Built-in Postgres (with TLS)
-- Built-in Valkey (with TLS)
-- Built-in NATS (with mTLS)
-- Built-in VersityGW object storage (with HTTPS)
-- Certificate generator (automatic cert creation and renewal)
-
-**Note:** The `--wait --timeout 20m` flags ensure Helm waits for all pods to be ready. Built-in services may take 10-15 minutes to fully initialize on first deployment.
+The `--wait --timeout 20m` flags ensure Helm waits for all pods to be ready. Built-in services may take 10-15 minutes to fully initialize on first deployment.
 
 ---
 
 ## Option 2: External Charts Mode
 
-This approach uses separate Helm charts for infrastructure services (Bitnami Postgres, Redis, MinIO, NATS). This is for organizations with existing external chart deployments or specific requirements.
+This approach uses separate Helm charts for infrastructure services (Bitnami Postgres, Redis, MinIO, NATS). This is useful when integrating with existing external chart deployments or when specific configurations are required.
 
-**For detailed guidance on external charts**, see the [helm-external-charts](../helm-external-charts/README.md) guide.
+For detailed guidance on external charts, see the [helm-external-charts](../helm-external-charts/README.md) guide.
 
 ### Download Helm charts
 

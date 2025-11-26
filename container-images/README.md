@@ -133,13 +133,11 @@ unset DOCKER_CONFIG
 
 [Trivy](https://github.com/aquasecurity/trivy) is a useful open-source tool for scanning container images for vulnerabilities.  To complete the example, let's use it to scan the images.
 
-**Default all-in-one mode** - the howso-platform chart now includes built-in infrastructure services (PostgreSQL, Valkey, NATS JetStream, VersityGW object storage) by default:
-
 ```sh
 helm template oci://registry.how.so/howso-platform/stable/howso-platform --values helm-basic/manifests/howso-platform.yaml  2> /dev/null | grep -E '^\s*image:' | sed -e 's/^[ \t]*image: \+//; s/^"//; s/"$//' | xargs -n 1 trivy i --severity=HIGH,CRITICAL --ignore-unfixed
 ```
 
-**External services mode** - if you've disabled built-in infrastructure (`*.builtin.enabled: false`) and are using external charts, scan those separately:
+And the same for the additional charts.
 
 ```sh
 # Nats (only if nats.builtin.enabled: false)
@@ -152,7 +150,7 @@ helm template oci://registry.how.so/howso-platform/stable/redis --values helm-ex
 helm template oci://registry.how.so/howso-platform/stable/postgresql --values helm-external-charts/manifests/postgres.yaml  2> /dev/null | grep -E '^\s*image:' | sed -e 's/^[ \t]*image: \+//; s/^"//; s/"$//' | xargs -n 1 trivy i --severity=HIGH,CRITICAL --ignore-unfixed
 ```
 
-> Note - the built-in infrastructure services use standard public images (postgres:16, valkey/valkey:7.2.7, nats:2.10.22-alpine, versity/versitygw:1.0.7). The separate infrastructure [charts](../common/README.md#addional-documentation) are only needed if using external services mode. These charts are hosted via the replicated helm repository and will be updated as part of the Howso Release process at the tested version.
+> Note - the built-in infrastructure services use standard public images (postgres:16, valkey/valkey:7.2.7, nats:2.10.22-alpine, versity/versitygw:1.0.7). The separate infrastructure [charts](../common/README.md#additional-documentation) are only needed if using external services mode. These charts are hosted via the replicated helm repository and will be updated as part of the Howso Release process at the tested version.
 
 ## Howso's Approach to vulnerabilities
 

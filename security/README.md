@@ -27,7 +27,7 @@ These docs will cover two approaches:
 
 > Note: In a Kubernetes cluster, depending on the Container Network Interface (CNI) used, traffic between nodes may be encrypted. Overlay networks, such as Calico or Weave, can be configured to encrypt traffic between nodes. This is a separate concern from the application-level encryption discussed here, but may be a relevant consideration when assessing the security posture of the cluster and its applications. 
 
-For information about ingress traffic TLS see the [Custom Ingress](#custom-ingress-certs) section.
+For information about ingress traffic TLS see the [Ingress Certs](#ingress-certs) section.
 
 ### Service Mesh
 

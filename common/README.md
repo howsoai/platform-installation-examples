@@ -134,7 +134,7 @@ If you are running air-gapped installation examples on Mac Silicon - the verific
 
 ### Basic Helm Install
 
-For examples that build off of a basic Helm install, the simplified instructions for the [basic Helm install](../helm-basic/README.md) are combined below. This uses the **built-in services** mode (single-chart installation).
+For examples that build off of a basic Helm install, the simplified instructions for the [basic Helm install](../helm-basic/README.md) are combined below. This uses the built-in services mode (single-chart installation).
 
 ```sh
 # Prerequisites TLDR
@@ -154,4 +154,4 @@ helm install howso-platform oci://registry.how.so/howso-platform/stable/howso-pl
   --wait --timeout 20m
 ```
 
-**Note:** This installs the Howso Platform with built-in Postgres, Valkey, NATS, and VersityGW object storage. For the external charts approach (using Bitnami/MinIO charts), see [helm-external-charts](../helm-external-charts/README.md).
+This installs the Howso Platform with built-in Postgres, Valkey, NATS, and VersityGW object storage. For the external charts approach (using Bitnami/MinIO charts), see [helm-external-charts](../helm-external-charts/README.md).
