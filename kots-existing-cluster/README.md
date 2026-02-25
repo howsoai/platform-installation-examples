@@ -59,6 +59,7 @@ kubectl kots install --namespace howso howso-platform
 - Upload the license file.
 - Continue (using the _internet install_ link at the bottom - if you have an air-gapped enabled license)
 - From the Configuration screen, note the initial platform-admin password, and enter `local.howso.com` in the _Parent Domain Name_ field.
+- Ensure _Use Built-in Datastores_ is enabled for this example.
 - Disable _Enable Internal TLS_ which is not supported for the k3d traefik ingress.
 - Continue > Deploy (Preflight checks will likely raise issues for local environments - though do not ignore for production deployments)
 - When the status on the _Dashboard_ screen becomes _Ready_ - proceed to [test the install](#test-the-installation).
@@ -69,6 +70,8 @@ kubectl kots install --namespace howso howso-platform
 #### Install via the KOTS CLI
 
 Alternatively, the following installation command assumes your license is downloaded from the [Howso Customer Portal](https://portal.howso.com) and is available at `~/howso-platform-license.yaml`.
+
+The example config file sets `builtin_services_enabled: "1"` to use built-in datastores. To install in external-datastore mode instead, change that value to `"0"` and configure the external datastore options in the same file.
 
 ```sh
 kubectl kots install howso-platform --skip-preflights \

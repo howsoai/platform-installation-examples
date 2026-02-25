@@ -82,6 +82,8 @@ This example will show a CLI-driven install.  The KOTS UI can also be used, use 
 
 To use the following commands _as-is_ - download your license and make it available at `~/howso-platform-license.yaml`, your kotsadm container bundle at `~/kotsadm.tar.gz` and your air-gapped bundle available at `~/2024.4.0.airgap`
 
+The example config file sets `builtin_services_enabled: "1"` to use built-in datastores. To install in external-datastore mode instead, change that value to `"0"` and configure the external datastore options in the same file.
+
 
 Push the kotsadm images to the local registry.
 

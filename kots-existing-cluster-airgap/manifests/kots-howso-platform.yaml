@@ -4,6 +4,8 @@ metadata:
   name: howso-platform
 spec:
   values:
+    builtin_services_enabled:
+      value: "1"
     beta_features_enabled:
       value: "1"
     global_debug:
