@@ -6,8 +6,6 @@ spec:
   values:
     builtin_services_enabled:
       value: "1"
-    beta_features_enabled:
-      value: "1"
     global_debug:
       default: "20"
       value: "15"
