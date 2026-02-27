@@ -149,18 +149,14 @@ nats:
 #      - Service: platform-redis-master
 #      - Secret: platform-redis (with key: redis-password)
 #
-# 3. External MinIO (MinIO Chart)
+# 3. External MinIO (Bitnami Chart)
 #    =======================================
-#    Chart: https://charts.min.io/
-#    Version: ~5.x (MinIO latest)
+#    Chart: oci://registry-1.docker.io/bitnamicharts/minio
 #
 #    Example deployment:
-#      helm repo add minio https://charts.min.io/
-#      helm install platform-minio minio/minio \
-#        --version 5.0.0 \
-#        --set rootUser=minioadmin \
-#        --set rootPassword=minioadmin123 \
-#        --set persistence.size=4Gi \
+#      helm install platform-minio oci://registry-1.docker.io/bitnamicharts/minio \
+#        --set auth.rootUser=minioadmin \
+#        --set auth.rootPassword=minioadmin123 \
 #        --set defaultBuckets="platform" \
 #        --namespace howso
 #
