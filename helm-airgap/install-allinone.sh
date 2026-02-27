@@ -4,13 +4,14 @@ set -euo pipefail
 # Helm Air-gap Installation — Option 1: All-in-One (Built-in Services)
 # See helm-airgap/README.md for full documentation.
 # Run from the repository root directory.
-#
-# Prerequisites:
-#   - kots CLI installed (https://kots.io/kots-cli/)
-#   - Air-gap bundle downloaded to ~/2024.4.0.airgap (adjust AIRGAP_BUNDLE below)
-#   - registry-localhost in /etc/hosts
 
-AIRGAP_BUNDLE="${AIRGAP_BUNDLE:-~/2024.4.0.airgap}"
+AIRGAP_BUNDLE="${AIRGAP_BUNDLE:-}"
+if [ -z "$AIRGAP_BUNDLE" ]; then
+  echo "AIRGAP_BUNDLE not set. Download from the Howso Customer Portal:"
+  echo "  https://portal.howso.com/"
+  echo "Then: AIRGAP_BUNDLE=~/2026.2.3.airgap bash $0"
+  exit 1
+fi
 
 echo "=== Creating k3d cluster ==="
 k3d cluster create --config prereqs/k3d-single-node.yaml
@@ -28,11 +29,8 @@ kubectl kots admin-console push-images "$AIRGAP_BUNDLE" registry-localhost:5000 
 
 echo "=== Downloading Helm chart ==="
 tmp_dir=$(mktemp -d)
-cd "$tmp_dir"
-helm pull oci://registry.how.so/howso-platform/stable/howso-platform --untar --untardir .
-cd -
-tar -czvf howso-platform-chart.tar.gz -C "$tmp_dir" .
-echo "Chart is in howso-platform-chart.tar.gz"
+helm pull oci://registry.how.so/howso-platform/stable/howso-platform \
+  --untar --untardir "$tmp_dir"
 
 echo "=== Installing Howso Platform (built-in services) ==="
 helm install howso-platform "$tmp_dir/howso-platform" \

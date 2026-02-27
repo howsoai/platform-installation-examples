@@ -37,7 +37,7 @@ In this example, we'll use the [kots cli](https://kots.io/kots-cli/) - which can
 
 > Note: registry-localhost was set up as a loopback host entry in the [prerequisites](../prereqs/README.md) - it should resolve to the registry container setup by k3d when the cluster was created. 
 
-This example will assume that the downloaded air-gap bundle has been moved to the air-gapped environment - and is available at the path `~/2024.4.0.airgap`.  Adjust the path as necessary.
+This example will assume that the downloaded air-gap bundle has been moved to the air-gapped environment - and is available at the path `~/2026.2.3.airgap`.  Adjust the path as necessary.
 
 #### Check connectivity to the local registry
 
@@ -51,7 +51,7 @@ curl -s http://registry-localhost:5000/v2/_catalog | jq .
 > Note: With this dev setup, the registry credentials, though required by the cli, are ultimately ignored.
 
 ```sh
-kubectl kots admin-console push-images ~/2024.4.0.airgap registry-localhost:5000 --registry-username reguser --registry-password pw --namespace howso --skip-registry-check
+kubectl kots admin-console push-images ~/2026.2.3.airgap registry-localhost:5000 --registry-username reguser --registry-password pw --namespace howso --skip-registry-check
 ```
 
 You can check the images are in the local registry with the command from the earlier [step](#check-connectivity-to-the-local-registry).
@@ -69,14 +69,10 @@ Pull the Howso Platform chart on a machine with internet access:
 > Note: The use of `--untar` is just so you don't need to know the version for the next step (the actual tarball will be named with the version).
 
 ```sh
-tmp_dir=$(mktemp -d) # Create a temporary directory to store the chart
-cd $tmp_dir
-# Pull the Howso Platform chart from the Helm registry
-helm pull oci://registry.how.so/howso-platform/stable/howso-platform --untar --untardir .
-cd -
-# Create a tarball of the chart
-tar -czvf howso-platform-chart.tar.gz -C $tmp_dir .
-echo "Chart is in howso-platform-chart.tar.gz"
+tmp_dir=$(mktemp -d)
+helm pull oci://registry.how.so/howso-platform/stable/howso-platform --untar --untardir "$tmp_dir"
+tar -czvf howso-platform-chart.tar.gz -C "$tmp_dir" .
+echo "Chart tarball: howso-platform-chart.tar.gz"
 ```
 
 ### Helm values file
@@ -89,7 +85,7 @@ The chart tarball can be copied to the air-gapped environment, extracted, and in
 > In this case we're using the same machine; if not, make sure a _tmp_dir_ variable is set to the directory where the chart is extracted.
 
 ```sh
-helm install howso-platform $tmp_dir/howso-platform \
+helm install howso-platform "$tmp_dir"/howso-platform \
   --namespace howso \
   --values helm-airgap/manifests/howso-platform-airgap.yaml \
   --wait --timeout 20m
@@ -110,20 +106,16 @@ For detailed guidance on external charts, see the [helm-external-charts](../helm
 Pull all five charts on a machine with internet access:
 
 ```sh
-tmp_dir=$(mktemp -d) # Create a temporary directory to store the charts
-cd $tmp_dir
-# Pull the charts from the Helm registry into the temporary directory
+tmp_dir=$(mktemp -d)
 helm repo add nats https://nats-io.github.io/k8s/helm/charts/
 helm repo update
-helm pull oci://registry-1.docker.io/bitnamicharts/minio --untar --untardir .
-helm pull nats/nats --untar --untardir .
-helm pull oci://registry-1.docker.io/bitnamicharts/postgresql --untar --untardir .
-helm pull oci://registry-1.docker.io/bitnamicharts/redis --untar --untardir .
-helm pull oci://registry.how.so/howso-platform/stable/howso-platform --untar --untardir .
-cd -
-# Create a tarball of the charts in the temporary directory
-tar -czvf howso-platform-charts.tar.gz -C $tmp_dir . # Create a tarball of the charts
-echo "Charts are in howso-platform-charts.tar.gz"
+helm pull oci://registry-1.docker.io/bitnamicharts/minio --untar --untardir "$tmp_dir"
+helm pull nats/nats --untar --untardir "$tmp_dir"
+helm pull oci://registry-1.docker.io/bitnamicharts/postgresql --untar --untardir "$tmp_dir"
+helm pull oci://registry-1.docker.io/bitnamicharts/redis --untar --untardir "$tmp_dir"
+helm pull oci://registry.how.so/howso-platform/stable/howso-platform --untar --untardir "$tmp_dir"
+tar -czvf howso-platform-charts.tar.gz -C "$tmp_dir" .
+echo "Charts tarball: howso-platform-charts.tar.gz"
 ```
 
 ### Create datastore secrets
@@ -155,27 +147,27 @@ The chart tarball can be copied to the air-gapped environment, extracted, and in
 
 Minio
 ```sh
-helm install platform-minio $tmp_dir/minio --namespace howso --values helm-airgap/manifests/minio.yaml --wait
+helm install platform-minio "$tmp_dir"/minio --namespace howso --values helm-airgap/manifests/minio.yaml --wait
 ```
 
 NATS
 ```sh
-helm install platform-nats $tmp_dir/nats --namespace howso --values helm-airgap/manifests/nats.yaml --wait
+helm install platform-nats "$tmp_dir"/nats --namespace howso --values helm-airgap/manifests/nats.yaml --wait
 ```
 
 Postgres
 ```sh
-helm install platform-postgres $tmp_dir/postgresql --namespace howso --values helm-airgap/manifests/postgres.yaml --wait
+helm install platform-postgres "$tmp_dir"/postgresql --namespace howso --values helm-airgap/manifests/postgres.yaml --wait
 ```
 
 Redis
 ```sh
-helm install platform-redis $tmp_dir/redis --namespace howso --values helm-airgap/manifests/redis.yaml --wait
+helm install platform-redis "$tmp_dir"/redis --namespace howso --values helm-airgap/manifests/redis.yaml --wait
 ```
 
 Howso Platform
 ```sh
-helm install howso-platform $tmp_dir/howso-platform --namespace howso --values helm-external-charts/manifests/values-external-all.yaml --values helm-airgap/manifests/howso-platform.yaml
+helm install howso-platform "$tmp_dir"/howso-platform --namespace howso --values helm-external-charts/manifests/values-external-all.yaml --values helm-airgap/manifests/howso-platform.yaml
 ```
 
 > **Note** You can remove installed charts with `helm uninstall` i.e. `helm uninstall platform-redis --namespace howso`.  Check each chart seems to be running correctly before installing the next.

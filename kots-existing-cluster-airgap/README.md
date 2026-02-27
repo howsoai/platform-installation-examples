@@ -80,7 +80,7 @@ curl -s http://registry-localhost:5000/v2/_catalog | jq .
 
 This example will show a CLI-driven install.  The KOTS UI can also be used, use `kubectl kots install --namespace howso howso-platform` to initiate the UI-driven install.
 
-To use the following commands _as-is_ - download your license and make it available at `~/howso-platform-license.yaml`, your kotsadm container bundle at `~/kotsadm.tar.gz` and your air-gapped bundle available at `~/2024.4.0.airgap`
+To use the following commands _as-is_ - download your license and make it available at `~/howso-platform-license.yaml`, your kotsadm container bundle at `~/kotsadm.tar.gz` and your air-gapped bundle available at `~/2026.2.3.airgap`
 
 The example config file sets `builtin_services_enabled: "1"` to use built-in datastores. To install in external-datastore mode instead, change that value to `"0"` and configure the external datastore options in the same file.
 
@@ -101,7 +101,7 @@ kubectl kots install howso-platform --skip-preflights \
                      --namespace howso --no-port-forward \
                      --registry-username reguser --registry-password pw \
                      --kotsadm-registry registry-localhost:5000 --skip-registry-check \
-                     --kotsadm-namespace howso --airgap-bundle ~/2024.4.0.airgap \
+                     --kotsadm-namespace howso --airgap-bundle ~/2026.2.3.airgap \
                      --license-file  ~/howso-platform-license.yaml \
                      --shared-password kotspw --wait-duration 20m \
                      --config-values kots-existing-cluster-airgap/manifests/kots-howso-platform.yaml
