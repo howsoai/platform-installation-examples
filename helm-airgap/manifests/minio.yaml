@@ -1,11 +1,19 @@
+global:
+  security:
+    allowInsecureImages: true
+image:
+  registry: registry-localhost:5000
+  repository: minio
+clientImage:
+  registry: registry-localhost:5000
+  repository: minio-client
+console:
+  enabled: false
 auth:
   existingSecret: platform-minio
   rootUserSecretKey: rootUser
   rootPasswordSecretKey: rootPassword
 defaultBuckets: platform
-image:
-  registry: registry-localhost:5000
-  repository: bitnami/minio
 resources:
   requests:
     memory: 2Gi

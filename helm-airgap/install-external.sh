@@ -13,6 +13,8 @@ if [ -z "$AIRGAP_BUNDLE" ]; then
   exit 1
 fi
 
+LOCAL_REGISTRY="registry-localhost:5000"
+
 echo "=== Creating k3d cluster ==="
 k3d cluster create --config prereqs/k3d-single-node.yaml
 
@@ -20,10 +22,10 @@ echo "=== Creating howso namespace ==="
 kubectl create namespace howso
 
 echo "=== Checking local registry connectivity ==="
-curl -s http://registry-localhost:5000/v2/_catalog | jq .
+curl -s http://${LOCAL_REGISTRY}/v2/_catalog | jq .
 
-echo "=== Pushing images to local registry ==="
-kubectl kots admin-console push-images "$AIRGAP_BUNDLE" registry-localhost:5000 \
+echo "=== Pushing Howso Platform images to local registry ==="
+kubectl kots admin-console push-images "$AIRGAP_BUNDLE" "$LOCAL_REGISTRY" \
   --registry-username reguser --registry-password pw \
   --namespace howso --skip-registry-check
 
@@ -36,6 +38,31 @@ helm pull nats/nats --untar --untardir "$tmp_dir"
 helm pull oci://registry-1.docker.io/bitnamicharts/postgresql --untar --untardir "$tmp_dir"
 helm pull oci://registry-1.docker.io/bitnamicharts/redis --untar --untardir "$tmp_dir"
 helm pull oci://registry.how.so/howso-platform/stable/howso-platform --untar --untardir "$tmp_dir"
+
+echo "=== Pushing external chart images to local registry ==="
+# Template each chart with non-airgap values to discover source image references,
+# then pull, retag, and push to the local registry.
+declare -A chart_values=(
+  [minio]=helm-external-charts/manifests/minio.yaml
+  [nats]=helm-external-charts/manifests/nats.yaml
+  [postgresql]=helm-external-charts/manifests/postgres.yaml
+  [redis]=helm-external-charts/manifests/redis.yaml
+)
+for chart in "${!chart_values[@]}"; do
+  values="${chart_values[$chart]}"
+  echo "--- $chart ---"
+  images=$(helm template "$tmp_dir/$chart" --values "$values" 2>/dev/null \
+    | grep -E '^\s*image:' \
+    | sed 's/^[[:space:]]*image:[[:space:]]*//; s/^"//; s/"$//' \
+    | sort -u) || true
+  for img in $images; do
+    short="${img##*/}"
+    echo "  $img -> ${LOCAL_REGISTRY}/${short}"
+    docker pull "$img"
+    docker tag "$img" "${LOCAL_REGISTRY}/${short}"
+    docker push "${LOCAL_REGISTRY}/${short}"
+  done
+done
 
 echo "=== Creating datastore secrets ==="
 kubectl create secret generic platform-minio \
