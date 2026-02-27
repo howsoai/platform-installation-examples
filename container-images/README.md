@@ -141,7 +141,6 @@ And the same for the additional charts (if using external services mode).
 
 First, add the required Helm repositories:
 ```sh
-helm repo add minio https://helm.min.io/
 helm repo add nats https://nats-io.github.io/k8s/helm/charts/
 helm repo update
 ```
@@ -151,7 +150,7 @@ Then scan the external chart images:
 # Nats (only if nats.builtin.enabled: false)
 helm template nats/nats --values helm-external-charts/manifests/nats.yaml  2> /dev/null | grep -E '^\s*image:' | sed -e 's/^[ \t]*image: \+//; s/^"//; s/"$//' | xargs -n 1 trivy i --severity=HIGH,CRITICAL --ignore-unfixed
 # Minio (only if using external object storage)
-helm template minio/minio --values helm-external-charts/manifests/minio.yaml  2> /dev/null | grep -E '^\s*image:' | sed -e 's/^[ \t]*image: \+//; s/^"//; s/"$//' | xargs -n 1 trivy i --severity=HIGH,CRITICAL --ignore-unfixed
+helm template oci://registry-1.docker.io/bitnamicharts/minio --values helm-external-charts/manifests/minio.yaml  2> /dev/null | grep -E '^\s*image:' | sed -e 's/^[ \t]*image: \+//; s/^"//; s/"$//' | xargs -n 1 trivy i --severity=HIGH,CRITICAL --ignore-unfixed
 # Redis (only if datastores.redis.builtin.enabled: false)
 helm template oci://registry-1.docker.io/bitnamicharts/redis --values helm-external-charts/manifests/redis.yaml  2> /dev/null | grep -E '^\s*image:' | sed -e 's/^[ \t]*image: \+//; s/^"//; s/"$//' | xargs -n 1 trivy i --severity=HIGH,CRITICAL --ignore-unfixed
 # Postgres (only if datastores.postgres.builtin.enabled: false)

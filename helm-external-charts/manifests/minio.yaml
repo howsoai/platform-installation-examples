@@ -1,2 +1,5 @@
-existingSecret: platform-minio
-mode: standalone
+auth:
+  existingSecret: platform-minio
+  rootUserSecretKey: rootUser
+  rootPasswordSecretKey: rootPassword
+defaultBuckets: platform

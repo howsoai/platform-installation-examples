@@ -1,12 +1,8 @@
-configPathmc: /tmp/
-existingSecret: platform-minio
-makeServiceAccountJob:
-  securityContext:
-    enabled: true
-    runAsUser: null
-mode: standalone
+auth:
+  existingSecret: platform-minio
+  rootUserSecretKey: rootUser
+  rootPasswordSecretKey: rootPassword
+defaultBuckets: platform
 resources:
   requests:
     memory: 2Gi
-securityContext:
-  enabled: false

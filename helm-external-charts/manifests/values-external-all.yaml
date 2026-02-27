@@ -1,16 +1,15 @@
-# External Services Configuration
+# Legacy Values File for External Infrastructure Services
 #
-# Use this file when deploying Howso Platform with external Helm charts
-# (Bitnami Postgres, Bitnami Redis, MinIO, NATS) instead of the built-in services.
-#
-# When to use this approach:
-# - Integration with existing infrastructure deployments
-# - Organization-specific chart requirements
-# - Gradual migration from previous installations
+# This file provides backward compatibility for users who want to continue
+# using external Bitnami Postgres, Bitnami Redis, MinIO, and NATS charts
+# instead of the integrated built-in services.
 #
 # Usage:
 #   helm install my-release . -f values-external-all.yaml
 #   helm upgrade my-release . -f values-external-all.yaml
+#
+# This will override the default integrated service configurations
+# and restore the original external chart behavior.
 #
 ################################################################################
 
@@ -22,18 +21,21 @@
 # 1. Disable the integrated services (builtin.enabled: false)
 # 2. Point to external charts with their default naming conventions
 
-# Disable the integrated ObjectStore (VersityGW) service
-objectstore:
+# Disable all built-in infrastructure services
+builtin:
   enabled: false
+
+# Enable network policies - now supports both built-in and external chart labels
+networkPolicies:
+  enabled: true
+  egress:
+    enabled: false  # Keep egress disabled by default for compatibility
 
 datastores:
   #
   # External PostgreSQL Configuration (Bitnami Chart)
   #
   postgres:
-    # Disable built-in PostgreSQL
-    builtin:
-      enabled: false
     ums:
       # Bitnami PostgreSQL chart creates service: <release-name>-postgresql
       # Default release name: platform-postgres
@@ -54,9 +56,6 @@ datastores:
   # External Redis Configuration (Bitnami Chart)
   #
   redis:
-    # Disable built-in Redis
-    builtin:
-      enabled: false
     # Bitnami Redis chart creates service: <release-name>-master
     # Default release name: platform-redis
     host: platform-redis-master
@@ -89,7 +88,7 @@ datastores:
       trainees: trainees
       data: data-resources
       jobs: jobs
-    region: null
+    region: "us-east-1"
     # MinIO chart creates secret: <release-name>
     existingSecret: true
     credentialsSecretName: platform-minio
@@ -104,9 +103,6 @@ datastores:
 # External NATS Configuration (NATS Chart)
 #
 nats:
-  # Disable built-in NATS
-  builtin:
-    enabled: false
   # NATS chart creates service: <release-name>
   # Default release name: platform-nats
   # OOTB mode: nats:// (no TLS)
@@ -206,7 +202,8 @@ nats:
 ################################################################################
 #
 # This file provides OOTB (out-of-the-box) configuration without TLS/hardening.
-# For a hardened configuration reference example, see:
-#   - config/values/kots.yaml
+# For a hardened configuration with TLS, mTLS, and network policies, see:
+#   - values-external-hardened.yaml (future)
+#   - config/values/kots.yaml (reference example)
 #
 ################################################################################

@@ -71,7 +71,8 @@ The Howso Platform chart includes all infrastructure services with OpenShift-com
 ```sh
 helm install howso-platform oci://registry.how.so/howso-platform/stable/howso-platform \
   --namespace howso \
-  --values helm-openshift/manifests/howso-platform-openshift.yaml
+  --values helm-openshift/manifests/howso-platform-openshift.yaml \
+  --wait --timeout 20m
 ```
 
 The built-in services are configured to work with OpenShift's `MustRunAsRange` and other SCCs. The chart automatically handles user ID constraints and read-only root filesystem requirements.
@@ -99,10 +100,9 @@ kubectl create secret generic platform-redis --from-literal=redis-password="$(op
 
 ### Add Helm Repositories
 
-MinIO and NATS charts require adding their official Helm repositories:
+NATS requires adding the official Helm repository:
 
 ```sh
-helm repo add minio https://helm.min.io/
 helm repo add nats https://nats-io.github.io/k8s/helm/charts/
 helm repo update
 ```
@@ -111,7 +111,7 @@ helm repo update
 
 Minio
 ```
-helm install platform-minio minio/minio --namespace howso --values helm-openshift/manifests/minio.yaml --wait
+helm install platform-minio oci://registry-1.docker.io/bitnamicharts/minio --namespace howso --values helm-openshift/manifests/minio.yaml --wait
 ```
 
 NATS

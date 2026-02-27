@@ -1,4 +1,4 @@
-# Helm Installation with External Charts (Advanced)
+# Helm Installation with External Charts
 
 ## Introduction
 
@@ -58,10 +58,9 @@ kubectl create secret generic platform-redis --from-literal=redis-password="$(op
 
 ### Add Helm Repositories
 
-MinIO and NATS charts require adding their official Helm repositories:
+NATS requires adding the official Helm repository:
 
 ```sh
-helm repo add minio https://helm.min.io/
 helm repo add nats https://nats-io.github.io/k8s/helm/charts/
 helm repo update
 ```
@@ -75,9 +74,9 @@ Now install the Helm charts.  It is encouraged to check the [values manifest fil
 
 #### Minio
 
-[Standalone mode](./manifests/minio.yaml) is used as an alternative to a much more heavyweight default configuration.
+[Bitnami MinIO](./manifests/minio.yaml) is deployed in standalone mode with pre-created secrets.
 ```
-helm install platform-minio minio/minio --namespace howso --values helm-external-charts/manifests/minio.yaml --wait
+helm install platform-minio oci://registry-1.docker.io/bitnamicharts/minio --namespace howso --values helm-external-charts/manifests/minio.yaml --wait
 ```
 
 #### NATS

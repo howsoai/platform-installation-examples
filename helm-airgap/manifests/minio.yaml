@@ -1,9 +1,11 @@
-existingSecret: platform-minio
+auth:
+  existingSecret: platform-minio
+  rootUserSecretKey: rootUser
+  rootPasswordSecretKey: rootPassword
+defaultBuckets: platform
 image:
-  repository: registry-localhost:5000/minio
-mcImage:
-  repository: registry-localhost:5000/mc
-mode: standalone
+  registry: registry-localhost:5000
+  repository: bitnami/minio
 resources:
   requests:
     memory: 2Gi

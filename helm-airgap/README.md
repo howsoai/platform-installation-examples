@@ -113,10 +113,12 @@ Pull all five charts on a machine with internet access:
 tmp_dir=$(mktemp -d) # Create a temporary directory to store the charts
 cd $tmp_dir
 # Pull the charts from the Helm registry into the temporary directory
-helm pull oci://registry.how.so/howso-platform/stable/minio --untar --untardir .
-helm pull oci://registry.how.so/howso-platform/stable/nats --untar --untardir .
-helm pull oci://registry.how.so/howso-platform/stable/postgresql --untar --untardir .
-helm pull oci://registry.how.so/howso-platform/stable/redis --untar --untardir .
+helm repo add nats https://nats-io.github.io/k8s/helm/charts/
+helm repo update
+helm pull oci://registry-1.docker.io/bitnamicharts/minio --untar --untardir .
+helm pull nats/nats --untar --untardir .
+helm pull oci://registry-1.docker.io/bitnamicharts/postgresql --untar --untardir .
+helm pull oci://registry-1.docker.io/bitnamicharts/redis --untar --untardir .
 helm pull oci://registry.how.so/howso-platform/stable/howso-platform --untar --untardir .
 cd -
 # Create a tarball of the charts in the temporary directory

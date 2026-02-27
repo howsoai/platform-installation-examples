@@ -61,7 +61,7 @@ ingress:
 From your installation of the [helm basic example](../helm-basic/README.md), update the chart with these [manifests](./manifests/howso-platform.yaml) additions. 
 
 ```sh
-helm upgrade howso-platform oci://registry.how.so/howso-platform/stable/howso-platform --namespace howso --values helm-basic/manifests/howso-platform.yaml --values custom-ingress/manifests/howso-platform.yaml 
+helm upgrade howso-platform oci://registry.how.so/howso-platform/stable/howso-platform --namespace howso --values helm-basic/manifests/howso-platform.yaml --values custom-ingress-cert/manifests/howso-platform.yaml 
 ```
 
 ### Creating sidecar server Certificates

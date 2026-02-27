@@ -95,7 +95,7 @@ For assistance, consult the documentation:-
 - [Argo CD](https://argoproj.github.io/argo-cd/)
 - [Bitnami PostgreSQL Chart](https://github.com/bitnami/charts/tree/main/bitnami/postgresql)
 - [Bitnami Redis Chart](https://github.com/bitnami/charts/tree/main/bitnami/redis)
-- [MinIO Community Chart](https://github.com/minio/minio/tree/master/helm/minio)
+- [Bitnami MinIO Chart](https://github.com/bitnami/charts/tree/main/bitnami/minio)
 - [NATS Chart](https://github.com/nats-io/k8s/tree/main/helm/charts/nats)
 
 ### Howso Platform Support
@@ -153,5 +153,3 @@ helm install howso-platform oci://registry.how.so/howso-platform/stable/howso-pl
   --values helm-basic/manifests/howso-platform.yaml \
   --wait --timeout 20m
 ```
-
-This installs the Howso Platform with built-in Postgres, Valkey, NATS, and VersityGW object storage. For the external charts approach (using Bitnami/MinIO charts), see [helm-external-charts](../helm-external-charts/README.md).
