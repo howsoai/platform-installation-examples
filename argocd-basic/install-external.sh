@@ -16,22 +16,26 @@ echo "=== Creating howso namespace ==="
 kubectl create namespace howso
 
 echo "=== Installing Argo CD ==="
-kubectl apply -k argocd-basic/manifests/argocd/
+kubectl apply -k argocd-basic/manifests/argocd/ || true
+kubectl wait --for=condition=established --timeout=60s crd/ingressroutes.traefik.io 2>/dev/null || true
+kubectl apply -f argocd-basic/manifests/argocd/ingress.yaml 2>/dev/null || true
 
 echo "=== Waiting for Argo CD to be ready ==="
 kubectl -n argocd wait --for=condition=ready --timeout=180s pod -l app.kubernetes.io/name=argocd-server
 
 echo "=== Logging into Argo CD ==="
 initial_argocd_pw=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
-argocd --insecure --grpc-web login argocd.local.howso.com --username admin --password "$initial_argocd_pw"
+yes | argocd --insecure --grpc-web login argocd.local.howso.com --username admin --password "$initial_argocd_pw"
 echo "Log into argocd at https://argocd.local.howso.com with username admin and password $initial_argocd_pw"
 
 echo "=== Applying CRDs ==="
 helm template oci://registry.how.so/howso-platform/stable/howso-platform \
-  --show-only 'templates/crds/*.yaml' | kubectl apply -f -
+  --show-only 'templates/crds/*.yaml' | kubectl apply --validate=false -f -
 
-echo "=== Adding chart registry to Argo CD ==="
+echo "=== Adding chart registries to Argo CD ==="
 echo "Run manually: argocd repo add registry.how.so --type helm --name replicated --username youremail@example.com --password <your-license-id> --enable-oci"
+argocd repo add registry-1.docker.io --type helm --name bitnami --enable-oci
+argocd repo add https://nats-io.github.io/k8s/helm/charts/ --type helm --name nats
 
 echo "=== Creating datastore secrets ==="
 kubectl create secret generic platform-minio \

@@ -1,14 +1,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: howso-platform 
+  name: howso-platform
   namespace: argocd
 spec:
-  project: howso-platform 
+  project: howso-platform
   source:
     repoURL: registry.how.so
-    targetRevision: '*' 
-    chart: howso-platform/stable/howso-platform 
+    targetRevision: '*'
+    chart: howso-platform/stable/howso-platform
     helm:
       values: |
         customResourceDefinitions:
@@ -17,10 +17,63 @@ spec:
         images:
           registry: proxy.replicated.com
           registryNamespace: proxy/howso-platform/dpbuild-docker-edge.jfrog.io/dp
-        
+
+        # External services mode — disable built-in services
+        builtin:
+          enabled: false
+
+        # External datastore connections
+        datastores:
+          postgres:
+            ums:
+              host: platform-postgres-postgresql
+              port: 5432
+              name: postgres
+              user: postgres
+              existingSecret: true
+              credentialsSecretName: platform-postgres-postgresql
+              passwordDataKey: postgres-password
+              sslmode: disable
+              serverVerificationCustomCertChain: false
+              clientVerification: false
+          redis:
+            host: platform-redis-master
+            port: 6379
+            existingSecret: true
+            credentialsSecretName: platform-redis
+            passwordDataKey: redis-password
+            serverVerification: false
+            verifyMode: none
+            checkHostname: false
+            serverVerificationCustomCertChain: false
+            clientVerification: false
+          objectStore:
+            type: s3
+            endpoint: platform-minio:9000
+            scheme: http
+            encryptionEnabled: false
+            signatureVersion: s3v4
+            bucketName: platform
+            locations:
+              trainees: trainees
+              data: data-resources
+              jobs: jobs
+            region: "us-east-1"
+            existingSecret: true
+            credentialsSecretName: platform-minio
+            accesskeyDataKey: rootUser
+            secretkeyDataKey: rootPassword
+            serverVerification: false
+            serverVerificationCustomCertChain: false
+            clientVerification: false
+        nats:
+          serverList: "nats://platform-nats:4222"
+          tls:
+            enabled: false
+
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: howso 
+    namespace: howso
   syncPolicy:
     automated:
       selfHeal: true
