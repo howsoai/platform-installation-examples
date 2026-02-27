@@ -22,6 +22,4 @@ readReplicas:
 shmVolume:
   enabled: false
 volumePermissions:
-  containerSecurityContext:
-    runAsUser: null
-  enabled: true
+  enabled: false
