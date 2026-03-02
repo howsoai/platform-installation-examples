@@ -61,7 +61,8 @@ Argo CD uses [projects](https://argo-cd.readthedocs.io/en/stable/user-guide/proj
 
 To extract and apply the CRD directly, use the following command:
 ```sh
-helm template oci://registry.how.so/howso-platform/stable/howso-platform --show-only 'templates/crds/*.yaml' | kubectl apply -f -
+helm template oci://registry.how.so/howso-platform/stable/howso-platform \
+  --show-only 'templates/crds/*.yaml' | kubectl apply --validate=false -f -
 ```
 
 ### Add the Chart registry to Argo CD

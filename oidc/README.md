@@ -63,7 +63,11 @@ Take a look at the [config](./manifests/howso-platform.yaml) for Howso Platform.
 Update your Howso Platform configuration to configure OIDC with Dex as the identity provider.
 
 ```sh
-helm upgrade howso-platform oci://registry.how.so/howso-platform/stable/howso-platform --namespace howso --values oidc/manifests/howso-platform.yaml --wait
+helm upgrade howso-platform oci://registry.how.so/howso-platform/stable/howso-platform \
+  --namespace howso \
+  --values helm-basic/manifests/howso-platform.yaml \
+  --values oidc/manifests/howso-platform.yaml \
+  --wait
 ```
 
 ## Verification

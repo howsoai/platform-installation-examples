@@ -35,12 +35,12 @@ The sample configuration uses the Kubernetes API to collect Kubernetes-related a
 The Howso Platform also needs to be configured to enable OpenTelemetry data collection, with the URL of the collector.  This is a small [Helm configuration](manifests/howso-platform.yaml) that can be included with the other configuration for the Howso Platform.  Working from the [basic Helm installation](../helm-basic/README.md) this can be added in as additional Helm values
 
 ```sh
-helm upgrade --install howso-platform \
+helm upgrade howso-platform \
   oci://registry.how.so/howso-platform/stable/howso-platform \
   --namespace howso \
   --values helm-basic/manifests/howso-platform.yaml \
-  --wait \
-  --values opentelemetry/manifests/howso-platform.yaml  # <-- add to basic setup
+  --values opentelemetry/manifests/howso-platform.yaml \
+  --wait
 ```
 
 These examples install a dedicated OpenTelemetry collector for the Howso Platform, in the same namespace.  So long as the configured collector URL is reachable from the Kubernetes Pods, the collector does not necessarily need to be in the same namespace or even in the cluster.

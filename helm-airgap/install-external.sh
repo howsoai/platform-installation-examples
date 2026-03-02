@@ -46,14 +46,12 @@ declare -A chart_values=(
 )
 for chart in "${!chart_values[@]}"; do
   values="${chart_values[$chart]}"
-  echo "--- $chart ---"
   images=$(helm template "$tmp_dir/$chart" --values "$values" 2>/dev/null \
     | grep -E '^\s*image:' \
     | sed 's/^[[:space:]]*image:[[:space:]]*//; s/^"//; s/"$//' \
     | sort -u) || true
   for img in $images; do
     short="${img##*/}"
-    echo "  $img -> ${LOCAL_REGISTRY}/${short}"
     docker pull "$img"
     docker tag "$img" "${LOCAL_REGISTRY}/${short}"
     docker push "${LOCAL_REGISTRY}/${short}"
