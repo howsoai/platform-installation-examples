@@ -6,11 +6,8 @@ set -euo pipefail
 # Run from the repository root directory.
 #
 # Prerequisites:
-#   - Howso Platform running with external charts (helm-external-charts/install.sh)
+#   - Howso Platform running (via helm-basic or helm-external-charts)
 #   - step CLI installed (https://smallstep.com/docs/step-cli/)
-#
-# Note: Built-in services mode uses internal TLS which conflicts with
-# Linkerd's mTLS proxy. Use external charts mode for Linkerd integration.
 
 if ! command -v step &>/dev/null; then
   echo "Error: 'step' CLI is required but not found."
@@ -45,17 +42,48 @@ helm upgrade --install --namespace linkerd-viz --create-namespace linkerd-viz li
 echo "=== Annotating howso namespace for sidecar injection ==="
 kubectl annotate namespaces howso linkerd.io/inject=enabled --overwrite
 
-echo "=== Annotating NATS for opaque port handling ==="
-# NATS uses a server-speaks-first protocol; Linkerd needs opaque port annotation
+echo "=== Excluding infrastructure service ports from Linkerd proxy ==="
+# Built-in infrastructure services (NATS, Postgres, Valkey, ObjectStore) use
+# application-level TLS managed by cert-manager. Linkerd's proxy cannot layer
+# its mTLS on top of these already-encrypted connections. We use skip-inbound
+# on the server side and skip-outbound on the client side so these connections
+# bypass the proxy entirely while all other traffic remains in the mesh.
+#
+# NATS also uses a server-speaks-first protocol that Linkerd cannot detect.
+#
+# In external-charts mode (plain connections), this is still safe — the
+# application TLS handles encryption directly.
+
+INFRA_PORTS="4222,5432,6379,9000"
+
+# Server side: skip inbound proxy for infrastructure service ports
+patch_skip_inbound() {
+  local name=$1 port=$2
+  if kubectl -n howso get statefulset "$name" &>/dev/null; then
+    kubectl -n howso patch statefulset "$name" --type merge \
+      -p "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"config.linkerd.io/skip-inbound-ports\":\"$port\"}}}}}"
+    echo "  $name: skip-inbound-ports=$port"
+  fi
+}
+
+patch_skip_inbound platform-nats 4222
+patch_skip_inbound platform-postgres 5432
+patch_skip_inbound platform-valkey 6379
+patch_skip_inbound platform-objectstore 9000
+
+# Client side: skip outbound proxy for all infrastructure ports
+echo "  Patching deployments with skip-outbound-ports..."
+for deploy in $(kubectl -n howso get deployment -o name); do
+  kubectl -n howso patch "$deploy" --type merge \
+    -p "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"config.linkerd.io/skip-outbound-ports\":\"$INFRA_PORTS\"}}}}}"
+done
+
+# For external NATS installed via Helm, upgrade the release to include annotations
 if helm status platform-nats -n howso &>/dev/null; then
-  # External charts mode: upgrade the NATS helm release with annotations
   helm repo add nats https://nats-io.github.io/k8s/helm/charts/ 2>/dev/null || true
   helm repo update nats
   helm upgrade platform-nats nats/nats --namespace howso --values linkerd/manifests/nats.yaml --wait
-else
-  # Built-in mode: annotate existing NATS resources directly
-  kubectl -n howso annotate svc platform-nats config.linkerd.io/opaque-ports="4222" --overwrite
-  kubectl -n howso annotate statefulset platform-nats config.linkerd.io/opaque-ports="4222" --overwrite
+  echo "  platform-nats: helm release upgraded with opaque port annotations"
 fi
 
 echo "=== Restarting Howso Platform pods for sidecar injection ==="

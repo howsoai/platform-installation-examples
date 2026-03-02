@@ -51,19 +51,45 @@ kubectl -n linkerd-viz port-forward svc/web 8084:8084
 
 ## Annotating the Howso Platform
 
-By default linkerd will not involve itself in the Howso Platform traffic.  By annotating the Howso Platform namespace (default howso) - linkerd will automatically inject the sidecar proxy into all pods and establish mTLS between them. 
+By default linkerd will not involve itself in the Howso Platform traffic.  By annotating the Howso Platform namespace (default howso) - linkerd will automatically inject the sidecar proxy into all pods and establish mTLS between them.
 
 Annotate the namespace
 ```sh
 kubectl annotate namespaces howso linkerd.io/inject=enabled
 ```
 
-### NATS
-NATS Message queue is heavilly used within the Howso Platform.  The NATS traffic is not automatically recognized by Linkerd (as it uses a server-speaks-first protocol).  To enable Linkerd to recognize NATS traffic, the NATS service and server(s) need to be annotated as being an opaque port.
+### Excluding Infrastructure Service Ports from the Proxy
 
-> Note this does not skip NATS traffic from the proxy - it just informs Linkerd that it should be proxied even though it doesn't automatically recognize it.
+Howso Platform's built-in infrastructure services (Postgres, Valkey, NATS, ObjectStore) use application-level TLS managed by cert-manager. Linkerd's proxy cannot layer its mTLS on top of these already-encrypted connections — attempting to do so causes connection failures (e.g. `[SSL: UNEXPECTED_EOF_WHILE_READING]`).
 
-Since we've installed via Helm - we'll update the installed NATS chart to include the `config.linkerd.io/opaque-ports="4222"` annotation.  The [values file](./manifests/nats.yaml) includes the annotations for the service and statefulset.
+NATS additionally uses a server-speaks-first protocol that Linkerd cannot automatically detect.
+
+The solution is to exclude these specific ports from the Linkerd proxy using `skip-inbound-ports` on the server side and `skip-outbound-ports` on the client side. Traffic on these ports bypasses the proxy entirely and relies on the existing application-level TLS. All other traffic (HTTP between services, ingress, etc.) remains fully meshed with Linkerd mTLS.
+
+> Note: In external-charts mode where infrastructure connections are plain, this is still safe — the application TLS handles encryption for these ports directly.
+
+Patch infrastructure statefulsets to skip inbound proxy on their service ports:
+```sh
+kubectl -n howso patch statefulset platform-nats --type merge \
+  -p '{"spec":{"template":{"metadata":{"annotations":{"config.linkerd.io/skip-inbound-ports":"4222"}}}}}'
+kubectl -n howso patch statefulset platform-postgres --type merge \
+  -p '{"spec":{"template":{"metadata":{"annotations":{"config.linkerd.io/skip-inbound-ports":"5432"}}}}}'
+kubectl -n howso patch statefulset platform-valkey --type merge \
+  -p '{"spec":{"template":{"metadata":{"annotations":{"config.linkerd.io/skip-inbound-ports":"6379"}}}}}'
+kubectl -n howso patch statefulset platform-objectstore --type merge \
+  -p '{"spec":{"template":{"metadata":{"annotations":{"config.linkerd.io/skip-inbound-ports":"9000"}}}}}'
+```
+
+Patch all deployments to skip outbound proxy for infrastructure ports:
+```sh
+INFRA_PORTS="4222,5432,6379,9000"
+for deploy in $(kubectl -n howso get deployment -o name); do
+  kubectl -n howso patch "$deploy" --type merge \
+    -p "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"config.linkerd.io/skip-outbound-ports\":\"$INFRA_PORTS\"}}}}}"
+done
+```
+
+If your platform is installed with **external charts** (separate Helm releases for each service), also upgrade the NATS release to include the annotations. The [values file](./manifests/nats.yaml) includes the annotations for the service and statefulset.
 
 > Note: If you haven't already added the NATS Helm repository, run: `helm repo add nats https://nats-io.github.io/k8s/helm/charts/`
 
@@ -89,7 +115,7 @@ Setup a test user and environment using the [instructions here](../common/README
 
 Observe the traffic in the Linkerd dashboard.  The dashboard will show the traffic between the Howso Platform components.
 
-> Note - NATS traffic will not appear in the graphs.  Since it is the main inter-pod communication channel in the Howso Platform - the graphs do not give a complete indication of the flow of traffic.  You can confirm the NATS traffic is included in the secured `edges` with the following command: 
+> Note - Infrastructure service traffic (NATS, Postgres, Valkey, ObjectStore) bypasses the proxy and will not appear in the Linkerd graphs. Since NATS is the main inter-pod communication channel, the graphs do not give a complete picture of traffic flow. You can confirm that meshed pods have secured edges with:
 ```sh
 linkerd viz edges -n howso po
 ```
