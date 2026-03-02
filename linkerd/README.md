@@ -58,15 +58,31 @@ Annotate the namespace
 kubectl annotate namespaces howso linkerd.io/inject=enabled
 ```
 
-### Excluding Infrastructure Service Ports from the Proxy
+### Handling Infrastructure Service Ports
 
-Howso Platform's built-in infrastructure services (Postgres, Valkey, NATS, ObjectStore) use application-level TLS managed by cert-manager. Linkerd's proxy cannot layer its mTLS on top of these already-encrypted connections — attempting to do so causes connection failures (e.g. `[SSL: UNEXPECTED_EOF_WHILE_READING]`).
+Howso Platform's built-in infrastructure services (Postgres, Valkey, NATS, ObjectStore) use application-level TLS managed by cert-manager by default. Linkerd's proxy cannot layer its mTLS on top of these already-encrypted connections — attempting to do so causes connection failures (e.g. `[SSL: UNEXPECTED_EOF_WHILE_READING]`). NATS additionally uses a server-speaks-first protocol that Linkerd cannot automatically detect.
 
-NATS additionally uses a server-speaks-first protocol that Linkerd cannot automatically detect.
+There are two approaches:
 
-The solution is to exclude these specific ports from the Linkerd proxy using `skip-inbound-ports` on the server side and `skip-outbound-ports` on the client side. Traffic on these ports bypasses the proxy entirely and relies on the existing application-level TLS. All other traffic (HTTP between services, ingress, etc.) remains fully meshed with Linkerd mTLS.
+**Option A: Skip infrastructure ports (default — keep app-level TLS)**
 
-> Note: In external-charts mode where infrastructure connections are plain, this is still safe — the application TLS handles encryption for these ports directly.
+Exclude infrastructure ports from the Linkerd proxy using `skip-inbound-ports` / `skip-outbound-ports`. Traffic on these ports bypasses the proxy and relies on the existing application-level TLS. All other traffic remains fully meshed.
+
+**Option B: Disable builtin TLS (let the mesh handle encryption)**
+
+Disable application-level TLS on the built-in services and let Linkerd provide encryption. Apply the `values-builtin-notls.yaml` overlay (shipped alongside `values.yaml` in the chart) when installing:
+
+```sh
+helm install howso-platform ./howso-platform \
+  -f values-builtin-notls.yaml \
+  [other values files...]
+```
+
+You can also set the annotations via Helm values (`builtin.<service>.podAnnotations` and `builtin.<service>.service.annotations`) instead of patching after install. This gives Linkerd full L7 visibility on datastore traffic. See the chart's `values-builtin-notls.yaml` for the complete set of values.
+
+---
+
+The rest of this section demonstrates **Option A** (skip ports).
 
 Patch infrastructure statefulsets to skip inbound proxy on their service ports:
 ```sh

@@ -38,6 +38,10 @@ echo "=== Annotating howso namespace for sidecar injection ==="
 kubectl annotate namespaces howso linkerd.io/inject=enabled --overwrite
 
 echo "=== Excluding infrastructure service ports from Linkerd proxy ==="
+# Alternative: Instead of skipping ports, you can disable builtin TLS entirely
+# and let Linkerd handle encryption. Install the chart with:
+#   helm install ... -f values-builtin-notls.yaml
+# See the chart's values-builtin-notls.yaml and linkerd/README.md for details.
 if kubectl -n howso get statefulset platform-nats &>/dev/null; then
   kubectl -n howso patch statefulset platform-nats --type merge \
     -p '{"spec":{"template":{"metadata":{"annotations":{"config.linkerd.io/skip-inbound-ports":"4222"}}}}}'
