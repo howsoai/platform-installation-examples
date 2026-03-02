@@ -3,7 +3,7 @@
 ## Introduction
 This guide covers how the Howso Platform installation may be configured for deploying into an OpenShift environment.  It demonstrates the additional configuration to accommodate the security policies of OpenShift.  It also separates the CRD installation from the main chart installation, which can be helpful in environments where the installation is done with only namespace-level (OpenShift Project) permissions.
 
-The Howso Platform chart includes built-in infrastructure services (Postgres, Valkey, NATS, VersityGW) configured to work with OpenShift's Security Context Constraints (SCCs).
+The Howso Platform chart includes built-in infrastructure services configured to work with OpenShift's Security Context Constraints (SCCs).
 
 For deployments requiring external Bitnami/MinIO charts, this guide also covers the legacy 5-chart installation approach. See [Option 2: External Charts Mode](#option-2-external-charts-mode) below.
 
@@ -60,7 +60,7 @@ This command uses Helm's template functionality to generate the necessary CRD ma
 
 ---
 
-## Option 1: All-in-One Mode (Recommended)
+## Option 1: All-in-One Mode (Default)
 
 This approach uses the Howso Platform chart with built-in infrastructure services configured for OpenShift SCCs.
 

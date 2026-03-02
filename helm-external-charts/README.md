@@ -2,15 +2,7 @@
 
 ## Introduction
 
-This guide details the process of deploying the Howso Platform using external charts for infrastructure services (Postgres, Redis, NATS, MinIO).
-
-When to use this approach:
-- You have existing Bitnami/MinIO chart deployments you want to integrate with
-- You require specific versions or configurations not available in built-in services
-- You need to gradually migrate from a previous Howso Platform installation
-- Your organization has standardized on specific Helm charts for infrastructure
-
-For simpler deployments, see the [helm-basic](../helm-basic/README.md) guide which uses built-in services included in the Howso Platform chart.
+This guide details the process of deploying the Howso Platform using external Helm charts for infrastructure services instead of the built-in services. For simpler deployments, see the [helm-basic](../helm-basic/README.md) guide which uses built-in services included in the Howso Platform chart.
 
 > Note for Existing Installations: If you're currently using external datastores, including Helm charts, there's no urgent need to migrate. Using external datastores continues to be fully supported.
 

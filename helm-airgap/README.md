@@ -4,7 +4,7 @@
 
 This guide details the process of deploying the Howso Platform using Helm in an air-gapped Kubernetes environment.  The main goal is to avoid public internet registries for both container images and Helm charts; allowing the Kubernetes environment to have restricted network access.  As such additional steps are required to download/upload these components and the chart values are modified to use the local registry.
 
-The Howso Platform chart includes built-in infrastructure services (Postgres, Valkey, NATS, VersityGW), providing a simple single-chart air-gap installation.
+The Howso Platform chart includes built-in infrastructure services, providing a simple single-chart air-gap installation.
 
 For deployments requiring external Bitnami/MinIO charts, this guide also covers the legacy 5-chart installation approach. See [Option 2: External Charts Mode](#option-2-external-charts-mode) below.
 
@@ -58,7 +58,7 @@ You can check the images are in the local registry with the command from the ear
 
 ---
 
-## Option 1: All-in-One Mode (Recommended)
+## Option 1: All-in-One Mode (Default)
 
 This approach uses the Howso Platform chart with built-in infrastructure services. This is simpler and requires only a single Helm chart.
 
@@ -91,7 +91,7 @@ helm install howso-platform "$tmp_dir"/howso-platform \
   --wait --timeout 20m
 ```
 
-The `--wait --timeout 20m` flags ensure Helm waits for all pods to be ready. Built-in services may take 10-15 minutes to fully initialize on first deployment.
+The `--wait --timeout 20m` flags ensure Helm waits for all pods to be ready.
 
 ---
 

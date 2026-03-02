@@ -32,7 +32,7 @@ helm install howso-platform oci://registry.how.so/howso-platform/stable/howso-pl
   --wait --timeout 20m
 ```
 
-Time to install may vary significantly depending on network speed and resources. The `--wait --timeout 20m` flags ensure Helm waits for all pods to be ready; built-in services may take 10-15 minutes to fully initialize on first deployment.
+Time to install may vary significantly depending on network speed and resources. The `--wait --timeout 20m` flags ensure Helm waits for all pods to be ready.
 
 ### Monitor Deployment
 
