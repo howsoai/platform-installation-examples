@@ -4,21 +4,10 @@ set -euo pipefail
 # KOTS Existing Cluster Installation
 # See kots-existing-cluster/README.md for full documentation.
 # Run from the repository root directory.
-#
-# Prerequisites:
-#   - kubectl kots plugin installed (https://kots.io/install/)
-#   - KOTS_LICENSE_FILE env var set to path of license YAML
-#
-# Usage:
-#   export KOTS_LICENSE_FILE=/path/to/license.yaml
-#   ./kots-existing-cluster/install.sh
+# Requires: KOTS_LICENSE_FILE
 
 if [[ -z "${KOTS_LICENSE_FILE:-}" ]]; then
-  echo "Error: KOTS_LICENSE_FILE environment variable is required."
-  echo ""
-  echo "Usage:"
-  echo "  export KOTS_LICENSE_FILE=/path/to/howso-platform-license.yaml"
-  echo "  ./kots-existing-cluster/install.sh"
+  echo "Error: KOTS_LICENSE_FILE not set"
   exit 1
 fi
 
@@ -28,8 +17,7 @@ if [[ ! -f "$KOTS_LICENSE_FILE" ]]; then
 fi
 
 if ! kubectl kots version &>/dev/null; then
-  echo "Error: 'kubectl kots' plugin is required but not found."
-  echo "Install from: https://kots.io/install/"
+  echo "Error: 'kubectl kots' plugin not found"
   exit 1
 fi
 

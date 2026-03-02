@@ -4,12 +4,10 @@ set -euo pipefail
 # Helm Air-gap Installation — Option 2: External Charts Mode
 # See helm-airgap/README.md for full documentation.
 # Run from the repository root directory.
+# Requires: AIRGAP_BUNDLE
 
-AIRGAP_BUNDLE="${AIRGAP_BUNDLE:-}"
-if [ -z "$AIRGAP_BUNDLE" ]; then
-  echo "AIRGAP_BUNDLE not set. Download from the Howso Customer Portal:"
-  echo "  https://portal.howso.com/"
-  echo "Then: AIRGAP_BUNDLE=~/2026.2.3.airgap bash $0"
+if [[ -z "${AIRGAP_BUNDLE:-}" ]]; then
+  echo "Error: AIRGAP_BUNDLE not set"
   exit 1
 fi
 
@@ -40,8 +38,6 @@ helm pull oci://registry-1.docker.io/bitnamicharts/redis --untar --untardir "$tm
 helm pull oci://registry.how.so/howso-platform/stable/howso-platform --untar --untardir "$tmp_dir"
 
 echo "=== Pushing external chart images to local registry ==="
-# Template each chart with non-airgap values to discover source image references,
-# then pull, retag, and push to the local registry.
 declare -A chart_values=(
   [minio]=helm-external-charts/manifests/minio.yaml
   [nats]=helm-external-charts/manifests/nats.yaml
@@ -106,7 +102,8 @@ echo "=== Installing Howso Platform ==="
 helm install howso-platform "$tmp_dir/howso-platform" \
   --namespace howso \
   --values helm-external-charts/manifests/values-external-all.yaml \
-  --values helm-airgap/manifests/howso-platform.yaml
+  --values helm-airgap/manifests/howso-platform.yaml \
+  --wait --timeout 20m
 
 echo "=== Installation complete ==="
 echo "Monitor pods: watch kubectl -n howso get po"

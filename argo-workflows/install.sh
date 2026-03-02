@@ -4,15 +4,10 @@ set -euo pipefail
 # Argo Workflows Integration — Add-on
 # See argo-workflows/README.md for full documentation.
 # Run from the repository root directory.
-#
-# Prerequisites:
-#   - Howso Platform running (e.g., via helm-basic/install.sh)
 
 echo "=== Adding argo-workflows.local.howso.com to /etc/hosts ==="
 if ! grep -q 'argo-workflows.local.howso.com' /etc/hosts; then
   echo "127.0.0.1  argo-workflows.local.howso.com" | sudo tee -a /etc/hosts
-else
-  echo "Already present, skipping"
 fi
 
 echo "=== Adding Argo Helm repository ==="
@@ -22,7 +17,8 @@ helm repo update
 echo "=== Installing Argo Workflows ==="
 helm install argo-workflows argo/argo-workflows \
   --namespace howso \
-  --values argo-workflows/manifests/argo-workflows.yaml
+  --values argo-workflows/manifests/argo-workflows.yaml \
+  --wait
 
 echo "=== Enabling Workflows in Howso Platform ==="
 helm upgrade howso-platform \

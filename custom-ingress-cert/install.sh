@@ -4,10 +4,6 @@ set -euo pipefail
 # Custom Ingress Certificates — Add-on
 # See custom-ingress-cert/README.md for full documentation.
 # Run from the repository root directory.
-#
-# Prerequisites:
-#   - Howso Platform running (e.g., via helm-basic/install.sh)
-#   - step CLI installed (https://smallstep.com/docs/step-cli/)
 
 if ! command -v step &>/dev/null; then
   echo "Error: 'step' CLI is required but not found."

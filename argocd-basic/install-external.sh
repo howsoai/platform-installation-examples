@@ -4,10 +4,6 @@ set -euo pipefail
 # Argo CD Installation — Option 2: External Charts Mode
 # See argocd-basic/README.md for full documentation.
 # Run from the repository root directory.
-#
-# Prerequisites:
-#   - argocd CLI installed (https://argo-cd.readthedocs.io/en/stable/cli_installation/)
-#   - Helm registry login completed
 
 echo "=== Creating k3d cluster ==="
 k3d cluster create --config prereqs/k3d-single-node.yaml

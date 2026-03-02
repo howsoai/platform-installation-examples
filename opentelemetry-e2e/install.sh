@@ -4,12 +4,9 @@ set -euo pipefail
 # OpenTelemetry End-to-End — Add-on (Prometheus, Grafana, Jaeger)
 # See opentelemetry-e2e/README.md for full documentation.
 # Run from the repository root directory.
-#
-# Prerequisites:
-#   - Howso Platform running (e.g., via helm-basic/install.sh)
-#   - opentelemetry/install.sh already run, or will be handled here
 
 echo "=== Adding Helm repositories ==="
+# may already exist from opentelemetry/install.sh
 helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts 2>/dev/null || true
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo add jaegertracing https://jaegertracing.github.io/helm-charts

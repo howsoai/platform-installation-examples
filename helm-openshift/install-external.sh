@@ -58,7 +58,8 @@ echo "=== Installing Howso Platform ==="
 helm install howso-platform oci://registry.how.so/howso-platform/stable/howso-platform \
   --namespace howso \
   --values helm-external-charts/manifests/values-external-all.yaml \
-  --values helm-openshift/manifests/howso-platform.yaml
+  --values helm-openshift/manifests/howso-platform.yaml \
+  --wait --timeout 20m
 
 echo "=== Installation complete ==="
 echo "Monitor pods: watch kubectl -n howso get po"

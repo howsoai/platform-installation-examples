@@ -4,12 +4,10 @@ set -euo pipefail
 # Helm Air-gap Installation — Option 1: All-in-One (Built-in Services)
 # See helm-airgap/README.md for full documentation.
 # Run from the repository root directory.
+# Requires: AIRGAP_BUNDLE
 
-AIRGAP_BUNDLE="${AIRGAP_BUNDLE:-}"
-if [ -z "$AIRGAP_BUNDLE" ]; then
-  echo "AIRGAP_BUNDLE not set. Download from the Howso Customer Portal:"
-  echo "  https://portal.howso.com/"
-  echo "Then: AIRGAP_BUNDLE=~/2026.2.3.airgap bash $0"
+if [[ -z "${AIRGAP_BUNDLE:-}" ]]; then
+  echo "Error: AIRGAP_BUNDLE not set"
   exit 1
 fi
 

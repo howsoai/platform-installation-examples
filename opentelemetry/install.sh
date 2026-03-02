@@ -4,9 +4,6 @@ set -euo pipefail
 # OpenTelemetry Collector — Add-on
 # See opentelemetry/README.md for full documentation.
 # Run from the repository root directory.
-#
-# Prerequisites:
-#   - Howso Platform running (e.g., via helm-basic/install.sh)
 
 echo "=== Adding OpenTelemetry Helm repository ==="
 helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts

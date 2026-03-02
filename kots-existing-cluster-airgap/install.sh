@@ -4,43 +4,36 @@ set -euo pipefail
 # KOTS Air-gap Existing Cluster Installation
 # See kots-existing-cluster-airgap/README.md for full documentation.
 # Run from the repository root directory.
-#
-# Prerequisites:
-#   - kubectl kots plugin installed (https://kots.io/install/)
-#   - Environment variables set (see usage below)
-#
-# Usage:
-#   export KOTS_LICENSE_FILE=/path/to/license.yaml
-#   export AIRGAP_BUNDLE=/path/to/2026.2.3.airgap
-#   export KOTSADM_BUNDLE=/path/to/kotsadm.tar.gz
-#   ./kots-existing-cluster-airgap/install.sh
+# Requires: KOTS_LICENSE_FILE, AIRGAP_BUNDLE, KOTSADM_BUNDLE
 
-missing=()
-[[ -z "${KOTS_LICENSE_FILE:-}" ]] && missing+=("KOTS_LICENSE_FILE")
-[[ -z "${AIRGAP_BUNDLE:-}" ]] && missing+=("AIRGAP_BUNDLE")
-[[ -z "${KOTSADM_BUNDLE:-}" ]] && missing+=("KOTSADM_BUNDLE")
-
-if [[ ${#missing[@]} -gt 0 ]]; then
-  echo "Error: Required environment variable(s) not set: ${missing[*]}"
-  echo ""
-  echo "Usage:"
-  echo "  export KOTS_LICENSE_FILE=/path/to/howso-platform-license.yaml"
-  echo "  export AIRGAP_BUNDLE=/path/to/2026.2.3.airgap"
-  echo "  export KOTSADM_BUNDLE=/path/to/kotsadm.tar.gz"
-  echo "  ./kots-existing-cluster-airgap/install.sh"
+if [[ -z "${KOTS_LICENSE_FILE:-}" ]]; then
+  echo "Error: KOTS_LICENSE_FILE not set"
+  exit 1
+fi
+if [[ -z "${AIRGAP_BUNDLE:-}" ]]; then
+  echo "Error: AIRGAP_BUNDLE not set"
+  exit 1
+fi
+if [[ -z "${KOTSADM_BUNDLE:-}" ]]; then
+  echo "Error: KOTSADM_BUNDLE not set"
   exit 1
 fi
 
-for var in KOTS_LICENSE_FILE AIRGAP_BUNDLE KOTSADM_BUNDLE; do
-  if [[ ! -f "${!var}" ]]; then
-    echo "Error: File not found for $var: ${!var}"
-    exit 1
-  fi
-done
+if [[ ! -f "$KOTS_LICENSE_FILE" ]]; then
+  echo "Error: File not found: $KOTS_LICENSE_FILE"
+  exit 1
+fi
+if [[ ! -f "$AIRGAP_BUNDLE" ]]; then
+  echo "Error: File not found: $AIRGAP_BUNDLE"
+  exit 1
+fi
+if [[ ! -f "$KOTSADM_BUNDLE" ]]; then
+  echo "Error: File not found: $KOTSADM_BUNDLE"
+  exit 1
+fi
 
 if ! kubectl kots version &>/dev/null; then
-  echo "Error: 'kubectl kots' plugin is required but not found."
-  echo "Install from: https://kots.io/install/"
+  echo "Error: 'kubectl kots' plugin not found"
   exit 1
 fi
 
@@ -66,7 +59,6 @@ if ! curl -sf http://registry-localhost:5000/v2/_catalog > /dev/null; then
   echo "Ensure k3d cluster was created with registry and registry-localhost is in /etc/hosts"
   exit 1
 fi
-echo "Registry is reachable"
 
 echo "=== Pushing kotsadm images to local registry ==="
 kubectl kots admin-console push-images "$KOTSADM_BUNDLE" registry-localhost:5000/howso \
