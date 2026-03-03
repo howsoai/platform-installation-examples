@@ -108,7 +108,7 @@ The `values-external-all.yaml` file disables all built-in services and points to
 Time to install may vary significantly depending on network speed and resources -so the above install command avoids waiting.  Instead check the status of the pods in the howso namespace, as they come online (CTRL-C to exit).
 
 ```
-watch kubectl -n howso get po 
+kubectl -n howso get pod -w
 ```
 
 Set up a test user and Python client environment using the [instructions here](../common/README.md#login-to-the-howso-platform).
