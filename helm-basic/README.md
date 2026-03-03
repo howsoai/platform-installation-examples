@@ -39,7 +39,7 @@ Time to install may vary significantly depending on network speed and resources.
 You can monitor the status of pods as they come online (CTRL-C to exit):
 
 ```
-watch kubectl -n howso get po
+kubectl -n howso get pod -w
 ```
 
 ### Next Steps
