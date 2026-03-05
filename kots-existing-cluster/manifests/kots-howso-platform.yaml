@@ -4,7 +4,7 @@ metadata:
   name: howso-platform
 spec:
   values:
-    beta_features_enabled:
+    builtin_services_enabled:
       value: "1"
     global_debug:
       default: "20"

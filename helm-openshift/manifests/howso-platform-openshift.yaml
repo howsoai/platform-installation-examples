@@ -1,0 +1,28 @@
+# Howso Platform Helm Values - OpenShift with Built-in Services
+#
+# This configuration is for OpenShift deployments using built-in infrastructure services
+# (Postgres, Valkey, NATS, VersityGW) with OpenShift-compatible security contexts.
+#
+# Built-in services are enabled by default and configured to work with OpenShift's
+# Security Context Constraints (SCCs), including:
+# - MustRunAsRange (arbitrary user IDs)
+# - readOnlyRootFilesystem
+# - runAsNonRoot
+#
+# For external charts instead, see helm-openshift/manifests/howso-platform.yaml
+# and the helm-external-charts guide.
+
+domain: local.howso.com
+
+# Skip CRD installation since it's done as a separate step
+customResourceDefinitions:
+  skip: true
+
+# Standard Replicated registry configuration
+images:
+  registry: proxy.replicated.com
+  registryNamespace: proxy/howso-platform/dpbuild-docker-edge.jfrog.io/dp
+
+# Built-in services configuration
+# Note: Built-in services are enabled by default with OpenShift-compatible security contexts
+# The certificate generator will automatically create TLS certificates for services

@@ -2,11 +2,11 @@ global:
   security:
     allowInsecureImages: true
 image:
-  registry: registry-localhost:5000
-  repository: minio
+  registry: docker.io
+  repository: bitnamilegacy/minio
 clientImage:
-  registry: registry-localhost:5000
-  repository: minio-client
+  registry: docker.io
+  repository: bitnamilegacy/minio-client
 console:
   enabled: false
 auth:
@@ -14,6 +14,3 @@ auth:
   rootUserSecretKey: rootUser
   rootPasswordSecretKey: rootPassword
 defaultBuckets: platform
-resources:
-  requests:
-    memory: 2Gi

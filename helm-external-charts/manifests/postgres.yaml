@@ -1,0 +1,2 @@
+auth:
+  existingSecret: platform-postgres-postgresql

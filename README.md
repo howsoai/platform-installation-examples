@@ -18,7 +18,8 @@ By providing self-contained local workstation setups the documentation aims to:-
 ## Examples
 - [Prerequisites](prereqs/README.md)
 ---
-- [Helm](helm-basic/README.md)
+- [Helm (Built-in Services)](helm-basic/README.md)
+- [Helm (External Charts)](helm-external-charts/README.md) - Use external Bitnami/MinIO charts
 - [Helm Air-gap](helm-airgap/README.md)
 - [Helm Openshift](helm-openshift/README.md)
 - [Argo CD Basic](argocd-basic/README.md)
@@ -32,7 +33,7 @@ The Howso Platform can optionally integrate with Argo Workflows to enable certai
 
 ## Overview
 
-Howso Platform is a Kubernetes-based application that consists of many services, it is available as a Helm chart install, depending on data stores and a message queue that can also be deployed as charts.
+Howso Platform is a Kubernetes-based application that consists of many services, available as a single Helm chart. The platform chart includes built-in infrastructure services (Postgres, Valkey, NATS, VersityGW object storage) for simplified deployment, or can be configured to use external charts (Bitnami Postgres/Redis, MinIO, NATS) for other use cases.
 
 
 ### Replicated
@@ -46,16 +47,25 @@ The Howso Platform is distributed as a [Replicated](https://www.replicated.com/)
 
 [Helm](https://helm.sh/) modularizes Kubernetes manifests into charts, which can be installed, upgraded, and uninstalled as a single entity. It includes a straightforward method for templating out certain values, to make it simple to configure the application.
 
-The Howso Platform relies on data stores, such as Postgres, [Redis](./redis-license-update.md), an S3-compatible object store (Minio), and a message queue (NATS).  These requirements can themselves be deployed as Helm charts.  The documentation will use commonly available charts for these dependencies.  These public charts are configurable and mature enough to provide a range from simple tests to scaled production configurations.
+The Howso Platform relies on data stores (Postgres, Redis/Valkey), an S3-compatible object store, and a message queue (NATS). By default, these are included as built-in services within the platform chart. Alternatively, they can be deployed as separate Helm charts—see [External Charts](helm-external-charts/README.md) for details.
 
 
 ## Quick Start vs Production Readiness
 
-### Out-of-the-Box Interoperability
+### Built-in Services (Default)
 
-The Howso Platform chart is designed to work together well with the dependent Helm charts for Redis, PostgreSQL, MinIO, and NATS, in an (almost) default configuration.  Except for some small changes (i.e. enabling JetStream in NATS), these charts require minimal setup for a quick start. This interoperability facilitates an easy and efficient initial deployment of the Howso Platform.
+The Howso Platform chart includes built-in infrastructure services (Postgres, Valkey, NATS, VersityGW) that work together in an almost default configuration. Except for some small changes (i.e. configuring the domain), these services require minimal setup for a quick start. This interoperability facilitates an easy and efficient initial deployment of the Howso Platform.
 
-In the _basic_ examples, this type of configuration will be demonstrated.  It is recommended to start with this configuration before more complex arrangements.
+In the [helm-basic](helm-basic/README.md) examples, this type of configuration will be demonstrated. It is recommended to start with this configuration before more complex arrangements.
+
+### External Charts
+
+Alternatively, the platform can be configured to use external Bitnami/MinIO charts instead of built-in services. This approach is useful for:
+- Integration with existing infrastructure
+- Gradual migration from previous installations
+- Organization-specific chart requirements
+
+The [helm-external-charts](helm-external-charts/README.md) guide demonstrates this configuration.
 
 
 ### Considerations for Production Environments
@@ -94,9 +104,3 @@ For details on configuring your Howso Platform deployment, refer to the [Configu
 ## Trainee Scaling
 
 The Howso Platform can automatically set the resource requirements for a trainee, increasing them as the trainee's memory utilization increases.  This setup is discussed in the [trainee scaling](trainee-scaling/README.md) section.
-
-
-## Licensing Note
-
-MinIO is used as the default S3 object store with the Howso Platform.  For production deployments ensure you have a valid license for MinIO.
-MinIO, under the AGPL license, is included with Howso Inc.'s OEM license for commercial Howso Platform deployments, covering usage up to 1 terabyte.

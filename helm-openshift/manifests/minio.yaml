@@ -1,12 +1,19 @@
-configPathmc: /tmp/
-existingSecret: platform-minio
-makeServiceAccountJob:
-  securityContext:
-    enabled: true
-    runAsUser: null
-mode: standalone
+global:
+  security:
+    allowInsecureImages: true
+image:
+  registry: docker.io
+  repository: bitnamilegacy/minio
+clientImage:
+  registry: docker.io
+  repository: bitnamilegacy/minio-client
+console:
+  enabled: false
+auth:
+  existingSecret: platform-minio
+  rootUserSecretKey: rootUser
+  rootPasswordSecretKey: rootPassword
+defaultBuckets: platform
 resources:
   requests:
     memory: 2Gi
-securityContext:
-  enabled: false

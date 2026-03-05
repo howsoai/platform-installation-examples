@@ -1,49 +1,26 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: howso-platform 
-  namespace: argocd
-spec:
-  project: howso-platform 
-  source:
-    repoURL: registry.how.so
-    targetRevision: '*' 
-    chart: howso-platform/stable/howso-platform 
-    helm:
-      values: |
-        customResourceDefinitions:
-          skip: true
-        domain: local.howso.com
-        images:
-          registry: proxy.replicated.com
-          registryNamespace: proxy/howso-platform/dpbuild-docker-edge.jfrog.io/dp
-        
-  destination:
-    server: 'https://kubernetes.default.svc'
-    namespace: howso 
-  syncPolicy:
-    automated:
-      selfHeal: true
-      prune: true
----
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: platform-minio 
+  name: platform-minio
   namespace: argocd
 spec:
   project: howso-platform
   source:
-    repoURL: registry.how.so
-    targetRevision: '*' 
-    chart: howso-platform/stable/minio 
+    repoURL: registry-1.docker.io
+    targetRevision: '*'
+    chart: bitnamicharts/minio
     helm:
       values: |
-        existingSecret: platform-minio
-        mode: standalone
+        console:
+          enabled: false
+        auth:
+          existingSecret: platform-minio
+          rootUserSecretKey: rootUser
+          rootPasswordSecretKey: rootPassword
+        defaultBuckets: platform
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: howso 
+    namespace: howso
   syncPolicy:
     automated:
       selfHeal: true
@@ -52,14 +29,14 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: platform-nats 
+  name: platform-nats
   namespace: argocd
 spec:
-  project: howso-platform 
+  project: howso-platform
   source:
-    repoURL: registry.how.so
-    targetRevision: '*' 
-    chart: howso-platform/stable/nats
+    repoURL: https://nats-io.github.io/k8s/helm/charts/
+    targetRevision: '*'
+    chart: nats
     helm:
       values: |
         config:
@@ -67,7 +44,7 @@ spec:
             enabled: true
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: howso 
+    namespace: howso
   syncPolicy:
     automated:
       selfHeal: true
@@ -76,21 +53,21 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: platform-postgres 
+  name: platform-postgres
   namespace: argocd
 spec:
-  project: howso-platform 
+  project: howso-platform
   source:
-    repoURL: registry.how.so
-    targetRevision: '*' 
-    chart: howso-platform/stable/postgresql
+    repoURL: registry-1.docker.io
+    targetRevision: '*'
+    chart: bitnamicharts/postgresql
     helm:
       values: |
         auth:
           existingSecret: platform-postgres-postgresql
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: howso 
+    namespace: howso
   syncPolicy:
     automated:
       selfHeal: true
@@ -99,23 +76,27 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: platform-redis 
+  name: platform-redis
   namespace: argocd
 spec:
-  project: howso-platform 
+  project: howso-platform
   source:
-    repoURL: registry.how.so
-    targetRevision: '*' 
-    chart: howso-platform/stable/redis
+    repoURL: registry-1.docker.io
+    targetRevision: '*'
+    chart: bitnamicharts/redis
     helm:
       values: |
         auth:
           existingSecret: platform-redis
+        commonConfiguration: |
+          appendonly yes
+          save ""
+          notify-keyspace-events Kgh
         replica:
           replicaCount: 0
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: howso 
+    namespace: howso
   syncPolicy:
     automated:
       selfHeal: true

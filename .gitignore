@@ -5,7 +5,8 @@ howso.yml*
 howso_stacktrace.txt
 .envrc
 .direnv
-howso-platform-charts.tar.gz
+*.tar.gz
+*.tgz
 *.key
 *.crt
 .python-version
