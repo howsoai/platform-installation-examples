@@ -35,8 +35,6 @@ For Openshift examples, you'll need to install the following:-
 
 These examples and the related CI validation currently test Howso Platform against Kubernetes `1.31` through `1.35`.
 
-Treat that as a tested range, not a general support statement.
-
 
 ## Accessing the Howso Platform Helm Registry
 
