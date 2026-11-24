@@ -34,10 +34,11 @@ Take a look at the [manifests](./manifests/argo-workflows.yaml) for the Argo Wor
 
 Ingress is enabled, so that the Argo Workflows UI will be available at https://argo-workflows.local.howso.com. 
 
-Install Argo Workflows using Helm:
+Install Argo Workflows using Helm.  This guide is tested with chart version 2.0.18 (Argo Workflows v4.1.6):
 
 ```sh
 helm install argo-workflows argo/argo-workflows \
+  --version 2.0.18 \
   --namespace howso \
   --values argo-workflows/manifests/argo-workflows.yaml
 ```
@@ -50,7 +51,7 @@ kubectl get pods -n howso -l app.kubernetes.io/instance=argo-workflows
 
 ### Enable Workflows in Howso Platform
 
-Take a look at the [workflow configuration](./manifests/howso-platform.yaml) for the Howso Platform. The workflow feature and the jobs sub-feature are enabled. Update your existing Howso Platform installation to enable workflows:
+Take a look at the [workflow configuration](./manifests/howso-platform.yaml) for the Howso Platform, which enables the workflow feature. Update your existing Howso Platform installation to enable workflows:
 
 ```sh
 helm upgrade howso-platform oci://registry.how.so/howso-platform/stable/howso-platform \
@@ -67,7 +68,7 @@ kubectl delete pod -n howso -l app.kubernetes.io/instance=argo-workflows
 
 ### Verify Installation
 
-Argo Workflows is now installed and enabled in Howso Platform.  The next steps are to verify the installation and then run the UI Synthesizer feature.
+Argo Workflows is now installed and enabled in Howso Platform.  The next steps are to verify the installation and then run an analyze that is offloaded to a workflow.
 
 ### Argo Workflows pods
 
@@ -90,26 +91,33 @@ kubectl get workflowtemplates -n howso
 
 The Argo Workflows UI is available at https://argo-workflows.local.howso.com.  Click through the certificate warning to access the UI.  As server mode is enabled, no authentication is required in this configuration.
 
-Argo Workflows is used to enable features in the Howso Platform, such as the UI Synthesizer.  The UI can help with visibility into the workflows running in the cluster, but is not required for the Howso Platform to function, and is not used to directly run workflows.
+The Howso Platform uses Argo Workflows to offload long-running Trainee tasks to their own workers.  The UI can help with visibility into the workflows running in the cluster, but is not required for the Howso Platform to function, and is not used to directly run workflows.
 
 
-### Run the UI Synthesizer feature
+### Run an offloaded analyze
 
-
-The UI Synthesizer feature is available in the Howso Platform UI.  It uses Argo Workflows under the hood to synthesize small datasets, uploaded via the browser.
+With workflows enabled, `analyze` on a persisted Trainee runs as a workflow from the `task-worker` template rather than in the Trainee's own worker.
 
 #### Steps
 
-- Set a password and login using the [instructions here](../common/README.md#login-to-the-howso-platform).
-- Create a new project and give it a name, such as `ui-synthesizer`.
-- Click into the project, and look for the Jobs section.  Click the `+ Create new` button then `synthesizer job` from the dropdown.
-- You will need a dataset to upload.  Grab [iris](https://raw.githubusercontent.com/mwaskom/seaborn-data/master/iris.csv) and save locally.
-- Give any name to the synthesizer job, such as `iris-synthesizer`.
-- In the Add New Data section, select or drag and drop the iris dataset.
-- Click Create.  The job will run, first inferring the features from the dataset.
-- For this `iris` example, if any features show a warning, click configure and deselect `Sensitive` and update.
-- Click `Next Step` then `Run`.
-> Note: Both the infer feature attributes and the synthesizer job run as workflows in the cluster - view them with `kubectl get workflows -n howso`.
+- Set up a Python client environment using the [common setup steps](../common/README.md#create-client-environment).
+- Run the following, which trains a persisted Trainee on the iris dataset and analyzes it:
 
-Click through the stats, synthesized dataset and validation results.
+```python
+import pandas as pd
+from howso.engine import Trainee
+from howso.utilities import infer_feature_attributes
+
+df = pd.read_csv("https://raw.githubusercontent.com/mwaskom/seaborn-data/master/iris.csv")
+trainee = Trainee(features=infer_feature_attributes(df), persistence="always")
+trainee.train(df)
+trainee.analyze()
+trainee.delete()
+```
+
+- While `analyze` runs, the workflow appears in the cluster and completes with a `Succeeded` status:
+
+```sh
+kubectl get workflows -n howso
+```
 
