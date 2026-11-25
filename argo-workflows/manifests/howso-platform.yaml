@@ -1,4 +1,2 @@
 workflows:
   enabled: true
-  jobs:
-    enabled: true 

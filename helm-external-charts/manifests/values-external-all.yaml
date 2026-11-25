@@ -85,7 +85,6 @@ datastores:
     locations:
       trainees: trainees
       data: data-resources
-      jobs: jobs
     region: "us-east-1"
     # MinIO chart creates secret: <release-name>
     existingSecret: true

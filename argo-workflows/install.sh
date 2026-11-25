@@ -15,10 +15,12 @@ helm repo add argo https://argoproj.github.io/argo-helm
 helm repo update
 
 echo "=== Installing Argo Workflows ==="
+# No --wait: the controller and server read platform-configmap-workflows-controller,
+# which the Howso Platform upgrade below creates, so they cannot start yet.
 helm install argo-workflows argo/argo-workflows \
+  --version 2.0.18 \
   --namespace howso \
-  --values argo-workflows/manifests/argo-workflows.yaml \
-  --wait
+  --values argo-workflows/manifests/argo-workflows.yaml
 
 echo "=== Enabling Workflows in Howso Platform ==="
 helm upgrade howso-platform \
@@ -38,4 +40,4 @@ kubectl -n howso wait --for=condition=ready --timeout=120s pod -l app.kubernetes
 echo "=== Installation complete ==="
 echo "Argo UI: https://argo-workflows.local.howso.com"
 echo "Check workflow templates: kubectl get workflowtemplates -n howso"
-echo "Next steps: see argo-workflows/README.md#run-the-ui-synthesizer-feature"
+echo "Next steps: see argo-workflows/README.md#run-an-offloaded-analyze"
