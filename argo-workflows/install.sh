@@ -15,11 +15,12 @@ helm repo add argo https://argoproj.github.io/argo-helm
 helm repo update
 
 echo "=== Installing Argo Workflows ==="
+# No --wait: the controller and server read platform-configmap-workflows-controller,
+# which the Howso Platform upgrade below creates, so they cannot start yet.
 helm install argo-workflows argo/argo-workflows \
   --version 2.0.18 \
   --namespace howso \
-  --values argo-workflows/manifests/argo-workflows.yaml \
-  --wait
+  --values argo-workflows/manifests/argo-workflows.yaml
 
 echo "=== Enabling Workflows in Howso Platform ==="
 helm upgrade howso-platform \

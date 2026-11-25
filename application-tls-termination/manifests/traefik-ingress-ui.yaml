@@ -25,7 +25,7 @@ spec:
         - name: platform-ui-v2
           port: 8443
           serversTransport: ui-v2-backend-transport
-    - match: Host(`presigned.local.howso.com`) && (PathPrefix(`/platform/jobs/`) || PathPrefix(`/platform/data-resources/`) || PathPrefix(`/platform/trainees/`))
+    - match: Host(`presigned.local.howso.com`) && (PathPrefix(`/platform/data-resources/`) || PathPrefix(`/platform/trainees/`))
       kind: Rule
       services:
         - name: platform-ui-v2
